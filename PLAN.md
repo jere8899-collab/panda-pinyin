@@ -9,13 +9,15 @@ Rule for every future run: verify pinyin, tones, stroke order and vocabulary aga
 | 1 | 🌈 拼音乐园 Pinyin Park | 4 tones + neutral tone; simple finals a o e i u ü; initials b p m f; blending | ✅ v1 (7 lessons) |
 | 1b | | initials d t n l, g k h + blending | ✅ v2 (5 lessons) |
 | 1b+ | | initials j q x (+ ü rule), zh ch sh r, z c s + blending + look-alike review | ✅ v3 (7 lessons) |
-| 1b++ | | y w as initials; 整体认读音节 zhi chi shi ri zi ci si yi wu yu | ⏭ next |
-| 1c | | compound finals ai ei ui ao ou iu ie üe er; nasal finals an en in un ün, ang eng ing ong; whole syllables (整体认读音节 zhi chi shi ri zi ci si yi wu yu ye yue yuan yin yun ying) | later |
+| 1b++ | | y w as initials; 整体认读音节 zhi chi shi ri zi ci si yi wu yu | ✅ v4 |
+| 1c | | compound finals ai ei ui ao ou iu ie üe er + blending + review | ✅ v4 (7 lessons) |
+| 1c+ | | nasal finals an en in un ün, ang eng ing ong; whole syllables ye yue yuan yin yun ying | ⏭ next |
 | 1d | | tone-mark placement rules, 3rd-tone sandhi (nǐ hǎo → ní hǎo), 一/不 tone changes, two-syllable words, spelling games (drag initial + final + tone) | later |
 | 2 | 🌸 写字花园 Stroke-order tracing | Hanzi Writer tracing: 一 二 三 人 大 口 | ✅ v1 (6 characters) |
 | 2b | | 十 土 上 下 小 山 · 中 日 月 木 水 火, in sets that unlock | ✅ v2 (18 characters) |
 | 2c | | 目 耳 手 足 头 门 · 天 田 王 云 白 不 | ✅ v3 (30 characters) |
-| 2d | | 子 女 马 牛 羊 鸟 · 石 禾 竹 米 刀 力 | ⏭ next |
+| 2d | | 子 女 马 牛 羊 鸟 | ✅ v4 (36 characters) |
+| 2e | | 石 禾 竹 米 刀 力 · 文 方 夕 心 | ⏭ next |
 | 3 | 🧱 Basic strokes & radicals | 基本笔画 (横 竖 撇 捺 点 提 横折 竖钩 …) with names; common radicals 亻 口 木 氵 扌 女 日 … | later |
 | 4 | 📚 MOE characters / vocab by level | K1–K2 NEL themes (family, body, colours, numbers, food) → P1–P6 欢乐伙伴 识读字 / 识写字 per unit: picture ↔ word, hear ↔ word, write it | later |
 | 5 | 💬 Phrases & sentences | 你好、谢谢、我是…、这是… ; P1–P2 sentence patterns; word-order tiles | later |
@@ -42,10 +44,16 @@ Rule for every future run: verify pinyin, tones, stroke order and vocabulary aga
 * Pitch check: octave-jump tails cut; 4 more unclear recordings excluded from answers (qi4 se4 shu4 zhe4). Unused audio files removed (smaller offline cache).
 * Old v1/v2 saves unchanged and tested.
 
+## v4 done (2026-11-10)
+* 9 new Pinyin Park lessons after the z/zh/j review: y w, whole syllables, ai ei ui (+blend), ao ou iu (+blend), ie üe er (+blend), compound-finals review (28 lessons).
+* Writing Garden set 6 (people & animals): 子 女 马 牛 羊 鸟 (36 characters).
+* 🏅 Badge shelf: 14 badges (7 worlds, 6 writing sets, graduate), +5⭐ each, graduate +20⭐; older saves get earned badges on first open.
+* Tone-mark rule unit check (24 cases: guì liú duì jiǔ xué yuè lǜ nǚ ài hǎo gǒu ér shuǐ uī iū üē iē nüè huì niú xiū lüè měi zhōu). 6 more unclear recordings excluded from answers.
+
 ## Next ideas (in order)
-1. y w and the whole syllables (整体认读音节), then compound finals ai ei ui ao ou iu ie üe er (audio-cmn 64k/syllabs; run pitch_check + verify_pinyin; download only what's used).
+1. Nasal finals an en in un ün, then ang eng ing ong, + whole syllables ye yue yuan yin yun ying (audio-cmn 64k/syllabs; pitch_check + verify_pinyin; download only what's used).
 2. "Spell it" game: drag initial + final, then pick the tone.
-3. Tracing set 6 (2d) + a sticker page / badges for finished worlds.
+3. Tracing set 7 (2e).
 4. A grown-ups progress view per child (which tones are tricky).
 5. Daily goal / streak with the panda (no punishment for missed days).
 6. Consider a fully separate free Supabase project if Jeremy wants (see README).
@@ -55,4 +63,4 @@ Rule for every future run: verify pinyin, tones, stroke order and vocabulary aga
 * A grown-up gate is a simple sum, not a real lock.
 * No real recording for every neutral-tone syllable; only "ma" uses the neutral tone.
 * audio-cmn records all 4 tones of every syllable, including a few that are not real words (e.g. tē, nē); they are used only as tone drill sounds, never shown as words.
-* la4 qi4 se4 shu4 zhe4 are not used as answers (pitch check unclear).
+* la4 qi4 se4 shu4 zhe4 lve2 miu4 niu2 nve4 tie2 xue2 are not used as answers (pitch check unclear).

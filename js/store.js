@@ -6,7 +6,7 @@ const PP = window.PP;
 const today = () => { const d = new Date(); return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); };
 const uid = () => "p" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
 const fresh = () => ({ app: "panda-pinyin", v: 1, profiles: [], current: null, deleted: [] });
-const newProfile = name => ({ id: uid(), name, stars: 0, xp: 0, happy: 60, day: null, skin: "classic", owned: ["classic"], lessons: {}, chars: {}, created: Date.now(), updated: Date.now() });
+const newProfile = name => ({ id: uid(), name, stars: 0, xp: 0, happy: 60, day: null, skin: "classic", owned: ["classic"], lessons: {}, chars: {}, badges: {}, created: Date.now(), updated: Date.now() });
 
 function load() {
   try { const s = JSON.parse(localStorage.getItem(KEY)); if (s && s.app === "panda-pinyin") { s.deleted = s.deleted || []; return s; } } catch (e) {}

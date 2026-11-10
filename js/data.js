@@ -15,10 +15,10 @@ function mark(base, tone) {
   return base.slice(0, idx) + MARKS[base[idx]][tone] + base.slice(idx + 1);
 }
 // written form -> audio file stem (a single final i/u/ü is read like yi/wu/yu)
-const AUDIO = { i: "yi", u: "wu", "ü": "yu" };
+const AUDIO = { i: "yi", u: "wu", "ü": "yu", ui: "wei", iu: "you", ie: "ye", "üe": "yue" };   // finals said alone
 const audioOf = (base, tone) => "audio/" + (AUDIO[base] || base.replace("ü", "v")) + tone + ".mp3";   // audio-cmn writes nü/lü as nv/lv
 // recordings we don't ask about: the pitch check (tools/pitch_check.py) couldn't confirm the tone
-const NO_AUDIO = new Set(["la4", "qi4", "se4", "shu4", "zhe4"]);
+const NO_AUDIO = new Set(["la4", "qi4", "se4", "shu4", "zhe4", "lüe2", "miu4", "niu2", "nüe4", "tie2", "xue2"]);
 const hasAudio = (base, tone) => !NO_AUDIO.has(base + tone);
 
 const TONES = [null,
@@ -133,6 +133,57 @@ const LESSONS = [
       confuse: { zi: ["zhi", "ji"], ci: ["chi", "qi"], si: ["shi", "xi"], zhi: ["zi", "ji"], chi: ["ci", "qi"], shi: ["si", "xi"], ji: ["zhi", "zi"], qi: ["chi", "ci"], xi: ["shi", "si"],
         zu: ["zhu", "ju"], cu: ["chu", "qu"], su: ["shu", "xu"], zhu: ["zu", "ju"], chu: ["cu", "qu"], shu: ["su", "xu"], ju: ["zhu", "zu"], qu: ["chu", "cu"], xu: ["shu", "su"],
         za: ["zha", "ca"], ca: ["cha", "za"], sa: ["sha", "ca"], zha: ["za", "cha"], cha: ["ca", "zha"], sha: ["sa", "cha"] }, n: 10 } }
+,
+  { id: "s13", icon: "🦆", zh: "声母 y w", en: "Initials y w",
+    intro: "y and w are like i and u wearing a little hat 🎩. They start a syllable: y sounds like i, w sounds like u.",
+    learn: [{ base: "ya", tone: 1, hz: "鸭", tip: "duck" }, { base: "ye", tone: 2, hz: "爷", tip: "grandpa (爷爷)" }, { base: "yu", tone: 2, hz: "鱼", tip: "fish" },
+      { base: "wa", tone: 1, hz: "蛙", tip: "frog (青蛙)" }, { base: "wu", tone: 3, hz: "五", tip: "five" }],
+    quiz: { kind: "syl", bases: ["ya", "wa", "ye", "yi", "wu", "yu"], tones: [1, 2, 3, 4], twin: true, n: 6 } },
+  { id: "s14", icon: "🌟", zh: "整体认读音节", en: "Whole syllables",
+    intro: "Some syllables are read as ONE sound. Don’t blend them (not z + i!), just say them whole: zhi chi shi ri zi ci si yi wu yu. In zhi chi shi ri zi ci si the i is only a buzz.",
+    learn: ["zhi", "chi", "shi", "ri", "zi", "ci", "si", "yi", "wu", "yu"].map(b => ({ base: b, tone: b === "ri" ? 4 : 1, tip: "say it as one sound" })),
+    quiz: { kind: "tone", tones: [1, 2, 3, 4], bases: ["zhi", "chi", "shi", "ri", "zi", "ci", "si", "yi", "wu", "yu"], n: 8 } },
+  { id: "s15", icon: "🍎", zh: "复韵母 ai ei ui", en: "Finals ai ei ui",
+    intro: "Two vowels glide together like a slide 🛝: a → i makes ai, e → i makes ei, u → i makes ui.",
+    learn: [{ base: "ai", tone: 1, tip: "a slides to i" }, { base: "ei", tone: 1, tip: "e slides to i" }, { base: "ui", tone: 1, tip: "u slides to i (alone: wei)" }],
+    quiz: { kind: "syl", bases: ["ai", "ei", "ui"], tones: [1, 2, 3, 4], n: 6 } },
+  { id: "s16", icon: "💧", zh: "拼一拼 ai ei ui", en: "Blend: ai ei ui",
+    intro: "b + ái → bái 白. Tone-mark tip: the mark sits on a, then o, then e. In ui it goes on the last letter: guì, shuǐ.",
+    learn: [
+      { base: "ai", tone: 4, hz: "爱", tip: "love" }, { base: "bai", tone: 2, hz: "白", tip: "white" },
+      { base: "lai", tone: 2, hz: "来", tip: "to come" }, { base: "bei", tone: 1, hz: "杯", tip: "cup" },
+      { base: "hei", tone: 1, hz: "黑", tip: "black" }, { base: "fei", tone: 1, hz: "飞", tip: "to fly" },
+      { base: "shui", tone: 3, hz: "水", tip: "water" }, { base: "gui", tone: 4, hz: "贵", tip: "expensive" }],
+    quiz: { kind: "syl", bases: ["bai", "mai", "lai", "hai", "tai", "dai", "gai", "bei", "mei", "fei", "hei", "lei", "gei", "dui", "gui", "hui", "shui", "tui"], tones: [1, 2, 3, 4], twin: true, n: 8 } },
+  { id: "s17", icon: "🐱", zh: "复韵母 ao ou iu", en: "Finals ao ou iu",
+    intro: "More gliding vowels: a → o makes ao, o → u makes ou, i → u makes iu.",
+    learn: [{ base: "ao", tone: 1, tip: "a slides to o" }, { base: "ou", tone: 1, tip: "o slides to u" }, { base: "iu", tone: 1, tip: "i slides to u (alone: you)" }],
+    quiz: { kind: "syl", bases: ["ao", "ou", "iu"], tones: [1, 2, 3, 4], n: 6 } },
+  { id: "s18", icon: "🐶", zh: "拼一拼 ao ou iu", en: "Blend: ao ou iu",
+    intro: "m + āo → māo 猫, a cat! In iu the tone mark goes on the last letter: liù, niú.",
+    learn: [
+      { base: "mao", tone: 1, hz: "猫", tip: "cat" }, { base: "bao", tone: 1, hz: "包", tip: "bag, bun" },
+      { base: "hao", tone: 3, hz: "好", tip: "good" }, { base: "gou", tone: 3, hz: "狗", tip: "dog" },
+      { base: "zou", tone: 3, hz: "走", tip: "to walk" }, { base: "niu", tone: 2, hz: "牛", tip: "cow", audio: "audio/c_niu.mp3" },
+      { base: "liu", tone: 4, hz: "六", tip: "six" }, { base: "qiu", tone: 2, hz: "球", tip: "ball" }],
+    quiz: { kind: "syl", bases: ["bao", "mao", "hao", "pao", "dao", "gao", "lao", "dou", "tou", "lou", "gou", "kou", "zou", "hou", "niu", "liu", "jiu", "qiu", "xiu", "diu"], tones: [1, 2, 3, 4], twin: true, n: 8 } },
+  { id: "s19", icon: "🌙", zh: "复韵母 ie üe er", en: "Finals ie üe er",
+    intro: "i → e makes ie, ü → e makes üe, and er curls your tongue up. After j q x y, üe hides its dots too: xué, yuè.",
+    learn: [{ base: "ie", tone: 1, tip: "i slides to e (alone: ye)" }, { base: "üe", tone: 1, tip: "ü slides to e (alone: yue)" }, { base: "er", tone: 2, hz: "儿", tip: "curl your tongue up" }],
+    quiz: { kind: "syl", bases: ["ie", "üe", "er"], tones: [1, 2, 3, 4], n: 6 } },
+  { id: "s20", icon: "❄️", zh: "拼一拼 ie üe er", en: "Blend: ie üe er",
+    intro: "x + uě → xuě 雪, snow! Remember: j q x y + üe is written ue, but still said with round lips.",
+    learn: [
+      { base: "jie", tone: 3, hz: "姐", tip: "big sister" }, { base: "xie", tone: 3, hz: "写", tip: "to write" },
+      { base: "xie", tone: 2, hz: "鞋", tip: "shoe" }, { base: "yue", tone: 4, hz: "月", tip: "moon" },
+      { base: "xue", tone: 3, hz: "雪", tip: "snow" }, { base: "er", tone: 3, hz: "耳", tip: "ear" },
+      { base: "er", tone: 4, hz: "二", tip: "two" }, { base: "er", tone: 2, hz: "儿", tip: "child" }],
+    quiz: { kind: "syl", bases: ["jie", "xie", "qie", "die", "tie", "bie", "nie", "lie", "xue", "jue", "que", "nüe", "lüe", "ye", "yue", "er"], tones: [1, 2, 3, 4], twin: true, n: 8 } },
+  { id: "t6", icon: "🍀", zh: "复韵母大复习", en: "Review: ai ei · ao ou · iu ui · ie üe",
+    intro: "Same start, different glide! Listen to the end of the sound 👂",
+    learn: [],
+    quiz: { kind: "syl", bases: ["bai", "bei", "bao", "mai", "mei", "mao", "mou", "lai", "lei", "lao", "lou", "liu", "hai", "hei", "hao", "hou", "hui", "dai", "dao", "dou", "dui", "diu", "gai", "gei", "gao", "gou", "gui", "jie", "jue", "jiu", "xie", "xue", "xiu", "nie", "nüe", "niu", "lie", "lüe"],
+      tones: [1, 2, 3, 4], sameTone: true, sameInitial: true, n: 10 } }
 ];
 
 // stroke tracing (stroke order data: hanzi-writer-data, Make Me a Hanzi / Arphic PL)
@@ -166,10 +217,30 @@ const CHARS = [
   { ch: "王", py: "wáng", en: "king", audio: "audio/c_wang.mp3", strokes: 4, set: 5 },
   { ch: "云", py: "yún", en: "cloud", audio: "audio/c_yun.mp3", strokes: 4, set: 5 },
   { ch: "白", py: "bái", en: "white", audio: "audio/c_bai.mp3", strokes: 5, set: 5 },
-  { ch: "不", py: "bù", en: "not, no", audio: "audio/c_bu.mp3", strokes: 4, set: 5 }
+  { ch: "不", py: "bù", en: "not, no", audio: "audio/c_bu.mp3", strokes: 4, set: 5 },
+  { ch: "子", py: "zǐ", en: "child", audio: "audio/c_zi.mp3", strokes: 3, set: 6 },
+  { ch: "女", py: "nǚ", en: "girl, woman", audio: "audio/c_nv.mp3", strokes: 3, set: 6 },
+  { ch: "马", py: "mǎ", en: "horse", audio: "audio/c_ma.mp3", strokes: 3, set: 6 },
+  { ch: "牛", py: "niú", en: "cow", audio: "audio/c_niu.mp3", strokes: 4, set: 6 },
+  { ch: "羊", py: "yáng", en: "sheep", audio: "audio/c_yang.mp3", strokes: 6, set: 6 },
+  { ch: "鸟", py: "niǎo", en: "bird", audio: "audio/c_niao.mp3", strokes: 5, set: 6 }
 ];
 // a set opens once 3 characters of the set before it have been traced
-const CHAR_SETS = [null, { zh: "第一组", en: "Set 1 · first strokes" }, { zh: "第二组", en: "Set 2 · up, down & more" }, { zh: "第三组", en: "Set 3 · nature" }, { zh: "第四组", en: "Set 4 · my body" }, { zh: "第五组", en: "Set 5 · sky & field" }];
+const CHAR_SETS = [null, { zh: "第一组", en: "Set 1 · first strokes" }, { zh: "第二组", en: "Set 2 · up, down & more" }, { zh: "第三组", en: "Set 3 · nature" }, { zh: "第四组", en: "Set 4 · my body" }, { zh: "第五组", en: "Set 5 · sky & field" }, { zh: "第六组", en: "Set 6 · people & animals" }];
+
+
+// badges: finish every lesson of a world, or trace every character of a set (+5⭐ each once; the graduate badge +20⭐)
+const BADGES = [
+  { id: "w_tones", icon: "🎵", zh: "声调小达人", en: "Tone Star", lessons: ["t1", "t2", "t3"] },
+  { id: "w_finals", icon: "🅰️", zh: "单韵母", en: "Simple Finals", lessons: ["f1", "f2"] },
+  { id: "w_bpmf", icon: "🫧", zh: "b p m f", en: "First Initials", lessons: ["s1", "s2"] },
+  { id: "w_dtnl", icon: "🥁", zh: "d t n l g k h", en: "Drum Sounds", lessons: ["s3", "s4", "s5", "s6", "t4"] },
+  { id: "w_zcs", icon: "🐝", zh: "j q x · zh ch sh r · z c s", en: "Buzzy Sounds", lessons: ["s7", "s8", "s9", "s10", "s11", "s12", "t5"] },
+  { id: "w_whole", icon: "🌟", zh: "y w · 整体认读", en: "Whole Syllables", lessons: ["s13", "s14"] },
+  { id: "w_glide", icon: "🍀", zh: "复韵母", en: "Gliding Finals", lessons: ["s15", "s16", "s17", "s18", "s19", "s20", "t6"] },
+  ...[1, 2, 3, 4, 5, 6].map(n => ({ id: "set" + n, icon: "✍️", zh: "写字 第" + "一二三四五六"[n - 1] + "组", en: "Writing Set " + n, set: n })),
+  { id: "grad", icon: "👑", zh: "拼音乐园毕业", en: "Pinyin Park Graduate", all: true, stars: 20 }
+];
 
 const PRAISE = [["真棒！", "Great job!"], ["太好了！", "Awesome!"], ["你真聪明！", "So clever!"], ["好极了！", "Excellent!"], ["对了！", "That’s right!"]];
 const KIND = [["没关系！", "That’s okay!"], ["再听一次！", "Let’s listen again!"], ["加油！", "You can do it!"]];
@@ -182,5 +253,5 @@ const SKINS = [
   { id: "lion", zh: "舞狮熊猫", en: "Lion Dance Panda", img: "img/panda_lion.webp", cost: 120 }
 ];
 
-window.PP = Object.assign(window.PP || {}, { MARKS, mark, audioOf, hasAudio, CHAR_SETS, TONES, LESSONS, CHARS, PRAISE, KIND, SKINS });
+window.PP = Object.assign(window.PP || {}, { MARKS, mark, audioOf, hasAudio, CHAR_SETS, BADGES, TONES, LESSONS, CHARS, PRAISE, KIND, SKINS });
 })();

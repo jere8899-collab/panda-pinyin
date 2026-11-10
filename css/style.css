@@ -107,3 +107,8 @@ input:focus{outline:none;border-color:var(--pink)}
 .set-h{margin:16px 4px 6px;font-size:1.1rem}.set-h small{color:var(--mut);font-weight:600;font-size:.8rem;margin-left:4px}
 .set-lock{margin:0 4px 8px}.chars.locked .ch{opacity:.45;filter:grayscale(.6)}
 .skins{grid-template-columns:repeat(2,1fr)}
+.node.shelf{margin-top:12px}.node.shelf .n-ic{background:#fff7d6}.node.shelf .n-tx small{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
+.badges{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:8px 0}
+.badge{background:#f6f3fa;border-radius:16px;padding:10px 8px;display:flex;flex-direction:column;align-items:center;text-align:center;opacity:.7}
+.badge.got{background:#fff7d6;opacity:1;box-shadow:0 0 0 2px var(--gold) inset}
+.badge .b-ic{font-size:2rem}.badge b{font-size:.95rem}.badge small{color:var(--mut);font-size:.75rem}.badge .how{margin-top:2px}

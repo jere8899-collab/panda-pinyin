@@ -45,6 +45,30 @@ function reward(p, stars, xp, happy) {
   return level(p) > before;
 }
 
+/* ---------------- badges ---------------- */
+const badgeDone = (p, b) => b.all ? PP.LESSONS.every(l => (p.lessons[l.id] || {}).best)
+  : b.lessons ? b.lessons.every(id => (p.lessons[id] || {}).best)
+  : PP.CHARS.filter(c => c.set === b.set).every(c => p.chars[c.ch]);
+// award any badge now earned (also gives older saves the badges they already deserve); returns the new ones
+function checkBadges(p) {
+  p.badges = p.badges || {};
+  const fresh = PP.BADGES.filter(b => !p.badges[b.id] && badgeDone(p, b));
+  if (!fresh.length) return [];
+  fresh.forEach(b => { p.badges[b.id] = S.today(); p.stars = (p.stars || 0) + (b.stars || 5); });
+  S.touch(p); paintTop();
+  fresh.forEach((b, i) => setTimeout(() => toast(`${b.icon} New badge! 新徽章：${b.zh} +${b.stars || 5}⭐`, 2200), 600 + i * 2400));
+  return fresh;
+}
+function badgeShelf() {
+  const p = S.cur(); checkBadges(p);
+  modal(`<h3>🏅 徽章 Badges <small class="muted">${Object.keys(p.badges).length}/${PP.BADGES.length}</small></h3>
+    <div class="badges">${PP.BADGES.map(b => { const got = p.badges[b.id];
+      const how = b.all ? "Finish every Pinyin Park lesson" : b.lessons ? "Finish: " + b.lessons.map(id => PP.LESSONS.find(l => l.id === id).zh).join(" · ") : "Trace all of " + PP.CHAR_SETS[b.set].zh;
+      return `<div class="badge ${got ? "got" : ""}"><span class="b-ic">${got ? b.icon : "🔒"}</span><b>${b.zh}</b><small>${b.en}</small><small class="how">${got ? "✓ " + got : how}</small></div>`; }).join("")}</div>
+    <button class="btn ghost" data-x>Close</button>`, (m, close) => { m.querySelector("[data-x]").onclick = close; });
+}
+PP.checkBadges = checkBadges;
+
 /* ---------------- top bar ---------------- */
 function topBar(back) {
   const p = S.cur();
@@ -112,6 +136,7 @@ const unlocked = (p, i) => i === 0 || !!(p.lessons[PP.LESSONS[i - 1].id] || {}).
 const crowns = n => "⭐".repeat(n) + "☆".repeat(3 - n);
 function home() {
   const p = S.cur(); if (!p) return profiles();
+  checkBadges(p);
   const lv = level(p), nextIdx = PP.LESSONS.findIndex(l => !(p.lessons[l.id] || {}).best);
   app().innerHTML = `${topBar()}<section class="screen home">
     <div class="pet card">
@@ -124,6 +149,7 @@ function home() {
         <div class="row"><button class="btn sm" id="feed">🎋 Feed (2⭐)</button><button class="btn sm ghost" id="skins">👕 Skins</button></div>
       </div>
     </div>
+    <button class="node shelf" id="shelf"><span class="n-ic">🏅</span><span class="n-tx"><b>徽章 Badges</b><small>${PP.BADGES.filter(b => p.badges[b.id]).map(b => b.icon).join(" ") || "Finish a world to win your first badge!"}</small></span><span class="n-st">${Object.keys(p.badges).length}/${PP.BADGES.length}</span></button>
     <h2 class="world">🌈 拼音乐园 <small>Pinyin Park</small></h2>
     <div class="path">
       ${PP.LESSONS.map((l, i) => { const r = p.lessons[l.id] || {}, open = unlocked(p, i);
@@ -136,6 +162,7 @@ function home() {
   bindTop();
   app().querySelectorAll(".node[data-i]").forEach(b => b.onclick = () => { const i = +b.dataset.i; if (!unlocked(p, i)) return toast("🔒 Finish the lesson before this one first!"); lesson(PP.LESSONS[i]); });
   $("#garden").onclick = garden;
+  $("#shelf").onclick = badgeShelf;
   $("#petTap").onclick = () => { const im = $("#petTap .panda"); im.classList.remove("hop"); void im.offsetWidth; im.classList.add("hop"); toast(pick(["🐼💕 嘻嘻！", "🐼 抱抱！ Hug!", "🐼🎋 好好吃！"]), 900); };
   $("#feed").onclick = () => {
     if ((p.stars || 0) < 2) return toast("Earn ⭐ in a lesson first!");
@@ -171,11 +198,12 @@ function lesson(L) {
     <button class="btn big" id="go">我准备好了！ I’m ready ▶</button>
   </section>`;
   bindTop();
-  app().querySelectorAll(".lcard").forEach(b => b.onclick = () => { const c = L.learn[+b.dataset.i]; b.classList.add("heard"); Audio1.play(PP.audioOf(c.base, c.tone), c.hz || PP.mark(c.base, c.tone)); });
+  app().querySelectorAll(".lcard").forEach(b => b.onclick = () => { const c = L.learn[+b.dataset.i]; b.classList.add("heard"); Audio1.play(c.audio || PP.audioOf(c.base, c.tone), c.hz || PP.mark(c.base, c.tone)); });
   $("#go").onclick = () => quiz(L);
 }
 
-const finalOf = b => b.replace(/^(zh|ch|sh|[bpmfdtnlgkhjqxzcsr])/, "");
+const INITIAL = /^(zh|ch|sh|[bpmfdtnlgkhjqxzcsryw])/;
+const finalOf = b => b.replace(INITIAL, ""), initialOf = b => (b.match(INITIAL) || [""])[0];
 function makeQs(L) {
   const q = L.quiz, qs = [];
   let last = "";
@@ -192,6 +220,7 @@ function makeQs(L) {
       // twin: sometimes the same sound with another tone, so the tone matters too
       let pool = q.bases.filter(b => b !== base);
       if (q.sameFinal) pool = pool.filter(b => finalOf(b) === finalOf(base));
+      if (q.sameInitial) pool = pool.filter(b => initialOf(b) === initialOf(base));
       if (q.confuse && q.confuse[base]) pool = q.confuse[base].slice();   // look-alike sounds (z / zh / j)
       const others = shuffle(pool).slice(0, 2).map(b => [b, q.sameTone ? tone : pick(q.tones)]);
       if (q.twin && Math.random() < 0.5) others[1] = [base, pick(q.tones.filter(t => t !== tone))];
@@ -209,7 +238,7 @@ function quiz(L) {
   const p = S.cur(), qs = makeQs(L);
   let i = 0, right = 0, firstTry = true, starsGot = 0;
   const show = () => {
-    const q = qs[i];
+    const q = PP._q = qs[i];   // PP._q: read by the automated test
     firstTry = true;
     app().innerHTML = `${topBar(true)}<section class="screen quiz">
       <div class="prog"><i style="width:${Math.round(i / qs.length * 100)}%"></i></div>
@@ -245,6 +274,7 @@ function quiz(L) {
     const firstTime = !r.best, bonus = firstTime ? 5 : (c > r.best ? 2 : 0);
     r.plays++; r.best = Math.max(r.best, c);
     const up = reward(p, starsGot + bonus, right * 2 + 4, 15);
+    checkBadges(p);
     const nx = PP.LESSONS[PP.LESSONS.indexOf(L) + 1];
     app().innerHTML = `${topBar(true)}<section class="screen done">
       <div class="confetti">🎉✨⭐✨🎉</div>
@@ -312,7 +342,7 @@ function trace(idx) {
         const c = s.totalMistakes <= 1 ? 3 : s.totalMistakes <= 3 ? 2 : 1, r = p.chars[C.ch];
         const first = !r, better = r && c > r.best;
         p.chars[C.ch] = { best: Math.max(c, r ? r.best : 0), plays: (r ? r.plays : 0) + 1 };
-        const st = 3 + (first ? 3 : better ? 1 : 0); reward(p, st, 5, 15);
+        const st = 3 + (first ? 3 : better ? 1 : 0); reward(p, st, 5, 15); checkBadges(p);
         Audio1.play(C.audio, C.ch);
         fb(`🎉 <b>${pick(PP.PRAISE)[0]}</b> You wrote ${C.ch}! ${crowns(c)} +${st}⭐`);
       }

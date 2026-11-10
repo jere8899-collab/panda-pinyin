@@ -13,6 +13,8 @@ Picker (start) → Add child / tap child → Home: pet (tap = hop, 🎋 Feed, �
 Writing Garden node → character grid → trace screen (👀 Watch, ✍️ Trace, ⬅ ➡); ☁️ chip or "Grown-ups" link → sum gate → cloud login/sign-up, remove player.
 
 # Lessons learned
+* Tests must not guess the answer from the audio file name (wei/you/ye are both finals and whole syllables); read the question via PP._q (v4).
+* Check lesson indexes in tests against PP.LESSONS order, not by counting by hand (v4).
 * audio-cmn naming is not always regular (jù is `jv4`); check the file list, don't assume (v3).
 * Pitch tracker octave jumps at the end of falling tones: cut only jumps > 1.6×, or real rises get cut too (v3).
 * Playwright won't click aria-disabled tiles; use force:true to test the locked-tile toast (v2).
