@@ -34,7 +34,7 @@ for p in sorted(glob.glob("*.mp3")):
     if not m: continue
     f = f0(p)
     if len(f) < 5 or not fits(int(m.group(2)), f):
-        if p[:-4] in known: print("known, not used as an answer:", p); continue
+        if p[:-4].replace("v", "ü") in known: print("known, not used as an answer:", p); continue
         bad.append(p); print("CHECK", p, " ".join(str(int(v)) for v in f))
 print(f"{len(glob.glob('*[1-4].mp3'))} files checked, {len(bad)} new ones to listen to (add them to NO_AUDIO in js/data.js)")
 sys.exit(1 if bad else 0)

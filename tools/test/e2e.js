@@ -89,7 +89,9 @@ async function traceChar(page, ch, wrongFirst) {
   ok(stars1 === 10, `stars after lesson 1 = 5 first-try + 5 bonus (got ${stars1})`);
   await page.screenshot({ path: SHOTS + "/tmp_done.png" });
   console.log("Lessons 2-7");
-  for (let i = 1; i < 28; i++) { await page.click("#next"); await page.waitForSelector(".learn, .quiz");
+  for (let i = 1; i < 30; i++) { await page.click("#next"); await page.waitForSelector(".learn, .quiz");
+    if (i === 28) { await sleep(700); await page.click(".lcard[data-i='2']"); ok((await page.evaluate(() => __played.slice(-1)[0])) === "audio/yin1.mp3", "in card plays yin1.mp3 (in said alone = yin)"); await page.screenshot({ path: SHOTS + "/14_nasal_learn.png" }); }
+    if (i === 29) { await sleep(700); await page.click(".lcard[data-i='7']"); ok((await page.evaluate(() => __played.slice(-1)[0])) === "audio/qun2.mp3", "裙 qún card plays qun2.mp3"); }
     if (i === 20) { await sleep(700); await page.screenshot({ path: SHOTS + "/13_whole_syllables.png" }); }
     if (i === 24) { await sleep(700); await page.click(".lcard[data-i='5']"); ok((await page.evaluate(() => __played.slice(-1)[0])) === "audio/c_niu.mp3", "牛 card plays its own word recording"); }
     if (i === 12) { await sleep(700); await page.screenshot({ path: SHOTS + "/09_jqx_learn.png" }); ok((await page.textContent(".intro")).includes("jü"), "ü-dots rule explained"); }
@@ -99,7 +101,7 @@ async function traceChar(page, ch, wrongFirst) {
     if (i === 18) { await sleep(900); await page.screenshot({ path: SHOTS + "/10_review_quiz.png" }); }
     if (i === 7) { await sleep(900); await page.screenshot({ path: SHOTS + "/05_dtnl_quiz.png" }); }
     const n = await playLesson(page); ok(n >= 6, `lesson ${i + 1} done (${n} qs)`); await page.waitForSelector(".done"); }
-  const usedBad = await page.evaluate(() => __played.filter(f => /audio\/(la4|qi4|se4|shu4|zhe4|lve2|miu4|niu2|nve4|tie2|xue2)\.mp3/.test(f)));
+  const usedBad = await page.evaluate(() => __played.filter(f => /audio\/(la4|qi4|se4|shu4|zhe4|lve2|miu4|niu2|nve4|tie2|xue2|pin2|ren4|shan2|zhen2)\.mp3/.test(f)));
   ok(usedBad.length === 0, "no unchecked recording played as a question " + usedBad.join(","));
   await page.click("#homeGo"); await page.waitForSelector(".home");
   ok((await page.$$(".node.locked")).length === 0, "all lessons unlocked after playing through");
@@ -155,12 +157,12 @@ async function traceChar(page, ch, wrongFirst) {
   await page.click("#back"); await page.click("#back"); await page.waitForSelector(".home"); await page.click(".who");
   await page.click(".kid[data-id] >> text=Xiao Long"); await page.waitForSelector(".home");
   ok((await page.textContent("#starPill")).includes("0"), "Xiao Long has his own 0⭐");
-  ok((await page.$$(".node.locked")).length === 27, "Xiao Long's lessons are still locked");
+  ok((await page.$$(".node.locked")).length === 29, "Xiao Long's lessons are still locked");
   await page.reload(); await page.waitForSelector(".home");
   ok((await page.textContent(".who")).includes("Xiao Long"), "after reload the same child is playing");
   await page.click(".who"); await page.click(".kid[data-id] >> text=Mei Mei"); await page.waitForSelector(".home");
   const after = await page.evaluate(() => PP.Store.cur());
-  ok(after.stars === mei.stars && after.xp === mei.xp && Object.keys(after.lessons).length === 28, `Mei Mei's progress survived reload (⭐${after.stars}, xp ${after.xp})`);
+  ok(after.stars === mei.stars && after.xp === mei.xp && Object.keys(after.lessons).length === 30, `Mei Mei's progress survived reload (⭐${after.stars}, xp ${after.xp})`);
 
   console.log("Grown-ups gate");
   await page.click("#cloudChip"); await page.waitForSelector("#gate");
@@ -206,7 +208,7 @@ async function traceChar(page, ch, wrongFirst) {
   await mp.goto(BASE); await mp.evaluate(v => { localStorage.setItem("pandaPinyin.save.v1", JSON.stringify(v)); localStorage.removeItem("pandaPinyin.cloud.v1"); }, V1); await mp.reload(); await mp.waitForSelector(".home");
   ok((await mp.textContent("#starPill")).includes("48"), "old kid keeps 33⭐ + 3 badges they already earned (+15⭐) = 48");
   ok(await mp.evaluate(() => Object.keys(PP.Store.cur().badges).sort().join() === "w_bpmf,w_finals,w_tones"), "old kid gets Tone, Finals, b p m f badges");
-  ok((await mp.$$(".node[data-i]")).length === 28 && (await mp.$$(".node.locked")).length === 20, "28 lessons shown; old kid's 7 done + d t n l open, 20 locked");
+  ok((await mp.$$(".node[data-i]")).length === 30 && (await mp.$$(".node.locked")).length === 22, "30 lessons shown; old kid's 7 done + d t n l open, 22 locked");
   ok(await mp.$eval(".node[data-i='7']", e => e.classList.contains("next")), "next lesson for old kid is 声母 d t n l");
   ok((await mp.getAttribute(".pet .panda", "src")).includes("sleepy") || (await mp.getAttribute(".pet .panda", "src")).includes("space"), "old kid's panda/skin shown");
   await mp.click("#garden"); ok((await mp.$$(".chars.locked")).length === 5, "old kid with 2 traced: sets 2-6 still locked");

@@ -15,10 +15,10 @@ function mark(base, tone) {
   return base.slice(0, idx) + MARKS[base[idx]][tone] + base.slice(idx + 1);
 }
 // written form -> audio file stem (a single final i/u/ü is read like yi/wu/yu)
-const AUDIO = { i: "yi", u: "wu", "ü": "yu", ui: "wei", iu: "you", ie: "ye", "üe": "yue" };   // finals said alone
+const AUDIO = { i: "yi", u: "wu", "ü": "yu", ui: "wei", iu: "you", ie: "ye", "üe": "yue", in: "yin", un: "wen", "ün": "yun" };   // finals said alone
 const audioOf = (base, tone) => "audio/" + (AUDIO[base] || base.replace("ü", "v")) + tone + ".mp3";   // audio-cmn writes nü/lü as nv/lv
 // recordings we don't ask about: the pitch check (tools/pitch_check.py) couldn't confirm the tone
-const NO_AUDIO = new Set(["la4", "qi4", "se4", "shu4", "zhe4", "lüe2", "miu4", "niu2", "nüe4", "tie2", "xue2"]);
+const NO_AUDIO = new Set(["la4", "qi4", "se4", "shu4", "zhe4", "lüe2", "miu4", "niu2", "nüe4", "tie2", "xue2", "pin2", "ren4", "shan2", "zhen2"]);
 const hasAudio = (base, tone) => !NO_AUDIO.has(base + tone);
 
 const TONES = [null,
@@ -183,7 +183,20 @@ const LESSONS = [
     intro: "Same start, different glide! Listen to the end of the sound 👂",
     learn: [],
     quiz: { kind: "syl", bases: ["bai", "bei", "bao", "mai", "mei", "mao", "mou", "lai", "lei", "lao", "lou", "liu", "hai", "hei", "hao", "hou", "hui", "dai", "dao", "dou", "dui", "diu", "gai", "gei", "gao", "gou", "gui", "jie", "jue", "jiu", "xie", "xue", "xiu", "nie", "nüe", "niu", "lie", "lüe"],
-      tones: [1, 2, 3, 4], sameTone: true, sameInitial: true, n: 10 } }
+      tones: [1, 2, 3, 4], sameTone: true, sameInitial: true, n: 10 } },
+  { id: "s21", icon: "👃", zh: "前鼻韵母 an en in un ün", en: "Nose finals an en in un ün",
+    intro: "Add an n and the sound ends in your nose 👃: a + n → an. Tongue tip touches behind your top teeth at the end. (Alone, in un ün are written yin, wen, yun.)",
+    learn: [{ base: "an", tone: 1, tip: "a, then tongue up: n" }, { base: "en", tone: 1, tip: "e, then n" }, { base: "in", tone: 1, tip: "i, then n (alone: yin)" },
+      { base: "un", tone: 1, tip: "u, then n (alone: wen)" }, { base: "ün", tone: 1, tip: "ü, then n (alone: yun)" }],
+    quiz: { kind: "syl", bases: ["an", "en", "in", "un", "ün"], tones: [1, 2, 3, 4], n: 6 } },
+  { id: "s22", icon: "⛰️", zh: "拼一拼 an en in un ün", en: "Blend: an en in un ün",
+    intro: "sh + ān → shān 山, a mountain! After j q x, ün hides its dots again: q + ún → qún 裙.",
+    learn: [
+      { base: "shan", tone: 1, hz: "山", tip: "mountain" }, { base: "fan", tone: 4, hz: "饭", tip: "rice, meal" },
+      { base: "men", tone: 2, hz: "门", tip: "door" }, { base: "hen", tone: 3, hz: "很", tip: "very" },
+      { base: "xin", tone: 1, hz: "心", tip: "heart" }, { base: "lin", tone: 2, hz: "林", tip: "woods" },
+      { base: "chun", tone: 1, hz: "春", tip: "spring" }, { base: "qun", tone: 2, hz: "裙", tip: "skirt (q + ün)" }],
+    quiz: { kind: "syl", bases: ["ban", "pan", "man", "fan", "dan", "tan", "nan", "lan", "gan", "kan", "han", "zhan", "shan", "san", "ben", "pen", "men", "fen", "gen", "hen", "zhen", "chen", "shen", "ren", "bin", "pin", "min", "lin", "jin", "qin", "xin", "dun", "tun", "lun", "gun", "kun", "hun", "chun", "shun", "sun", "jun", "qun", "xun"], tones: [1, 2, 3, 4], twin: true, n: 8 } }
 ];
 
 // stroke tracing (stroke order data: hanzi-writer-data, Make Me a Hanzi / Arphic PL)
