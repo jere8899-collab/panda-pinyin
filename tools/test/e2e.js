@@ -162,9 +162,12 @@ async function traceChar(page, ch, wrongFirst) {
     ok(await p2.evaluate(s => PP.Store.cur().stars === s, after.stars), "Mei Mei's stars match on device 2");
     // device 2 plays, device 1 reloads and sees it
     await p2.evaluate(() => { const p = PP.Store.cur(); p.stars += 7; p.xp += 1; PP.Store.touch(p); });
-    await p2.waitForFunction(() => PP.Cloud.status === "saved", null, { timeout: 15000 }).catch(() => {}); await sleep(2500);
+    await p2.waitForFunction(() => PP.Cloud.status === "saving", null, { timeout: 8000 }).catch(() => {});
+    await p2.waitForFunction(() => PP.Cloud.status === "saved", null, { timeout: 15000 }).catch(() => {}); await sleep(500);
+    ok(await p2.evaluate(() => PP.Cloud.status === "saved"), "device 2 pushed its change");
     await page.reload(); await page.waitForFunction(() => PP.Cloud.status === "saved", null, { timeout: 20000 }).catch(() => {}); await sleep(500);
     const meiNow = await page.evaluate(() => PP.Store.state.profiles.find(p => p.name === "Mei Mei"));
+    console.log("    device1 status", await page.evaluate(() => PP.Cloud.status), "stars", meiNow.stars, "expected", after.stars + 7);
     ok(meiNow.stars === after.stars + 7, "device 1 picks up device 2's new stars after reload");
     await ctx2.close();
   }
