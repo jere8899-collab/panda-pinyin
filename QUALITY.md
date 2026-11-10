@@ -13,6 +13,8 @@ Picker (start) → Add child / tap child → Home: pet (tap = hop, 🎋 Feed, �
 Writing Garden node → character grid → trace screen (👀 Watch, ✍️ Trace, ⬅ ➡); ☁️ chip or "Grown-ups" link → sum gate → cloud login/sign-up, remove player.
 
 # Lessons learned
+* GitHub Pages can return a one-off 503 when the test fires ~800 audio fetches at once; recheck the failed file(s) one by one with curl before calling it a bug (v5).
+* New lessons change hard-coded lesson/locked counts in e2e.js (Xiao Long 27→29, old kid 20→22); search the test for the old total before running (v5).
 * Tests must not guess the answer from the audio file name (wei/you/ye are both finals and whole syllables); read the question via PP._q (v4).
 * Check lesson indexes in tests against PP.LESSONS order, not by counting by hand (v4).
 * audio-cmn naming is not always regular (jù is `jv4`); check the file list, don't assume (v3).
@@ -25,3 +27,6 @@ Writing Garden node → character grid → trace screen (👀 Watch, ✍️ Trac
 
 # Self-score v1 (2026-11-10): 9/10
 Passed 1–7. Minus 1: ma5 neutral tone is a different speaker; the gate is a simple sum.
+
+# Self-score v5 (2026-11-10): 9/10
+Passed 1–8 (live run 99/102: the 3 misses were one transient 503 on die3.mp3; all 775 audio files then rechecked 200 live). Minus 1: the live suite didn't pass in one clean run.
