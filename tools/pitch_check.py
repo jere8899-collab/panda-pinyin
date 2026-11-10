@@ -14,6 +14,8 @@ def f0(path):
         if ac[k] / ac[0] > 0.45: out.append(16000 / k)
     f = np.array(out); m = np.median(f); f = f[(f > m * 0.6) & (f < m * 1.6)]
     while len(f) > 5 and f[-1] > f[-2] * 1.25: f = f[:-1]   # creaky end: tracker jumps an octave
+    for i in range(max(1, len(f) // 2), len(f)):
+        if f[i] > 1.6 * f[i - 1]: f = f[:i]; break   # cut a creaky/octave tail
     f = list(f)
     while len(f) > 5 and f[-1] > 1.25 * np.median(f[-6:-1]): f.pop()
     f = np.array(f)
@@ -25,11 +27,14 @@ def fits(t, f):
     if t == 3: return np.median(f) < 230 or (lo < s - 15)
     if t == 4: return np.argmax(f) < len(f) * 0.6 and hi - e > 25
 os.chdir(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "audio"))
+known = set(re.search(r"NO_AUDIO = new Set\(\[([^\]]*)\]", open("../js/data.js").read()).group(1).replace('"', "").replace(" ", "").split(","))
 bad = []
 for p in sorted(glob.glob("*.mp3")):
     m = re.fullmatch(r"([a-z]+)([1-4])\.mp3", p)
     if not m: continue
     f = f0(p)
-    if len(f) < 5 or not fits(int(m.group(2)), f): bad.append(p); print("CHECK", p, " ".join(str(int(v)) for v in f))
-print(f"{len(glob.glob('*[1-4].mp3'))} files checked, {len(bad)} to listen to")
+    if len(f) < 5 or not fits(int(m.group(2)), f):
+        if p[:-4] in known: print("known, not used as an answer:", p); continue
+        bad.append(p); print("CHECK", p, " ".join(str(int(v)) for v in f))
+print(f"{len(glob.glob('*[1-4].mp3'))} files checked, {len(bad)} new ones to listen to (add them to NO_AUDIO in js/data.js)")
 sys.exit(1 if bad else 0)

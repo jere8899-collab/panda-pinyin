@@ -89,12 +89,16 @@ async function traceChar(page, ch, wrongFirst) {
   ok(stars1 === 10, `stars after lesson 1 = 5 first-try + 5 bonus (got ${stars1})`);
   await page.screenshot({ path: SHOTS + "/tmp_done.png" });
   console.log("Lessons 2-7");
-  for (let i = 1; i < 12; i++) { await page.click("#next"); await page.waitForSelector(".learn, .quiz");
+  for (let i = 1; i < 19; i++) { await page.click("#next"); await page.waitForSelector(".learn, .quiz");
+    if (i === 12) { await sleep(700); await page.screenshot({ path: SHOTS + "/09_jqx_learn.png" }); ok((await page.textContent(".intro")).includes("jü"), "ü-dots rule explained"); }
     if (i === 8) { await sleep(700); await page.screenshot({ path: SHOTS + "/06_blend_learn.png" }); await page.click(".lcard[data-i='3']"); ok((await page.evaluate(() => __played.slice(-1)[0])) === "audio/lv4.mp3", "绿 lǜ card plays lv4.mp3"); }
     if (await page.$("#go")) await page.click("#go"); await page.waitForSelector(".quiz");
     if (i === 4) { await sleep(500); await page.screenshot({ path: SHOTS + "/tmp_syl.png" }); }
+    if (i === 18) { await sleep(900); await page.screenshot({ path: SHOTS + "/10_review_quiz.png" }); }
     if (i === 7) { await sleep(900); await page.screenshot({ path: SHOTS + "/05_dtnl_quiz.png" }); }
     const n = await playLesson(page); ok(n >= 6, `lesson ${i + 1} done (${n} qs)`); await page.waitForSelector(".done"); }
+  const usedBad = await page.evaluate(() => __played.filter(f => /audio\/(la4|qi4|se4|shu4|zhe4)\.mp3/.test(f)));
+  ok(usedBad.length === 0, "no unchecked recording played as a question " + usedBad.join(","));
   await page.click("#homeGo"); await page.waitForSelector(".home");
   ok((await page.$$(".node.locked")).length === 0, "all lessons unlocked after playing through");
   await sleep(800); await page.screenshot({ path: SHOTS + "/04_home.png" });
@@ -111,7 +115,7 @@ async function traceChar(page, ch, wrongFirst) {
 
   console.log("Writing Garden");
   await page.click("#garden"); await page.waitForSelector(".garden-s");
-  ok((await page.$$(".chars.locked")).length === 2, "sets 2 and 3 locked at first");
+  ok((await page.$$(".chars.locked")).length === 4, "sets 2-5 locked at first");
   await page.click(".ch[data-i='6']", { force: true }); await sleep(300); ok(!!(await page.$(".garden-s")) && (await page.$$eval(".toast", ts => ts.some(t => /Trace 3/.test(t.textContent)))), "locked 十 doesn't open, kind toast instead");
   for (const [i, ch] of [[0, "一"], [5, "口"], [4, "大"]]) {
     if (i) { await page.click("#back"); await page.waitForSelector(".garden-s"); }
@@ -124,7 +128,7 @@ async function traceChar(page, ch, wrongFirst) {
     if (ch === "大") await page.screenshot({ path: SHOTS + "/03_tracing.png" });
   }
   await page.click("#back"); await page.waitForSelector(".garden-s");
-  ok((await page.$$(".chars.locked")).length === 1, "set 2 opens after 3 traced characters");
+  ok((await page.$$(".chars.locked")).length === 3, "set 2 opens after 3 traced characters");
   await page.click(".ch[data-i='6']"); await page.waitForFunction(() => /Your turn: stroke 1/.test(document.querySelector("#tfb").textContent), null, { timeout: 15000 });
   ok((await page.textContent(".ch-head")).includes("shí") && (await page.textContent(".ch-head")).includes("ten"), "十 shows shí · ten");
   await page.click("#say"); ok((await page.evaluate(() => __played.slice(-1)[0])) === "audio/c_shi.mp3", "十 plays c_shi.mp3");
@@ -144,12 +148,12 @@ async function traceChar(page, ch, wrongFirst) {
   await page.click("#back"); await page.click("#back"); await page.waitForSelector(".home"); await page.click(".who");
   await page.click(".kid[data-id] >> text=Xiao Long"); await page.waitForSelector(".home");
   ok((await page.textContent("#starPill")).includes("0"), "Xiao Long has his own 0⭐");
-  ok((await page.$$(".node.locked")).length === 11, "Xiao Long's lessons are still locked");
+  ok((await page.$$(".node.locked")).length === 18, "Xiao Long's lessons are still locked");
   await page.reload(); await page.waitForSelector(".home");
   ok((await page.textContent(".who")).includes("Xiao Long"), "after reload the same child is playing");
   await page.click(".who"); await page.click(".kid[data-id] >> text=Mei Mei"); await page.waitForSelector(".home");
   const after = await page.evaluate(() => PP.Store.cur());
-  ok(after.stars === mei.stars && after.xp === mei.xp && Object.keys(after.lessons).length === 12, `Mei Mei's progress survived reload (⭐${after.stars}, xp ${after.xp})`);
+  ok(after.stars === mei.stars && after.xp === mei.xp && Object.keys(after.lessons).length === 19, `Mei Mei's progress survived reload (⭐${after.stars}, xp ${after.xp})`);
 
   console.log("Grown-ups gate");
   await page.click("#cloudChip"); await page.waitForSelector("#gate");
@@ -194,13 +198,25 @@ async function traceChar(page, ch, wrongFirst) {
     chars: { "一": { best: 3, plays: 1 }, "人": { best: 2, plays: 1 } }, created: 1, updated: 2 }] };
   await mp.goto(BASE); await mp.evaluate(v => { localStorage.setItem("pandaPinyin.save.v1", JSON.stringify(v)); localStorage.removeItem("pandaPinyin.cloud.v1"); }, V1); await mp.reload(); await mp.waitForSelector(".home");
   ok((await mp.textContent("#starPill")).includes("33"), "old kid keeps 33⭐");
-  ok((await mp.$$(".node")).length === 13 && (await mp.$$(".node.locked")).length === 4, "12 lessons shown; old kid's 7 done + d t n l open, 4 locked");
+  ok((await mp.$$(".node")).length === 20 && (await mp.$$(".node.locked")).length === 11, "19 lessons shown; old kid's 7 done + d t n l open, 11 locked");
   ok(await mp.$eval(".node[data-i='7']", e => e.classList.contains("next")), "next lesson for old kid is 声母 d t n l");
   ok((await mp.getAttribute(".pet .panda", "src")).includes("sleepy") || (await mp.getAttribute(".pet .panda", "src")).includes("space"), "old kid's panda/skin shown");
-  await mp.click("#garden"); ok((await mp.$$(".chars.locked")).length === 2, "old kid with 2 traced: set 2 still locked");
+  await mp.click("#garden"); ok((await mp.$$(".chars.locked")).length === 4, "old kid with 2 traced: sets 2-5 still locked");
   ok((await mp.textContent(".garden-s")).includes("⭐⭐⭐"), "old kid's 一 crowns still shown");
-  await mp.click("#back"); await mp.click("#skins"); ok((await mp.textContent(".skins")).includes("Brush Panda"), "new Brush Panda skin in the shop");
+  await mp.click("#back"); await mp.click("#skins"); ok((await mp.textContent(".skins")).includes("Brush Panda") && (await mp.textContent(".skins")).includes("Lion Dance Panda"), "Brush + Lion Dance skins in the shop");
   ok(await mp.evaluate(() => PP.Store.cur().owned.join() === "classic,space"), "owned skins unchanged");
+  console.log("Sets 4-5");
+  await mp.evaluate(() => { const p = PP.Store.cur(); ["二", "三", "十", "土", "上", "中", "日", "月"].forEach(c => p.chars[c] = { best: 2, plays: 1 }); PP.Store.touch(p); });
+  await mp.reload(); await mp.waitForSelector(".home"); await mp.click("#garden"); await mp.waitForSelector(".garden-s");
+  ok((await mp.$$(".chars.locked")).length === 1, "sets 2-4 open after 3 traced in each set before, set 5 locked");
+  for (const [i, ch] of [[18, "目"], [21, "足"]]) {
+    if (i !== 18) { await mp.click("#back"); await mp.waitForSelector(".garden-s"); }
+    await mp.click(`.ch[data-i='${i}']`); await mp.waitForFunction(() => /Your turn: stroke 1/.test(document.querySelector("#tfb").textContent), null, { timeout: 20000 });
+    await traceChar(mp, ch); await mp.waitForFunction(() => /You wrote/.test(document.querySelector("#tfb").textContent), null, { timeout: 8000 }).catch(() => {});
+    ok(/You wrote/.test(await mp.textContent("#tfb")), `traced ${ch} (${ch === "目" ? 5 : 7} strokes)`);
+    await mp.click("#say"); ok(/c_(mu_eye|zu)\.mp3/.test(await mp.evaluate(() => __played.slice(-1)[0])), `${ch} plays its recording`);
+  }
+  await mp.screenshot({ path: SHOTS + "/11_trace_foot.png" });
   await mig.close();
 
   console.log("Small phone 320×640");

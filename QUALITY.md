@@ -13,6 +13,8 @@ Picker (start) → Add child / tap child → Home: pet (tap = hop, 🎋 Feed, �
 Writing Garden node → character grid → trace screen (👀 Watch, ✍️ Trace, ⬅ ➡); ☁️ chip or "Grown-ups" link → sum gate → cloud login/sign-up, remove player.
 
 # Lessons learned
+* audio-cmn naming is not always regular (jù is `jv4`); check the file list, don't assume (v3).
+* Pitch tracker octave jumps at the end of falling tones: cut only jumps > 1.6×, or real rises get cut too (v3).
 * Playwright won't click aria-disabled tiles; use force:true to test the locked-tile toast (v2).
 * Several toasts can be on screen; test any toast, not the first (v2).
 * HanziWriter: the quiz message overwrote "Your turn" instantly; tests must wait for the text the screen really shows (2026-11-10).

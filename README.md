@@ -10,8 +10,8 @@ v1 covers the very start: **Hanyu Pinyin** and a first taste of **stroke order**
 ## What's in v1
 * **Profile picker**: one profile per child (first name or nickname only, nothing else). Each child has their own stars, panda, lessons and characters. Tap 👤 to switch child.
 * **Panda pet**: grows (Lv 1–10, gets a little bigger, new title) from XP earned in lessons; ❤️ happiness goes up when you play or feed bamboo (2⭐). If a child hasn't played yet today the panda is sleepy ("I missed you!") and wakes up on the first activity; it is never sad or punished.
-* **Skins**: 竹子熊猫 Bamboo (free), 新年熊猫 New Year (20⭐), 太空熊猫 Space (40⭐), 书法熊猫 Brush Panda (80⭐, v2).
-* **🌈 拼音乐园 Pinyin Park**, 12 lessons, each opens after the one before:
+* **Skins**: 竹子熊猫 Bamboo (free), 新年熊猫 New Year (20⭐), 太空熊猫 Space (40⭐), 书法熊猫 Brush Panda (80⭐, v2), 舞狮熊猫 Lion Dance Panda (120⭐, v3).
+* **🌈 拼音乐园 Pinyin Park**, 19 lessons, each opens after the one before:
   1. 四个声调 The 4 tones (ā á ǎ à) → listen and pick the tone
   2. 轻声 mā 妈 má 麻 mǎ 马 mà 骂 ma 吗 → pick the tone (5 choices)
   3. 单韵母 a o e → listen and pick the sound
@@ -24,16 +24,23 @@ v1 covers the very start: **Hanyu Pinyin** and a first taste of **stroke order**
   10. 声母 g k h (said gē kē hē) *(v2)*
   11. 拼一拼 g k h + a e u; real words 哥 gē, 鼓 gǔ, 哭 kū, 渴 kě, 喝 hē, 虎 hǔ *(v2)*
   12. 声母大复习 big tone review of all 11 initials (10 questions) *(v2)*
+  13. 声母 j q x (said jī qī xī) + the ü-dots rule: ju qu xu are really jü qü xü *(v3)*
+  14. 拼一拼 j q x + i ü; 鸡 jī, 七 qī, 西 xī, 洗 xǐ, 去 qù, 橘 jú *(v3)*
+  15. 声母 zh ch sh r (curled tongue; said zhī chī shī rì) *(v3)*
+  16. 拼一拼 zh ch sh r + a e i u; 猪 zhū, 纸 zhǐ, 吃 chī, 茶 chá, 书 shū, 十 shí, 日 rì, 热 rè *(v3)*
+  17. 声母 z c s (flat tongue; said zī cī sī) *(v3)*
+  18. 拼一拼 z c s + a e i u; 字 zì, 四 sì, 词 cí, 足 zú, 擦 cā *(v3)*
+  19. 平舌还是翘舌？ review: z / zh / j look-alikes side by side (10 questions) *(v3)*
   Each lesson: tap-to-hear learn cards, then 6–10 questions. Right first time = +1⭐; a wrong answer gets kind feedback (没关系！再听一次！) and the sound plays again. 1–3 ⭐ crowns per lesson, +5⭐ the first time a lesson is finished, +2⭐ for a new best.
-* **🌸 写字花园 Writing Garden**: stroke-order tracing for 18 characters in 3 sets: 一 二 三 人 大 口 · 十 土 上 下 小 山 · 中 日 月 木 水 火 (v2 added sets 2–3). Each shows pinyin with tone mark + meaning and has a 🔊 real recording. A set opens after tracing any 3 characters of the set before. The panda first shows the strokes (👀 Watch), then the child traces with a finger; a wrong stroke gets "再试试！ Try again", and after 2 misses the right stroke is highlighted. 3/2/1 ⭐ by mistakes, +3⭐ each time (+3 more the first time).
+* **🌸 写字花园 Writing Garden**: stroke-order tracing for 30 characters in 5 sets: 一 二 三 人 大 口 · 十 土 上 下 小 山 · 中 日 月 木 水 火 · 目 耳 手 足 头 门 · 天 田 王 云 白 不 (v2 added sets 2–3, v3 sets 4–5). Each shows pinyin with tone mark + meaning and has a 🔊 real recording. A set opens after tracing any 3 characters of the set before. The panda first shows the strokes (👀 Watch), then the child traces with a finger; a wrong stroke gets "再试试！ Try again", and after 2 misses the right stroke is highlighted. 3/2/1 ⭐ by mistakes, +3⭐ each time (+3 more the first time).
 * **👪 Grown-ups** (☁️ button or link on the picker; a small multiplication question keeps children out): family cloud save, remove a player, credits.
 * Works offline after the first visit (service worker caches all files; cloud sync resumes when online). Can be added to the home screen.
 
 ## Audio & data sources (real recordings, no guessing)
-* Syllables `audio/<syllable><tone>.mp3` (ü is written v in file names: `lv4.mp3` = lǜ): native-speaker recordings by Chen Wang, [audio-cmn](https://github.com/hugolpz/audio-cmn) (CC BY-SA). Single finals i/u/ü play the yi/wu/yu recordings.
-* Neutral-tone ma (`ma5.mp3` = 吗) and the 18 characters (`c_*.mp3`): Yue Tan, Shtooka, via audio-cmn (CC BY-SA). (A different voice from the other ma recordings.)
-* Tone labels are checked with `python3 tools/pitch_check.py` (tone 1 flat, 2 rising, 3 low/dipping, 4 falling). The one recording it couldn't confirm (`la4`) is never used as an answer (`NO_AUDIO` in `js/data.js`).
-* Every character + pinyin is checked against CC-CEDICT with `python3 tools/verify_pinyin.py` (37/37 OK in v2).
+* Syllables `audio/<syllable><tone>.mp3` (ü is written v in file names: `lv4.mp3` = lǜ; audio-cmn names jù `jv4`, saved here as `ju4.mp3`): native-speaker recordings by Chen Wang, [audio-cmn](https://github.com/hugolpz/audio-cmn) (CC BY-SA). Single finals i/u/ü play the yi/wu/yu recordings.
+* Neutral-tone ma (`ma5.mp3` = 吗) and the characters (耳 uses Chen Wang's ěr syllable recording `er3.mp3`) (`c_*.mp3`): Yue Tan, Shtooka, via audio-cmn (CC BY-SA). (A different voice from the other ma recordings.)
+* Tone labels are checked with `python3 tools/pitch_check.py` (tone 1 flat, 2 rising, 3 low/dipping, 4 falling). Recordings it couldn't confirm (`la4 qi4 se4 shu4 zhe4`) are never used as answers (`NO_AUDIO` in `js/data.js`).
+* Every character + pinyin is checked against CC-CEDICT with `python3 tools/verify_pinyin.py` (69/69 OK in v3).
 * Stroke order: [Hanzi Writer](https://hanziwriter.org) 3.7.3 (MIT) + hanzi-writer-data 2.0.1 (copy `<char>.json` from the npm package into `vendor/hanzi-data/`) (Make Me a Hanzi / Arphic PL), vendored in `vendor/`. No hand-drawn stroke data.
 * If a sound file ever can't play, the device's zh-CN voice says it instead (fallback only).
 * See `CREDITS.md`.
@@ -49,7 +56,7 @@ v1 covers the very start: **Hanyu Pinyin** and a first taste of **stroke order**
 ```bash
 cd /workspace/panda-pinyin
 python3 -m http.server 8765          # open http://localhost:8765
-node tools/test/e2e.js               # full phone playthrough (390×844 + 320×640, all 12 lessons, tracing, old-save check); screenshots in shots/
+node tools/test/e2e.js               # full phone playthrough (390×844 + 320×640, all 19 lessons, tracing incl. sets 4–5, old-save check); screenshots in shots/
 BASE=https://jere8899-collab.github.io/panda-pinyin/ CLOUD=1 node tools/test/e2e.js   # live site + live cloud round trip
 ./deploy.sh "message"                # rebuilds sw.js (cache hash), commits, pushes to GitHub Pages
 ```
@@ -61,4 +68,4 @@ No build step; plain HTML/CSS/JS. (Test deps: `cd tools/test && npm i` for playw
 **Never** touch Word Realms (`/workspace/word-realms-deploy`, `/workspace/cefr-quest`) from this project.
 
 ## Backups
-Before each upgrade: `tar czf /workspace/backups/panda-pinyin-<version>-<date>.tgz` of the project and a git tag (`v1` = first release). Restore: `git checkout v1` or untar.
+Before each upgrade: `tar czf /workspace/backups/panda-pinyin-<version>-<date>.tgz` of the project and a git tag (`v1`, `v2`, … = releases). Restore: `git checkout v1` or untar.

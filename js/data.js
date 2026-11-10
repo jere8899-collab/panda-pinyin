@@ -18,7 +18,7 @@ function mark(base, tone) {
 const AUDIO = { i: "yi", u: "wu", "ü": "yu" };
 const audioOf = (base, tone) => "audio/" + (AUDIO[base] || base.replace("ü", "v")) + tone + ".mp3";   // audio-cmn writes nü/lü as nv/lv
 // recordings we don't ask about: the pitch check (tools/pitch_check.py) couldn't confirm the tone
-const NO_AUDIO = new Set(["la4"]);
+const NO_AUDIO = new Set(["la4", "qi4", "se4", "shu4", "zhe4"]);
 const hasAudio = (base, tone) => !NO_AUDIO.has(base + tone);
 
 const TONES = [null,
@@ -89,6 +89,50 @@ const LESSONS = [
     intro: "Everything so far! Which tone do you hear?",
     learn: [],
     quiz: { kind: "tone", tones: [1, 2, 3, 4], bases: ["ba", "pa", "ma", "fa", "da", "ta", "na", "la", "di", "ni", "li", "du", "tu", "lü", "ga", "ka", "ha", "ge", "ke", "he", "gu", "ku", "hu"], n: 10 } }
+,
+  { id: "s7", icon: "🐔", zh: "声母 j q x", en: "Initials j q x",
+    intro: "We say j, q, x as jī, qī, xī: smile and keep your tongue low. 🤫 A little secret: j q x never go with u. When you see ju, qu, xu, it is really jü, qü, xü! The two dots hide, but you still say ü (round lips 🐟).",
+    learn: [{ base: "ji", tone: 1, tip: "smile, no puff" }, { base: "qi", tone: 1, tip: "smile with a puff 💨" }, { base: "xi", tone: 1, tip: "smile and hiss softly 🐍" },
+      { base: "ju", tone: 1, tip: "j + ü → ju: the dots hide! 👀" }],
+    quiz: { kind: "syl", bases: ["ji", "qi", "xi", "ju", "qu", "xu"], tones: [1, 2, 3, 4], sameTone: true, sameFinal: true, n: 6 } },
+  { id: "s8", icon: "🍊", zh: "拼一拼 j q x", en: "Blend: j q x + i ü",
+    intro: "j + ī → jī 鸡. And remember: in ju qu xu the ü has hidden its dots, so say it with round lips!",
+    learn: [
+      { base: "ji", tone: 1, hz: "鸡", tip: "chicken" }, { base: "qi", tone: 1, hz: "七", tip: "seven" },
+      { base: "xi", tone: 1, hz: "西", tip: "west" }, { base: "xi", tone: 3, hz: "洗", tip: "to wash" },
+      { base: "qu", tone: 4, hz: "去", tip: "to go (q + ü)" }, { base: "ju", tone: 2, hz: "橘", tip: "tangerine (j + ü)" }],
+    quiz: { kind: "syl", bases: ["ji", "qi", "xi", "ju", "qu", "xu"], tones: [1, 2, 3, 4], twin: true, n: 8 } },
+  { id: "s9", icon: "🐷", zh: "声母 zh ch sh r", en: "Initials zh ch sh r",
+    intro: "Curl your tongue up a little (翘舌)! We say them zhī, chī, shī, rì. ch has a puff of air; zh doesn’t.",
+    learn: [{ base: "zhi", tone: 1, tip: "tongue curled, no puff" }, { base: "chi", tone: 1, tip: "tongue curled, with a puff 💨" },
+      { base: "shi", tone: 1, tip: "tongue curled, soft shhh 🤫" }, { base: "ri", tone: 4, hz: "日", tip: "tongue curled, buzz (said rì, like 日)" }],
+    quiz: { kind: "syl", bases: ["zha", "cha", "sha", "zhu", "chu", "shu", "ru", "zhi", "chi", "shi", "ri", "zhe", "che", "she", "re"], tones: [1, 2, 3, 4], sameTone: true, sameFinal: true, n: 6 } },
+  { id: "s10", icon: "🍵", zh: "拼一拼 zh ch sh r", en: "Blend: zh ch sh r + a e i u",
+    intro: "zh + ū → zhū 猪, a pig! In zhi, chi, shi, ri the i is not “ee”: just keep the buzzy sound going.",
+    learn: [
+      { base: "zhu", tone: 1, hz: "猪", tip: "pig" }, { base: "zhi", tone: 3, hz: "纸", tip: "paper" },
+      { base: "chi", tone: 1, hz: "吃", tip: "to eat" }, { base: "cha", tone: 2, hz: "茶", tip: "tea" },
+      { base: "shu", tone: 1, hz: "书", tip: "book" }, { base: "shi", tone: 2, hz: "十", tip: "ten" },
+      { base: "ri", tone: 4, hz: "日", tip: "sun, day" }, { base: "re", tone: 4, hz: "热", tip: "hot" }],
+    quiz: { kind: "syl", bases: ["zha", "cha", "sha", "zhu", "chu", "shu", "ru", "zhi", "chi", "shi", "ri", "zhe", "che", "she", "re"], tones: [1, 2, 3, 4], twin: true, n: 8 } },
+  { id: "s11", icon: "🐝", zh: "声母 z c s", en: "Initials z c s",
+    intro: "Keep your tongue flat (平舌), tip behind your teeth. We say them zī, cī, sī. c has a puff of air; s buzzes like a bee 🐝",
+    learn: [{ base: "zi", tone: 1, tip: "flat tongue, no puff" }, { base: "ci", tone: 1, tip: "flat tongue, with a puff 💨" }, { base: "si", tone: 1, tip: "flat tongue, sss like a snake 🐍" }],
+    quiz: { kind: "syl", bases: ["za", "ca", "sa", "zu", "cu", "su", "zi", "ci", "si", "ze", "ce", "se"], tones: [1, 2, 3, 4], sameTone: true, sameFinal: true, n: 6 } },
+  { id: "s12", icon: "✏️", zh: "拼一拼 z c s", en: "Blend: z c s + a e i u",
+    intro: "z + ì → zì 字, a character! Tap the cards to hear real words.",
+    learn: [
+      { base: "zi", tone: 4, hz: "字", tip: "character, word" }, { base: "si", tone: 4, hz: "四", tip: "four" },
+      { base: "ci", tone: 2, hz: "词", tip: "word" }, { base: "zu", tone: 2, hz: "足", tip: "foot" },
+      { base: "ca", tone: 1, hz: "擦", tip: "to wipe" }],
+    quiz: { kind: "syl", bases: ["za", "ca", "sa", "zu", "cu", "su", "zi", "ci", "si", "ze", "ce", "se"], tones: [1, 2, 3, 4], twin: true, n: 8 } },
+  { id: "t5", icon: "🦁", zh: "平舌还是翘舌？", en: "Review: z c s, zh ch sh or j q x?",
+    intro: "These sound alike! Flat tongue z c s, curled tongue zh ch sh, smiley j q x. Listen carefully 👂",
+    learn: [],
+    quiz: { kind: "syl", bases: ["zi", "ci", "si", "zhi", "chi", "shi", "ji", "qi", "xi", "zu", "cu", "su", "zhu", "chu", "shu", "ju", "qu", "xu", "za", "ca", "sa", "zha", "cha", "sha"], tones: [1, 2, 3, 4], sameTone: true,
+      confuse: { zi: ["zhi", "ji"], ci: ["chi", "qi"], si: ["shi", "xi"], zhi: ["zi", "ji"], chi: ["ci", "qi"], shi: ["si", "xi"], ji: ["zhi", "zi"], qi: ["chi", "ci"], xi: ["shi", "si"],
+        zu: ["zhu", "ju"], cu: ["chu", "qu"], su: ["shu", "xu"], zhu: ["zu", "ju"], chu: ["cu", "qu"], shu: ["su", "xu"], ju: ["zhu", "zu"], qu: ["chu", "cu"], xu: ["shu", "su"],
+        za: ["zha", "ca"], ca: ["cha", "za"], sa: ["sha", "ca"], zha: ["za", "cha"], cha: ["ca", "zha"], sha: ["sa", "cha"] }, n: 10 } }
 ];
 
 // stroke tracing (stroke order data: hanzi-writer-data, Make Me a Hanzi / Arphic PL)
@@ -110,10 +154,22 @@ const CHARS = [
   { ch: "月", py: "yuè", en: "moon, month", audio: "audio/c_yue.mp3", strokes: 4, set: 3 },
   { ch: "木", py: "mù", en: "tree, wood", audio: "audio/c_mu.mp3", strokes: 4, set: 3 },
   { ch: "水", py: "shuǐ", en: "water", audio: "audio/c_shui.mp3", strokes: 4, set: 3 },
-  { ch: "火", py: "huǒ", en: "fire", audio: "audio/c_huo.mp3", strokes: 4, set: 3 }
+  { ch: "火", py: "huǒ", en: "fire", audio: "audio/c_huo.mp3", strokes: 4, set: 3 },
+  { ch: "目", py: "mù", en: "eye", audio: "audio/c_mu_eye.mp3", strokes: 5, set: 4 },
+  { ch: "耳", py: "ěr", en: "ear", audio: "audio/er3.mp3", strokes: 6, set: 4 },
+  { ch: "手", py: "shǒu", en: "hand", audio: "audio/c_shou.mp3", strokes: 4, set: 4 },
+  { ch: "足", py: "zú", en: "foot", audio: "audio/c_zu.mp3", strokes: 7, set: 4 },
+  { ch: "头", py: "tóu", en: "head", audio: "audio/c_tou.mp3", strokes: 5, set: 4 },
+  { ch: "门", py: "mén", en: "door", audio: "audio/c_men.mp3", strokes: 3, set: 4 },
+  { ch: "天", py: "tiān", en: "sky, day", audio: "audio/c_tian.mp3", strokes: 4, set: 5 },
+  { ch: "田", py: "tián", en: "field", audio: "audio/c_tian_field.mp3", strokes: 5, set: 5 },
+  { ch: "王", py: "wáng", en: "king", audio: "audio/c_wang.mp3", strokes: 4, set: 5 },
+  { ch: "云", py: "yún", en: "cloud", audio: "audio/c_yun.mp3", strokes: 4, set: 5 },
+  { ch: "白", py: "bái", en: "white", audio: "audio/c_bai.mp3", strokes: 5, set: 5 },
+  { ch: "不", py: "bù", en: "not, no", audio: "audio/c_bu.mp3", strokes: 4, set: 5 }
 ];
 // a set opens once 3 characters of the set before it have been traced
-const CHAR_SETS = [null, { zh: "第一组", en: "Set 1 · first strokes" }, { zh: "第二组", en: "Set 2 · up, down & more" }, { zh: "第三组", en: "Set 3 · nature" }];
+const CHAR_SETS = [null, { zh: "第一组", en: "Set 1 · first strokes" }, { zh: "第二组", en: "Set 2 · up, down & more" }, { zh: "第三组", en: "Set 3 · nature" }, { zh: "第四组", en: "Set 4 · my body" }, { zh: "第五组", en: "Set 5 · sky & field" }];
 
 const PRAISE = [["真棒！", "Great job!"], ["太好了！", "Awesome!"], ["你真聪明！", "So clever!"], ["好极了！", "Excellent!"], ["对了！", "That’s right!"]];
 const KIND = [["没关系！", "That’s okay!"], ["再听一次！", "Let’s listen again!"], ["加油！", "You can do it!"]];
@@ -122,7 +178,8 @@ const SKINS = [
   { id: "classic", zh: "竹子熊猫", en: "Bamboo Panda", img: "img/panda_classic.webp", cost: 0 },
   { id: "festive", zh: "新年熊猫", en: "New Year Panda", img: "img/panda_festive.webp", cost: 20 },
   { id: "space", zh: "太空熊猫", en: "Space Panda", img: "img/panda_space.webp", cost: 40 },
-  { id: "brush", zh: "书法熊猫", en: "Brush Panda", img: "img/panda_brush.webp", cost: 80 }
+  { id: "brush", zh: "书法熊猫", en: "Brush Panda", img: "img/panda_brush.webp", cost: 80 },
+  { id: "lion", zh: "舞狮熊猫", en: "Lion Dance Panda", img: "img/panda_lion.webp", cost: 120 }
 ];
 
 window.PP = Object.assign(window.PP || {}, { MARKS, mark, audioOf, hasAudio, CHAR_SETS, TONES, LESSONS, CHARS, PRAISE, KIND, SKINS });

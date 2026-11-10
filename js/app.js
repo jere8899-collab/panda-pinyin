@@ -175,7 +175,7 @@ function lesson(L) {
   $("#go").onclick = () => quiz(L);
 }
 
-const finalOf = b => b.replace(/^[bpmfdtnlgkh]/, "");
+const finalOf = b => b.replace(/^(zh|ch|sh|[bpmfdtnlgkhjqxzcsr])/, "");
 function makeQs(L) {
   const q = L.quiz, qs = [];
   let last = "";
@@ -192,6 +192,7 @@ function makeQs(L) {
       // twin: sometimes the same sound with another tone, so the tone matters too
       let pool = q.bases.filter(b => b !== base);
       if (q.sameFinal) pool = pool.filter(b => finalOf(b) === finalOf(base));
+      if (q.confuse && q.confuse[base]) pool = q.confuse[base].slice();   // look-alike sounds (z / zh / j)
       const others = shuffle(pool).slice(0, 2).map(b => [b, q.sameTone ? tone : pick(q.tones)]);
       if (q.twin && Math.random() < 0.5) others[1] = [base, pick(q.tones.filter(t => t !== tone))];
       const seen = new Set([PP.mark(base, tone)]);
