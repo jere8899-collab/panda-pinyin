@@ -131,7 +131,7 @@ function home() {
           <span class="n-ic">${open ? l.icon : "🔒"}</span><span class="n-tx"><b>${l.zh}</b><small>${l.en}</small></span><span class="n-st">${r.best ? crowns(r.best) : (i === nextIdx ? "▶" : "")}</span></button>`; }).join("")}
     </div>
     <h2 class="world">🌸 写字花园 <small>Writing Garden</small></h2>
-    <button class="node garden" id="garden"><span class="n-ic">✍️</span><span class="n-tx"><b>笔顺 Stroke order</b><small>Trace 一 二 三 人 大 口 with your finger</small></span><span class="n-st">${Object.keys(p.chars).length}/${PP.CHARS.length}</span></button>
+    <button class="node garden" id="garden"><span class="n-ic">✍️</span><span class="n-tx"><b>笔顺 Stroke order</b><small>Trace ${PP.CHARS.length} characters with your finger: 一 二 三 人 大 口 十 山 日 月…</small></span><span class="n-st">${Object.keys(p.chars).length}/${PP.CHARS.length}</span></button>
   </section>`;
   bindTop();
   app().querySelectorAll(".node[data-i]").forEach(b => b.onclick = () => { const i = +b.dataset.i; if (!unlocked(p, i)) return toast("🔒 Finish the lesson before this one first!"); lesson(PP.LESSONS[i]); });
@@ -175,20 +175,27 @@ function lesson(L) {
   $("#go").onclick = () => quiz(L);
 }
 
+const finalOf = b => b.replace(/^[bpmfdtnlgkh]/, "");
 function makeQs(L) {
   const q = L.quiz, qs = [];
   let last = "";
   for (let k = 0; k < q.n; k++) {
     let base, tone, key, tries = 0;
-    do { base = pick(q.bases); tone = q.kind === "tone" ? q.tones[k % q.tones.length] : pick(q.tones); key = base + tone; } while (key === last && ++tries < 10);
+    do { base = pick(q.bases); tone = q.kind === "tone" ? q.tones[k % q.tones.length] : pick(q.tones); key = base + tone; }
+    while ((key === last || !PP.hasAudio(base, tone)) && ++tries < 30);
     last = key;
     if (q.kind === "tone") {
       const tones = base === "ma" && q.tones.includes(5) ? [1, 2, 3, 4, 5] : [1, 2, 3, 4];
       qs.push({ kind: "tone", base, tone, opts: tones.map(t => ({ t, label: PP.mark(base, t), sub: PP.TONES[t].shape + " " + PP.TONES[t].zh })), ans: tone });
     } else {
-      // options: the answer + 2 other syllables (different sound; in the blend lesson sometimes the same sound with another tone)
-      const others = shuffle(q.bases.filter(b => b !== base)).slice(0, 2).map(b => [b, q.sameTone ? tone : pick(q.tones)]);
-      if (L.id === "s2" && Math.random() < 0.5) others[1] = [base, pick(q.tones.filter(t => t !== tone))];
+      // options: the answer + 2 other syllables. sameFinal: only the initial differs (dā / tā / nā);
+      // twin: sometimes the same sound with another tone, so the tone matters too
+      let pool = q.bases.filter(b => b !== base);
+      if (q.sameFinal) pool = pool.filter(b => finalOf(b) === finalOf(base));
+      const others = shuffle(pool).slice(0, 2).map(b => [b, q.sameTone ? tone : pick(q.tones)]);
+      if (q.twin && Math.random() < 0.5) others[1] = [base, pick(q.tones.filter(t => t !== tone))];
+      const seen = new Set([PP.mark(base, tone)]);
+      others.forEach(o => { while (seen.has(PP.mark(o[0], o[1]))) o[1] = o[1] % 4 + 1; seen.add(PP.mark(o[0], o[1])); });
       const opts = shuffle([[base, tone], ...others]).map(([b, t]) => ({ b, t, label: PP.mark(b, t) }));
       qs.push({ kind: "syl", base, tone, opts, ans: PP.mark(base, tone) });
     }
@@ -259,15 +266,19 @@ function quiz(L) {
 }
 
 /* ---------------- 4. Writing Garden: stroke-order tracing (Hanzi Writer) ---------------- */
+const setOpen = (p, n) => n <= 1 || PP.CHARS.filter(c => c.set === n - 1 && p.chars[c.ch]).length >= 3;
 function garden() {
   const p = S.cur();
   app().innerHTML = `${topBar(true)}<section class="screen garden-s">
     <h2>🌸 写字花园 <small>Writing Garden</small></h2>
     <p class="intro">Watch the strokes, then trace them with your finger. 先看，再写！</p>
-    <div class="chars">${PP.CHARS.map((c, i) => { const r = p.chars[c.ch]; return `<button class="ch" data-i="${i}"><span class="hz">${c.ch}</span><small>${c.py} · ${c.en}</small><span class="st">${r ? crowns(r.best) : "☆☆☆"}</span></button>`; }).join("")}</div>
+    ${PP.CHAR_SETS.slice(1).map((st, k) => { const n = k + 1, open = setOpen(p, n), list = PP.CHARS.map((c, i) => [c, i]).filter(([c]) => c.set === n);
+      return `<h3 class="set-h">${open ? "" : "🔒 "}${st.zh} <small>${st.en}</small></h3>
+      ${open ? "" : `<p class="muted set-lock">Trace 3 characters in ${PP.CHAR_SETS[n - 1].en.split(" ·")[0]} to open these!</p>`}
+      <div class="chars ${open ? "" : "locked"}">${list.map(([c, i]) => { const r = p.chars[c.ch]; return `<button class="ch" data-i="${i}" ${open ? "" : "aria-disabled=true"}><span class="hz">${c.ch}</span><small>${c.py} · ${c.en}</small><span class="st">${r ? crowns(r.best) : "☆☆☆"}</span></button>`; }).join("")}</div>`; }).join("")}
   </section>`;
   bindTop();
-  app().querySelectorAll(".ch").forEach(b => b.onclick = () => trace(+b.dataset.i));
+  app().querySelectorAll(".ch").forEach(b => b.onclick = () => { const c = PP.CHARS[+b.dataset.i]; if (!setOpen(p, c.set)) return toast("🔒 Trace 3 characters in the set above first!"); trace(+b.dataset.i); });
 }
 function trace(idx) {
   const p = S.cur(), C = PP.CHARS[idx];
@@ -276,7 +287,7 @@ function trace(idx) {
     <div class="pad-wrap"><svg class="grid" viewBox="0 0 100 100" aria-hidden="true"><rect x="1" y="1" width="98" height="98" rx="4"/><line x1="50" y1="1" x2="50" y2="99"/><line x1="1" y1="50" x2="99" y2="50"/><line x1="1" y1="1" x2="99" y2="99"/><line x1="99" y1="1" x2="1" y2="99"/></svg><div id="pad"></div></div>
     <p class="fb" id="tfb">👀 Watch first, then trace!</p>
     <div class="row"><button class="btn ghost" id="watch">👀 Watch 看</button><button class="btn" id="write">✍️ Trace 写</button></div>
-    <div class="row"><button class="btn ghost sm" id="prev" ${idx ? "" : "disabled"}>⬅ ${idx ? PP.CHARS[idx - 1].ch : ""}</button><button class="btn ghost sm" id="nextc" ${idx < PP.CHARS.length - 1 ? "" : "disabled"}>${idx < PP.CHARS.length - 1 ? PP.CHARS[idx + 1].ch : ""} ➡</button></div>
+    <div class="row"><button class="btn ghost sm" id="prev" ${idx ? "" : "disabled"}>⬅ ${idx ? PP.CHARS[idx - 1].ch : ""}</button><button class="btn ghost sm" id="nextc" ${idx < PP.CHARS.length - 1 && setOpen(p, PP.CHARS[idx + 1].set) ? "" : "disabled"}>${idx < PP.CHARS.length - 1 ? PP.CHARS[idx + 1].ch : ""} ➡</button></div>
   </section>`;
   bindTop(garden);
   const size = Math.min(300, window.innerWidth - 64);
@@ -310,7 +321,7 @@ function trace(idx) {
   $("#write").onclick = () => { w.cancelQuiz && w.cancelQuiz(); w.hideCharacter(); startQuiz(); };
   $("#say").onclick = () => Audio1.play(C.audio, C.ch);
   $("#prev").onclick = () => idx && trace(idx - 1);
-  $("#nextc").onclick = () => idx < PP.CHARS.length - 1 && trace(idx + 1);
+  $("#nextc").onclick = () => idx < PP.CHARS.length - 1 && setOpen(p, PP.CHARS[idx + 1].set) && trace(idx + 1);
   setTimeout(() => { w.animateCharacter({ onComplete: () => { w.hideCharacter(); startQuiz(); } }); }, 400);
 }
 

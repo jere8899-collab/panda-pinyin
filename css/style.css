@@ -104,3 +104,6 @@ input:focus{outline:none;border-color:var(--pink)}
 .toast.out{opacity:0}
 @media (max-width:350px){.pet-tap{width:110px}.panda{width:calc(110px * var(--s,1))}.opt b{font-size:2rem}.lcard .py{font-size:2.3rem}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+.set-h{margin:16px 4px 6px;font-size:1.1rem}.set-h small{color:var(--mut);font-weight:600;font-size:.8rem;margin-left:4px}
+.set-lock{margin:0 4px 8px}.chars.locked .ch{opacity:.45;filter:grayscale(.6)}
+.skins{grid-template-columns:repeat(2,1fr)}
