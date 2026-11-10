@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="zh-Hans">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>熊猫拼音 Panda Pinyin</title>
+<meta name="description" content="A cute panda game for learning Hanyu Pinyin tones, finals, initials and stroke order.">
+<meta name="theme-color" content="#ffe3ec">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="img/icon-192.png">
+<link rel="apple-touch-icon" href="img/icon-192.png">
+<link rel="stylesheet" href="css/style.css">
+<script defer src="vendor/hanzi-writer.min.js"></script>
+<script defer src="js/data.js"></script>
+<script defer src="js/store.js"></script>
+<script defer src="js/app.js"></script>
+<script defer src="js/cloud.js"></script>
+</head>
+<body>
+<main id="app"><p style="text-align:center;margin-top:40vh">🐼 Loading…</p></main>
+<script>if ("serviceWorker" in navigator && location.protocol === "https:") addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => {}));</script>
+</body>
+</html>

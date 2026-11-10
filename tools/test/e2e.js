@@ -1,0 +1,185 @@
+// End-to-end phone test: node tools/test/e2e.js  (BASE=https://... to test the live site; CLOUD=1 for a live cloud round trip)
+const { chromium } = require("playwright-core");
+const path = require("path"), fs = require("fs");
+const BASE = process.env.BASE || "http://localhost:8765/";
+const SHOTS = path.join(__dirname, "../../shots");
+fs.mkdirSync(SHOTS, { recursive: true });
+let fails = 0, passes = 0;
+const ok = (c, m) => { if (c) { passes++; console.log("  ✓", m); } else { fails++; console.log("  ✗", m); } };
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+const HOOK = () => {   // remember which file the game asks to play
+  const A = window.Audio; window.__played = [];
+  window.Audio = function (src) { const a = new A(src); window.__played.push(src); a.play = () => Promise.resolve(); return a; };
+};
+async function answer(page, right) {
+  return page.evaluate(right => {
+    const src = window.__played[window.__played.length - 1], m = src.match(/audio\/([a-zü]+)(\d)\.mp3/);
+    const base = ({ yi: "i", wu: "u", yu: "ü" })[m[1]] || m[1], want = PP.mark(base, +m[2]);
+    const opts = [...document.querySelectorAll(".opt")];
+    const b = right ? opts.find(o => o.querySelector("b").textContent === want) : opts.find(o => o.querySelector("b").textContent !== want);
+    b.click(); return want;
+  }, right);
+}
+async function playLesson(page, wrongOnFirst) {
+  let n = 0;
+  while (await page.$(".quiz")) {
+    await page.waitForFunction(() => window.__played.length && document.querySelector(".opt:not([disabled])"));
+    await sleep(380);
+    if (wrongOnFirst && n === 0) { await answer(page, false); await sleep(200); ok(/没关系|再听|加油/.test(await page.textContent("#fb")), "gentle feedback on a wrong answer"); await sleep(800); }
+    await answer(page, true); n++;
+    await sleep(1500);
+  }
+  return n;
+}
+async function traceChar(page, ch, wrongFirst) {
+  const data = JSON.parse(fs.readFileSync(path.join(__dirname, "../../vendor/hanzi-data/" + ch + ".json")));
+  const box = await (await page.$("#pad svg")).boundingBox();
+  const size = box.width, pad = 12, scale = (size - 2 * pad) / 1024;
+  const P = ([x, y]) => [box.x + pad + x * scale, box.y + size - pad - (y + 124) * scale];
+  if (wrongFirst) { // draw stroke 1 backwards / in the wrong place
+    const m = data.medians[data.medians.length - 1].slice().reverse().map(P);
+    await page.mouse.move(...m[0]); await page.mouse.down(); for (const p of m) await page.mouse.move(...p, { steps: 3 }); await page.mouse.up(); await sleep(500);
+  }
+  for (const med of data.medians) {
+    const pts = med.map(P);
+    await page.mouse.move(...pts[0]); await page.mouse.down();
+    for (const p of pts.slice(1)) await page.mouse.move(...p, { steps: 4 });
+    await page.mouse.up(); await sleep(450);
+  }
+}
+
+(async () => {
+  const browser = await chromium.launch({ executablePath: "/opt/google/chrome/chrome", args: ["--autoplay-policy=no-user-gesture-required"] });
+  const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 2, hasTouch: false, isMobile: false });
+  const page = await ctx.newPage();
+  const errors = [], bad = [];
+  page.on("pageerror", e => errors.push(e.message)); page.on("console", m => m.type() === "error" && errors.push(m.text()));
+  page.on("response", r => { if (r.status() >= 400) bad.push(r.status() + " " + r.url()); });
+  await page.addInitScript(HOOK);
+  await page.goto(BASE); await page.waitForSelector(".pick");
+  await page.evaluate(() => { Object.keys(localStorage).filter(k => k.startsWith("pandaPinyin")).forEach(k => localStorage.removeItem(k)); });
+  await page.reload(); await page.waitForSelector(".pick");
+  console.log("Profiles");
+  await page.click("#addKid"); await page.click("#kidOk"); ok(/type a name/.test(await page.textContent("#kidErr")), "empty name is refused");
+  await page.fill("#kidName", "Mei Mei"); await page.click("#kidOk"); await page.waitForSelector(".home");
+  ok((await page.textContent(".who")).includes("Mei Mei"), "new child Mei Mei on home");
+  await page.click(".who"); await page.click("#addKid"); await page.fill("#kidName", "Xiao Long"); await page.click("#kidOk"); await page.waitForSelector(".home");
+  await page.click(".who"); ok((await page.$$(".kid[data-id]")).length === 2, "two profiles in the picker");
+  await sleep(500); await page.screenshot({ path: SHOTS + "/01_profiles.png" });
+  await page.click(".kid[data-id] >> text=Mei Mei"); await page.waitForSelector(".home");
+  ok(await page.$eval(".node[data-i='1']", e => e.classList.contains("locked")), "lesson 2 locked at first");
+
+  console.log("Audio files");
+  const files = await page.evaluate(() => { const s = new Set(); PP.LESSONS.forEach(L => { L.learn.forEach(c => s.add(PP.audioOf(c.base, c.tone))); L.quiz.bases.forEach(b => L.quiz.tones.forEach(t => { if (t < 5 || b === "ma") s.add(PP.audioOf(b, t)); })); }); PP.CHARS.forEach(c => s.add(c.audio)); return [...s]; });
+  const res = await page.evaluate(async files => Promise.all(files.map(f => fetch(f).then(async r => [f, r.status, (await r.arrayBuffer()).byteLength]))), files);
+  ok(res.every(([, s, n]) => s === 200 && n > 3000), `all ${files.length} audio files load (200, >3 KB)`);
+  const dec = await page.evaluate(async f => { const c = new AudioContext(); let n = 0; for (const x of f) { try { const b = await c.decodeAudioData(await (await fetch(x)).arrayBuffer()); if (b.duration > 0.3) n++; } catch (e) {} } return n; }, files);
+  ok(dec === files.length, `all ${files.length} audio files decode as sound (${dec})`);
+
+  console.log("Lesson 1 (tones)");
+  await page.click(".node[data-i='0']"); await page.waitForSelector(".learn");
+  await page.click(".lcard[data-i='2']"); ok((await page.evaluate(() => __played.slice(-1)[0])) === "audio/a3.mp3", "tap ǎ card plays a3.mp3");
+  await page.screenshot({ path: SHOTS + "/tmp_learn.png" });
+  await page.click("#go"); await page.waitForSelector(".quiz"); await sleep(900);
+  await page.screenshot({ path: SHOTS + "/02_tone_quiz.png" });
+  const n1 = await playLesson(page, true);
+  ok(n1 === 6, "6 questions answered"); await page.waitForSelector(".done");
+  const stars1 = await page.evaluate(() => PP.Store.cur().stars);
+  ok(stars1 === 10, `stars after lesson 1 = 5 first-try + 5 bonus (got ${stars1})`);
+  await page.screenshot({ path: SHOTS + "/tmp_done.png" });
+  console.log("Lessons 2-7");
+  for (let i = 1; i < 7; i++) { await page.click("#next"); await page.waitForSelector(".learn, .quiz"); if (await page.$("#go")) await page.click("#go"); await page.waitForSelector(".quiz");
+    if (i === 4) { await sleep(500); await page.screenshot({ path: SHOTS + "/tmp_syl.png" }); }
+    const n = await playLesson(page); ok(n >= 6, `lesson ${i + 1} done (${n} qs)`); await page.waitForSelector(".done"); }
+  await page.click("#homeGo"); await page.waitForSelector(".home");
+  ok((await page.$$(".node.locked")).length === 0, "all lessons unlocked after playing through");
+  await sleep(800); await page.screenshot({ path: SHOTS + "/04_home.png" });
+
+  console.log("Pet + skins");
+  const p0 = await page.evaluate(() => PP.Store.cur());
+  await page.click("#feed"); await sleep(200);
+  const p1 = await page.evaluate(() => PP.Store.cur());
+  ok(p1.stars === p0.stars - 2 || p0.happy >= 100, "feeding costs 2⭐");
+  await page.click("#skins"); await page.click(".skin[data-s='festive']"); await sleep(300);
+  const p2 = await page.evaluate(() => PP.Store.cur());
+  ok(p2.skin === "festive" && p2.owned.includes("festive"), "bought + wearing festive skin");
+  ok((await page.getAttribute(".pet .panda", "src")).includes("festive"), "home panda shows festive skin");
+
+  console.log("Writing Garden");
+  await page.click("#garden"); await page.waitForSelector(".garden-s"); await page.screenshot({ path: SHOTS + "/tmp_garden.png" });
+  for (const [i, ch] of [[0, "一"], [5, "口"], [4, "大"]]) {
+    if (i) { await page.click("#back"); await page.waitForSelector(".garden-s"); }
+    await page.click(`.ch[data-i='${i}']`); await page.waitForSelector("#pad svg");
+    await page.waitForFunction(() => /Your turn: stroke 1/.test(document.querySelector("#tfb").textContent), null, { timeout: 15000 });
+    await traceChar(page, ch, ch === "口");
+    if (ch === "口") ok(true, "wrong stroke tried first on 口");
+    await page.waitForFunction(() => /You wrote/.test(document.querySelector("#tfb").textContent), null, { timeout: 8000 }).catch(() => {});
+    ok(/You wrote/.test(await page.textContent("#tfb")), `traced ${ch} to the end`);
+    if (ch === "大") await page.screenshot({ path: SHOTS + "/03_tracing.png" });
+  }
+  const chars = await page.evaluate(() => PP.Store.cur().chars);
+  ok(Object.keys(chars).length === 3, "3 characters saved"); ok(chars["一"].best === 3, "一 got 3 stars");
+  // a deliberate mistake shows gentle feedback
+  await page.click("#back"); await page.click(".ch[data-i='3']"); await page.waitForFunction(() => /Your turn: stroke 1/.test(document.querySelector("#tfb").textContent), null, { timeout: 15000 });
+  const box = await (await page.$("#pad svg")).boundingBox();
+  await page.mouse.move(box.x + 30, box.y + box.height - 30); await page.mouse.down(); await page.mouse.move(box.x + box.width - 30, box.y + 40, { steps: 8 }); await page.mouse.up(); await sleep(400);
+  ok(/再试试|Follow/.test(await page.textContent("#tfb")), "wrong stroke on 人 → gentle 'try again'");
+
+  console.log("Switching + reload");
+  const mei = await page.evaluate(() => PP.Store.cur());
+  await page.click("#back"); await page.click("#back"); await page.waitForSelector(".home"); await page.click(".who");
+  await page.click(".kid[data-id] >> text=Xiao Long"); await page.waitForSelector(".home");
+  ok((await page.textContent("#starPill")).includes("0"), "Xiao Long has his own 0⭐");
+  ok((await page.$$(".node.locked")).length === 6, "Xiao Long's lessons are still locked");
+  await page.reload(); await page.waitForSelector(".home");
+  ok((await page.textContent(".who")).includes("Xiao Long"), "after reload the same child is playing");
+  await page.click(".who"); await page.click(".kid[data-id] >> text=Mei Mei"); await page.waitForSelector(".home");
+  const after = await page.evaluate(() => PP.Store.cur());
+  ok(after.stars === mei.stars && after.xp === mei.xp && Object.keys(after.lessons).length === 7, `Mei Mei's progress survived reload (⭐${after.stars}, xp ${after.xp})`);
+
+  console.log("Grown-ups gate");
+  await page.click("#cloudChip"); await page.waitForSelector("#gate");
+  const q = await page.textContent(".sheet p b"); const [a, b] = q.split("×").map(Number);
+  await page.fill("#gate", "1"); await page.click("#gOk"); ok(/Not quite/.test(await page.textContent("#gErr")), "wrong gate answer refused");
+  await page.fill("#gate", String(a * b)); await page.click("#gOk"); await page.waitForSelector("#cName");
+  ok(true, "grown-ups panel opens"); await sleep(600); await page.screenshot({ path: SHOTS + "/tmp_grown.png" });
+
+  if (process.env.CLOUD) {
+    console.log("Live cloud round trip");
+    const fam = "pptest_" + Date.now().toString(36);
+    await page.fill("#cName", fam); await page.fill("#cPass", "pandapass1"); await page.click("#cUp");
+    await page.waitForFunction(() => PP.Cloud.status === "saved", null, { timeout: 20000 }).catch(() => {});
+    ok(await page.evaluate(() => PP.Cloud.status === "saved"), "family account created and saved to cloud");
+    ok(await page.evaluate(() => !!localStorage.getItem("pp-auth")), "session kept under its own pp-auth key");
+    const ctx2 = await browser.newContext({ viewport: { width: 390, height: 844 } }); const p2 = await ctx2.newPage(); await p2.addInitScript(HOOK);
+    await p2.goto(BASE); await p2.waitForSelector(".pick"); ok((await p2.$$(".kid[data-id]")).length === 0, "fresh device starts empty");
+    await p2.click("#grown"); const q2 = await p2.textContent(".sheet p b"); const [c, d] = q2.split("×").map(Number); await p2.fill("#gate", String(c * d)); await p2.click("#gOk");
+    await p2.fill("#cName", fam); await p2.fill("#cPass", "pandapass1"); await p2.click("#cIn");
+    await p2.waitForSelector(".kid[data-id]", { timeout: 20000 }).catch(() => {});
+    ok((await p2.$$(".kid[data-id]")).length === 2, "second device gets both children from the cloud");
+    await p2.click(".kid[data-id] >> text=Mei Mei"); await p2.waitForSelector(".home");
+    ok(await p2.evaluate(s => PP.Store.cur().stars === s, after.stars), "Mei Mei's stars match on device 2");
+    // device 2 plays, device 1 reloads and sees it
+    await p2.evaluate(() => { const p = PP.Store.cur(); p.stars += 7; p.xp += 1; PP.Store.touch(p); });
+    await p2.waitForFunction(() => PP.Cloud.status === "saved", null, { timeout: 15000 }).catch(() => {}); await sleep(2500);
+    await page.reload(); await page.waitForFunction(() => PP.Cloud.status === "saved", null, { timeout: 20000 }).catch(() => {}); await sleep(500);
+    const meiNow = await page.evaluate(() => PP.Store.state.profiles.find(p => p.name === "Mei Mei"));
+    ok(meiNow.stars === after.stars + 7, "device 1 picks up device 2's new stars after reload");
+    await ctx2.close();
+  }
+  ok(errors.length === 0, "no console errors " + errors.slice(0, 3).join(" | "));
+  ok(bad.filter(u => !/favicon/.test(u)).length === 0, "no failed requests " + bad.slice(0, 3).join(" | "));
+
+  console.log("Small phone 320×640");
+  const small = await browser.newContext({ viewport: { width: 320, height: 640 } }); const sp = await small.newPage(); await sp.addInitScript(HOOK);
+  await sp.goto(BASE); await sp.evaluate(() => { const s = PP.Store.state; s.profiles.push(PP.Store.newProfile("Ana")); s.current = s.profiles[0].id; PP.Store.save(); }); await sp.reload(); await sp.waitForSelector(".home");
+  for (const [sel, nm] of [[".node[data-i='0']", "learn"], ["#go", "quiz"]]) { await sp.click(sel); await sleep(500); }
+  const over = await sp.evaluate(() => document.documentElement.scrollWidth > innerWidth + 1);
+  ok(!over, "no sideways scroll at 320 px"); await sp.screenshot({ path: SHOTS + "/tmp_320_quiz.png" });
+  const small_t = await sp.evaluate(() => [...document.querySelectorAll("button")].filter(b => b.offsetParent && (b.getBoundingClientRect().height < 44)).map(b => b.className || b.id));
+  ok(small_t.length === 0, "all visible buttons ≥ 44 px tall " + small_t.join(","));
+  await small.close();
+  console.log(`\n${passes} passed, ${fails} failed`);
+  await browser.close(); process.exit(fails ? 1 : 0);
+})().catch(e => { console.error(e); process.exit(1); });
