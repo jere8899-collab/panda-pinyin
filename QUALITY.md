@@ -32,4 +32,5 @@ Passed 1–7. Minus 1: ma5 neutral tone is a different speaker; the gate is a si
 # Self-score v5 (2026-11-10): 9/10
 Passed 1–8 (live run 99/102: the 3 misses were one transient 503 on die3.mp3; all 775 audio files then rechecked 200 live). Minus 1: the live suite didn't pass in one clean run.
 
-# Self-score v6 (2026-11-11): see below
+# Self-score v6 (2026-11-11): 9/10
+Passed 1–8: local 102/102, live + cloud 109/109 in one clean run; pitch_check clean (leng2 rong2 → NO_AUDIO); verify_pinyin 121/121. Minus 1: caught the long-syllable button overflow only from a screenshot, not a test (now a test).
