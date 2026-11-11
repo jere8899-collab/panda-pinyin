@@ -244,7 +244,7 @@ function quiz(L) {
       <div class="prog"><i style="width:${Math.round(i / qs.length * 100)}%"></i></div>
       <p class="ask">${q.kind === "tone" ? "听一听，是第几声？<small>Listen: which tone?</small>" : "听一听，选拼音<small>Listen: pick the sound</small>"}</p>
       <div class="listen"><button class="play" id="play" aria-label="Play sound">🔊</button><button class="slow" id="again">再听 Again</button></div>
-      <div class="opts n${q.opts.length}">${q.opts.map((o, k) => `<button class="opt" data-k="${k}"><b>${o.label}</b>${o.sub ? `<small>${o.sub}</small>` : ""}</button>`).join("")}</div>
+      <div class="opts n${q.opts.length}">${q.opts.map((o, k) => `<button class="opt" data-k="${k}"><b${o.label.length > 4 ? ' class="long"' : ""}>${o.label}</b>${o.sub ? `<small>${o.sub}</small>` : ""}</button>`).join("")}</div>
       <div class="buddy">${pandaImg(p, "xs")}<p id="fb">${i === 0 ? "Tap 🔊 to listen!" : "&nbsp;"}</p></div>
     </section>`;
     bindTop(home);

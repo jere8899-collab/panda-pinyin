@@ -12,7 +12,8 @@ Rule for every future run: verify pinyin, tones, stroke order and vocabulary aga
 | 1b++ | | y w as initials; 整体认读音节 zhi chi shi ri zi ci si yi wu yu | ✅ v4 |
 | 1c | | compound finals ai ei ui ao ou iu ie üe er + blending + review | ✅ v4 (7 lessons) |
 | 1c+ | | nasal finals an en in un ün + blending | ✅ v5 (2 lessons) |
-| 1c++ | | ang eng ing ong + blending; whole syllables ye yue yuan yin yun ying; nasal review + 🏅 badge | ⏭ next |
+| 1c++ | | ang eng ing ong + blending; n / ng review + 🏅 Nose Sounds badge | ✅ v6 (3 lessons) |
+| 1c+++ | | whole syllables ye yue yuan yin yun ying; ian uan üan iang uang iong | ⏭ next |
 | 1d | | tone-mark placement rules, 3rd-tone sandhi (nǐ hǎo → ní hǎo), 一/不 tone changes, two-syllable words, spelling games (drag initial + final + tone) | later |
 | 2 | 🌸 写字花园 Stroke-order tracing | Hanzi Writer tracing: 一 二 三 人 大 口 | ✅ v1 (6 characters) |
 | 2b | | 十 土 上 下 小 山 · 中 日 月 木 水 火, in sets that unlock | ✅ v2 (18 characters) |
@@ -57,8 +58,14 @@ Rule for every future run: verify pinyin, tones, stroke order and vocabulary aga
 * pitch_check now matches NO_AUDIO names written with ü (lüe2 = lve2.mp3).
 * No new badge yet: a nasal-finals badge comes with ang eng ing ong + review.
 
+## v6 done (2026-11-11, daily run)
+* 3 new Pinyin Park lessons: 后鼻韵母 ang eng ing ong (ing alone = ying; ong shown as dōng since it never stands alone; quiz pits an/ang, en/eng, in/ing), blending with 8 real words (糖 灯 风 星 冰 红 龙 虫), and 前鼻还是后鼻？ n-or-ng review (10 questions). 33 lessons.
+* 👃 Nose Sounds badge (s21–s24 + t7), 15 badges.
+* 180 new Chen Wang recordings; leng2 rong2 failed the pitch check → NO_AUDIO.
+* Fix: long syllables (chēng, zhōng) no longer push the 3rd answer button off a phone screen; e2e now checks every answer button fits.
+
 ## Next ideas (in order)
-1. Back nasal finals ang eng ing ong + blending, whole syllables ye yue yuan yin yun ying, nasal review lesson + 🏅 Nose Sounds badge (audio-cmn 64k/syllabs; pitch_check + verify_pinyin; download only what's used).
+1. Whole syllables ye yue yuan yin yun ying + finals ian uan üan iang uang iong.
 2. "Spell it" game: drag initial + final, then pick the tone.
 3. Tracing set 7 (2e).
 4. A grown-ups progress view per child (which tones are tricky).
@@ -70,4 +77,4 @@ Rule for every future run: verify pinyin, tones, stroke order and vocabulary aga
 * A grown-up gate is a simple sum, not a real lock.
 * No real recording for every neutral-tone syllable; only "ma" uses the neutral tone.
 * audio-cmn records all 4 tones of every syllable, including a few that are not real words (e.g. tē, nē); they are used only as tone drill sounds, never shown as words.
-* la4 qi4 se4 shu4 zhe4 lve2 miu4 niu2 nve4 tie2 xue2 pin2 ren4 shan2 zhen2 are not used as answers (pitch check unclear).
+* la4 qi4 se4 shu4 zhe4 lve2 miu4 niu2 nve4 tie2 xue2 pin2 ren4 shan2 zhen2 leng2 rong2 are not used as answers (pitch check unclear).

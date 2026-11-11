@@ -15,10 +15,10 @@ function mark(base, tone) {
   return base.slice(0, idx) + MARKS[base[idx]][tone] + base.slice(idx + 1);
 }
 // written form -> audio file stem (a single final i/u/ü is read like yi/wu/yu)
-const AUDIO = { i: "yi", u: "wu", "ü": "yu", ui: "wei", iu: "you", ie: "ye", "üe": "yue", in: "yin", un: "wen", "ün": "yun" };   // finals said alone
+const AUDIO = { i: "yi", u: "wu", "ü": "yu", ui: "wei", iu: "you", ie: "ye", "üe": "yue", in: "yin", un: "wen", "ün": "yun", ing: "ying" };   // finals said alone
 const audioOf = (base, tone) => "audio/" + (AUDIO[base] || base.replace("ü", "v")) + tone + ".mp3";   // audio-cmn writes nü/lü as nv/lv
 // recordings we don't ask about: the pitch check (tools/pitch_check.py) couldn't confirm the tone
-const NO_AUDIO = new Set(["la4", "qi4", "se4", "shu4", "zhe4", "lüe2", "miu4", "niu2", "nüe4", "tie2", "xue2", "pin2", "ren4", "shan2", "zhen2"]);
+const NO_AUDIO = new Set(["la4", "qi4", "se4", "shu4", "zhe4", "lüe2", "miu4", "niu2", "nüe4", "tie2", "xue2", "pin2", "ren4", "shan2", "zhen2", "leng2", "rong2"]);
 const hasAudio = (base, tone) => !NO_AUDIO.has(base + tone);
 
 const TONES = [null,
@@ -196,7 +196,28 @@ const LESSONS = [
       { base: "men", tone: 2, hz: "门", tip: "door" }, { base: "hen", tone: 3, hz: "很", tip: "very" },
       { base: "xin", tone: 1, hz: "心", tip: "heart" }, { base: "lin", tone: 2, hz: "林", tip: "woods" },
       { base: "chun", tone: 1, hz: "春", tip: "spring" }, { base: "qun", tone: 2, hz: "裙", tip: "skirt (q + ün)" }],
-    quiz: { kind: "syl", bases: ["ban", "pan", "man", "fan", "dan", "tan", "nan", "lan", "gan", "kan", "han", "zhan", "shan", "san", "ben", "pen", "men", "fen", "gen", "hen", "zhen", "chen", "shen", "ren", "bin", "pin", "min", "lin", "jin", "qin", "xin", "dun", "tun", "lun", "gun", "kun", "hun", "chun", "shun", "sun", "jun", "qun", "xun"], tones: [1, 2, 3, 4], twin: true, n: 8 } }
+    quiz: { kind: "syl", bases: ["ban", "pan", "man", "fan", "dan", "tan", "nan", "lan", "gan", "kan", "han", "zhan", "shan", "san", "ben", "pen", "men", "fen", "gen", "hen", "zhen", "chen", "shen", "ren", "bin", "pin", "min", "lin", "jin", "qin", "xin", "dun", "tun", "lun", "gun", "kun", "hun", "chun", "shun", "sun", "jun", "qun", "xun"], tones: [1, 2, 3, 4], twin: true, n: 8 } },
+  { id: "s23", icon: "🔔", zh: "后鼻韵母 ang eng ing ong", en: "Back nose finals ang eng ing ong",
+    intro: "Now the sound ends at the BACK of your mouth, with a ringing ng 🔔: a + ng → ang. Mouth stays open, tongue tip stays down. (Alone, ing is written ying. ong never stands alone.)",
+    learn: [{ base: "ang", tone: 1, tip: "a, then ring ng at the back" }, { base: "eng", tone: 1, tip: "e, then ng" }, { base: "ing", tone: 1, tip: "i, then ng (alone: ying)" },
+      { base: "dong", tone: 1, tip: "ong never stands alone: d + ōng → dōng" }],
+    quiz: { kind: "syl", bases: ["ang", "eng", "ing", "an", "en", "in"], tones: [1, 2, 3, 4], sameTone: true,
+      confuse: { ang: ["an", "eng"], an: ["ang", "en"], eng: ["en", "ang"], en: ["eng", "an"], ing: ["in", "eng"], in: ["ing", "en"] }, n: 6 } },
+  { id: "s24", icon: "🐉", zh: "拼一拼 ang eng ing ong", en: "Blend: ang eng ing ong",
+    intro: "l + óng → lóng 龙, a dragon! Listen for the ringing ng at the end, and the tone.",
+    learn: [
+      { base: "tang", tone: 2, hz: "糖", tip: "sweets, sugar" }, { base: "deng", tone: 1, hz: "灯", tip: "lamp, light" },
+      { base: "feng", tone: 1, hz: "风", tip: "wind" }, { base: "xing", tone: 1, hz: "星", tip: "star" },
+      { base: "bing", tone: 1, hz: "冰", tip: "ice" }, { base: "hong", tone: 2, hz: "红", tip: "red" },
+      { base: "long", tone: 2, hz: "龙", tip: "dragon" }, { base: "chong", tone: 2, hz: "虫", tip: "insect, worm" }],
+    quiz: { kind: "syl", bases: ["bang", "pang", "mang", "fang", "tang", "lang", "gang", "hang", "zhang", "chang", "shang", "sang", "peng", "meng", "feng", "deng", "teng", "leng", "geng", "heng", "zheng", "cheng", "sheng", "bing", "ping", "ming", "ding", "ting", "ling", "jing", "qing", "xing", "dong", "tong", "long", "gong", "kong", "hong", "zhong", "chong", "rong", "song"], tones: [1, 2, 3, 4], twin: true, n: 8 } },
+  { id: "t7", icon: "👃", zh: "前鼻还是后鼻？", en: "Review: n or ng?",
+    intro: "n ends at the front (tongue up 👅), ng rings at the back 🔔. Listen to the very end of the sound!",
+    learn: [],
+    quiz: { kind: "syl", bases: ["ban", "bang", "fan", "fang", "tan", "tang", "shan", "shang", "men", "meng", "fen", "feng", "gen", "geng", "chen", "cheng", "bin", "bing", "lin", "ling", "min", "ming", "xin", "xing", "jin", "jing"], tones: [1, 2, 3, 4], sameTone: true,
+      confuse: { ban: ["bang", "ben"], bang: ["ban", "beng"], fan: ["fang", "fen"], fang: ["fan", "feng"], tan: ["tang", "dan"], tang: ["tan", "teng"], shan: ["shang", "shen"], shang: ["shan", "sheng"],
+        men: ["meng", "man"], meng: ["men", "mang"], fen: ["feng", "fan"], feng: ["fen", "fang"], gen: ["geng", "gan"], geng: ["gen", "gang"], chen: ["cheng", "chan"], cheng: ["chen", "chang"],
+        bin: ["bing", "ben"], bing: ["bin", "beng"], lin: ["ling", "lan"], ling: ["lin", "leng"], min: ["ming", "men"], ming: ["min", "meng"], xin: ["xing", "xun"], xing: ["xin", "xiong"], jin: ["jing", "jun"], jing: ["jin", "jiong"] }, n: 10 } }
 ];
 
 // stroke tracing (stroke order data: hanzi-writer-data, Make Me a Hanzi / Arphic PL)
@@ -251,6 +272,7 @@ const BADGES = [
   { id: "w_zcs", icon: "🐝", zh: "j q x · zh ch sh r · z c s", en: "Buzzy Sounds", lessons: ["s7", "s8", "s9", "s10", "s11", "s12", "t5"] },
   { id: "w_whole", icon: "🌟", zh: "y w · 整体认读", en: "Whole Syllables", lessons: ["s13", "s14"] },
   { id: "w_glide", icon: "🍀", zh: "复韵母", en: "Gliding Finals", lessons: ["s15", "s16", "s17", "s18", "s19", "s20", "t6"] },
+  { id: "w_nasal", icon: "👃", zh: "鼻韵母", en: "Nose Sounds", lessons: ["s21", "s22", "s23", "s24", "t7"] },
   ...[1, 2, 3, 4, 5, 6].map(n => ({ id: "set" + n, icon: "✍️", zh: "写字 第" + "一二三四五六"[n - 1] + "组", en: "Writing Set " + n, set: n })),
   { id: "grad", icon: "👑", zh: "拼音乐园毕业", en: "Pinyin Park Graduate", all: true, stars: 20 }
 ];

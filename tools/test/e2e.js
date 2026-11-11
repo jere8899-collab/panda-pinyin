@@ -17,6 +17,7 @@ async function answer(page, right) {
     const q = PP._q, want = q.ans, opts = [...document.querySelectorAll(".opt")];
     const label = o => q.kind === "tone" ? q.opts[+o.dataset.k].t : o.querySelector("b").textContent;
     const b = right ? opts.find(o => label(o) === want) : opts.find(o => label(o) !== want && !o.disabled);
+    opts.forEach(o => { const r = o.getBoundingClientRect(), t = o.querySelector("b"); if (r.right > innerWidth + 1 || r.left < -1 || t.scrollWidth > o.clientWidth + 1) (window.__overflow = window.__overflow || []).push(t.textContent + "@" + innerWidth); });
     if (window.__played.slice(-1)[0] !== q.src) throw new Error("played " + window.__played.slice(-1)[0] + " but question is " + q.src);
     b.click(); return want;
   }, right);
@@ -89,8 +90,10 @@ async function traceChar(page, ch, wrongFirst) {
   ok(stars1 === 10, `stars after lesson 1 = 5 first-try + 5 bonus (got ${stars1})`);
   await page.screenshot({ path: SHOTS + "/tmp_done.png" });
   console.log("Lessons 2-7");
-  for (let i = 1; i < 30; i++) { await page.click("#next"); await page.waitForSelector(".learn, .quiz");
+  for (let i = 1; i < 33; i++) { await page.click("#next"); await page.waitForSelector(".learn, .quiz");
     if (i === 28) { await sleep(700); await page.click(".lcard[data-i='2']"); ok((await page.evaluate(() => __played.slice(-1)[0])) === "audio/yin1.mp3", "in card plays yin1.mp3 (in said alone = yin)"); await page.screenshot({ path: SHOTS + "/14_nasal_learn.png" }); }
+    if (i === 30) { await sleep(700); await page.click(".lcard[data-i='2']"); ok((await page.evaluate(() => __played.slice(-1)[0])) === "audio/ying1.mp3", "ing card plays ying1.mp3 (ing said alone = ying)"); await page.screenshot({ path: SHOTS + "/15_back_nasal_learn.png" }); }
+    if (i === 31) { await sleep(700); await page.click(".lcard[data-i='6']"); ok((await page.evaluate(() => __played.slice(-1)[0])) === "audio/long2.mp3", "龙 lóng card plays long2.mp3"); await page.screenshot({ path: SHOTS + "/16_back_nasal_blend.png" }); }
     if (i === 29) { await sleep(700); await page.click(".lcard[data-i='7']"); ok((await page.evaluate(() => __played.slice(-1)[0])) === "audio/qun2.mp3", "裙 qún card plays qun2.mp3"); }
     if (i === 20) { await sleep(700); await page.screenshot({ path: SHOTS + "/13_whole_syllables.png" }); }
     if (i === 24) { await sleep(700); await page.click(".lcard[data-i='5']"); ok((await page.evaluate(() => __played.slice(-1)[0])) === "audio/c_niu.mp3", "牛 card plays its own word recording"); }
@@ -98,18 +101,20 @@ async function traceChar(page, ch, wrongFirst) {
     if (i === 8) { await sleep(700); await page.screenshot({ path: SHOTS + "/06_blend_learn.png" }); await page.click(".lcard[data-i='3']"); ok((await page.evaluate(() => __played.slice(-1)[0])) === "audio/lv4.mp3", "绿 lǜ card plays lv4.mp3"); }
     if (await page.$("#go")) await page.click("#go"); await page.waitForSelector(".quiz");
     if (i === 4) { await sleep(500); await page.screenshot({ path: SHOTS + "/tmp_syl.png" }); }
+    if (i === 32) { await sleep(900); await page.screenshot({ path: SHOTS + "/17_n_ng_review.png" }); const q = await page.evaluate(() => PP._q); ok(!!q && q.opts.length === 3, "n / ng review shows 3 choices"); }
     if (i === 18) { await sleep(900); await page.screenshot({ path: SHOTS + "/10_review_quiz.png" }); }
     if (i === 7) { await sleep(900); await page.screenshot({ path: SHOTS + "/05_dtnl_quiz.png" }); }
     const n = await playLesson(page); ok(n >= 6, `lesson ${i + 1} done (${n} qs)`); await page.waitForSelector(".done"); }
-  const usedBad = await page.evaluate(() => __played.filter(f => /audio\/(la4|qi4|se4|shu4|zhe4|lve2|miu4|niu2|nve4|tie2|xue2|pin2|ren4|shan2|zhen2)\.mp3/.test(f)));
+  const ovf = await page.evaluate(() => window.__overflow || []); ok(ovf.length === 0, "every answer button fits on screen " + ovf.slice(0, 5).join(","));
+  const usedBad = await page.evaluate(() => __played.filter(f => /audio\/(la4|qi4|se4|shu4|zhe4|lve2|miu4|niu2|nve4|tie2|xue2|pin2|ren4|shan2|zhen2|leng2|rong2)\.mp3/.test(f)));
   ok(usedBad.length === 0, "no unchecked recording played as a question " + usedBad.join(","));
   await page.click("#homeGo"); await page.waitForSelector(".home");
   ok((await page.$$(".node.locked")).length === 0, "all lessons unlocked after playing through");
   await sleep(800); await page.screenshot({ path: SHOTS + "/04_home.png" });
   const bm = await page.evaluate(() => PP.Store.cur().badges);
-  ok(["w_tones", "w_finals", "w_bpmf", "w_dtnl", "w_zcs", "w_whole", "w_glide", "grad"].every(k => bm[k]), "all 7 world badges + graduate after every lesson");
+  ok(["w_tones", "w_finals", "w_bpmf", "w_dtnl", "w_zcs", "w_whole", "w_glide", "w_nasal", "grad"].every(k => bm[k]), "all 8 world badges + graduate after every lesson");
   await page.click("#shelf"); await page.waitForSelector(".badges"); await sleep(500);
-  ok((await page.$$(".badge.got")).length === 8, "badge shelf shows 8 earned"); await page.screenshot({ path: SHOTS + "/12_badges.png" });
+  ok((await page.$$(".badge.got")).length === 9, "badge shelf shows 9 earned"); await page.screenshot({ path: SHOTS + "/12_badges.png" });
   await page.click(".sheet [data-x]");
 
   console.log("Pet + skins");
@@ -157,12 +162,12 @@ async function traceChar(page, ch, wrongFirst) {
   await page.click("#back"); await page.click("#back"); await page.waitForSelector(".home"); await page.click(".who");
   await page.click(".kid[data-id] >> text=Xiao Long"); await page.waitForSelector(".home");
   ok((await page.textContent("#starPill")).includes("0"), "Xiao Long has his own 0⭐");
-  ok((await page.$$(".node.locked")).length === 29, "Xiao Long's lessons are still locked");
+  ok((await page.$$(".node.locked")).length === 32, "Xiao Long's lessons are still locked");
   await page.reload(); await page.waitForSelector(".home");
   ok((await page.textContent(".who")).includes("Xiao Long"), "after reload the same child is playing");
   await page.click(".who"); await page.click(".kid[data-id] >> text=Mei Mei"); await page.waitForSelector(".home");
   const after = await page.evaluate(() => PP.Store.cur());
-  ok(after.stars === mei.stars && after.xp === mei.xp && Object.keys(after.lessons).length === 30, `Mei Mei's progress survived reload (⭐${after.stars}, xp ${after.xp})`);
+  ok(after.stars === mei.stars && after.xp === mei.xp && Object.keys(after.lessons).length === 33, `Mei Mei's progress survived reload (⭐${after.stars}, xp ${after.xp})`);
 
   console.log("Grown-ups gate");
   await page.click("#cloudChip"); await page.waitForSelector("#gate");
@@ -208,7 +213,7 @@ async function traceChar(page, ch, wrongFirst) {
   await mp.goto(BASE); await mp.evaluate(v => { localStorage.setItem("pandaPinyin.save.v1", JSON.stringify(v)); localStorage.removeItem("pandaPinyin.cloud.v1"); }, V1); await mp.reload(); await mp.waitForSelector(".home");
   ok((await mp.textContent("#starPill")).includes("48"), "old kid keeps 33⭐ + 3 badges they already earned (+15⭐) = 48");
   ok(await mp.evaluate(() => Object.keys(PP.Store.cur().badges).sort().join() === "w_bpmf,w_finals,w_tones"), "old kid gets Tone, Finals, b p m f badges");
-  ok((await mp.$$(".node[data-i]")).length === 30 && (await mp.$$(".node.locked")).length === 22, "30 lessons shown; old kid's 7 done + d t n l open, 22 locked");
+  ok((await mp.$$(".node[data-i]")).length === 33 && (await mp.$$(".node.locked")).length === 25, "33 lessons shown; old kid's 7 done + d t n l open, 25 locked");
   ok(await mp.$eval(".node[data-i='7']", e => e.classList.contains("next")), "next lesson for old kid is 声母 d t n l");
   ok((await mp.getAttribute(".pet .panda", "src")).includes("sleepy") || (await mp.getAttribute(".pet .panda", "src")).includes("space"), "old kid's panda/skin shown");
   await mp.click("#garden"); ok((await mp.$$(".chars.locked")).length === 5, "old kid with 2 traced: sets 2-6 still locked");
