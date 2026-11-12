@@ -7,6 +7,7 @@
 5. No sideways scroll; every visible button ≥ 44 px.
 6. Pinyin/tone marks/stroke data come from a cited source (README "Audio & data sources").
 9. Both helper languages: `UI=vi node tools/test/e2e.js` green, `node tools/i18n_check.js vi` 0 missing, no text overflow at 390 px (the test checks every main screen).
+10. `node tools/test/namebox_webkit.js` green on live (iPhone-size WebKit name box: English keys, Vietnamese, Chinese IME).
 7. Never touch Word Realms files, repo, localStorage keys (wordRealms.*), caches (wr-*) or its cloud rows.
 
 # Feature map
@@ -49,3 +50,6 @@ Passed 1–8: local 102/102, live + cloud 109/109 in one clean run; pitch_check 
 
 # Self-score v7 (2026-11-12): 9/10
 Passed 1–8: live + cloud 139/139 in one clean run at 390×844 (+320×640), offline check OK; verify_pinyin 187/187; pitch_check 937 files, 0 new problems. Minus 1: the badge-shelf crash for the new 🧠 badge was only caught by the full test run, and the two-syllable word recordings can't be pitch-checked by the tool.
+
+# Self-score v8 (2026-11-13): 9/10
+Passed 1–10 on live: e2e + cloud 191/191 in English and 191/191 in Vietnamese (390×844 + 320×640), WebKit name-box check 27/27, i18n 523/523, verify_pinyin 253/253. Minus 1: the iPhone name-box bug (English keys ignored since v1) was found by Jeremy, not by a test; tests now type with real key presses in Chromium and WebKit.

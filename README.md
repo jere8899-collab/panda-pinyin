@@ -92,6 +92,7 @@ node tools/test/e2e.js               # full phone playthrough (390×844 + 320×6
 UI=vi node tools/test/e2e.js         # the same whole game with Vietnamese as the helper language; screenshots in shots/vi/
 node tools/i18n_check.js vi          # every helper text has a Vietnamese translation
 BASE=https://jere8899-collab.github.io/panda-pinyin/ CLOUD=1 node tools/test/e2e.js   # live site + live cloud round trip
+node tools/test/namebox_webkit.js    # iPhone-size WebKit: name box takes English keys, Vietnamese diacritics, Chinese IME (needs WebKit: npx playwright-core install webkit)
 ./deploy.sh "message"                # rebuilds sw.js (cache hash), commits, pushes to GitHub Pages
 ```
 No build step; plain HTML/CSS/JS. (Test deps: `cd tools/test && npm i` for playwright-core; Chrome at /opt/google/chrome/chrome.)
