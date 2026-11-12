@@ -114,7 +114,6 @@ function langPicker(p, after) {
     m.querySelectorAll(".lang").forEach(b => b.onclick = () => { PP.setLang(b.dataset.l, p); close(); after ? after() : (p ? home() : profiles()); });
   });
 }
-PP.langPicker = langPicker;
 
 /* ---------------- 1. profile picker ---------------- */
 function profiles() {

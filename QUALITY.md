@@ -35,6 +35,8 @@ Writing Garden node → sets 1–28 (locked ones folded) → trace screen (👀 
 * HanziWriter: the quiz message overwrote "Your turn" instantly; tests must wait for the text the screen really shows (2026-11-10).
 * Cloud sync tests: wait for "saving" then "saved"; status may already read "saved" from an earlier push (2026-11-10).
 * Same github.io origin as Word Realms: always use own storage keys (pandaPinyin.*, pp-auth) and pp-* caches.
+* Tidy first, then build (Jeremy's rule, 2026-11-12): small cleanup limited to the files the feature touches, tests green after the cleanup, then build the feature; mention the cleanup in the report.
+* Never return false from an on… key handler (`inp.onkeydown = e => e.key === "Enter" && ok()` cancelled every key press, so the name box ignored the iPhone English keyboard from v1 to v8; only the Chinese IME got through). Tests must type with real key presses (keyboard.type), not fill() (2026-11-12).
 
 # Self-score v1 (2026-11-10): 9/10
 Passed 1–7. Minus 1: ma5 neutral tone is a different speaker; the gate is a simple sum.

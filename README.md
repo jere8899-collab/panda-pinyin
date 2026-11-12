@@ -78,6 +78,12 @@ v1 covers the very start: **Hanyu Pinyin** and a first taste of **stroke order**
 4. `./deploy.sh "add <language>"`: the deploy step adds the new file to `index.html` and the offline cache by itself, and it appears in every 🌐 picker.
 The keys are the English texts themselves, so when English text in the game changes, `tools/i18n_check.js` shows which translations need updating.
 
+## 🧹 House rule: tidy first, then build (Jeremy, 2026-11-12)
+Before adding a feature, first clean up the code that feature touches: remove dead code, simplify, tidy.
+* Keep each cleanup **small** and limited to the files the feature touches.
+* Run the tests after the cleanup and make sure they pass **before** building the feature.
+* Mention the cleanup briefly in the report.
+
 ## Run / test / deploy
 ```bash
 cd /workspace/panda-pinyin

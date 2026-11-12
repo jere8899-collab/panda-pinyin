@@ -140,7 +140,7 @@ function panel() {
     m.querySelectorAll("[data-lang]").forEach(b => b.onclick = () => { const k = kids.find(x => x.id === b.dataset.lang); close(); PP.App.langPicker(k, panel); });
     m.querySelector("#devLang").onclick = () => { close(); PP.App.langPicker(null, panel); };
     m.querySelectorAll("[data-del]").forEach(b => b.onclick = () => { const k = kids.find(x => x.id === b.dataset.del);
-      if (!confirm(t("Remove {name} and all their progress?").replace("{name}", k.name))) return; S.remove(k.id); close(); PP.App.profiles(); });
+      if (!confirm(t("Remove {name} and all their progress?", { name: k.name }))) return; S.remove(k.id); close(); PP.App.profiles(); });
   });
 }
 })();

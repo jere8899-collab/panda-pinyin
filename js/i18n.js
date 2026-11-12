@@ -8,12 +8,11 @@ const DKEY = "pandaPinyin.lang";          // device default (used before a child
 const LANGS = PP.LANGS = {};
 const seen = PP._i18nSeen = new Set();    // every key looked up (the test checks they're all translated)
 PP.addLang = (code, meta, strings) => { LANGS[code] = Object.assign({ code, strings: strings || {} }, meta); };
+PP.deviceLang = () => LANGS[localStorage.getItem(DKEY)] ? localStorage.getItem(DKEY) : "en";
 PP.lang = () => {
   const p = PP.langMode !== "device" && PP.Store && PP.Store.cur && PP.Store.cur();   // the picker screen uses the device language
-  let l = (p && p.lang) || localStorage.getItem(DKEY) || "en";
-  return LANGS[l] ? l : "en";
+  return p && LANGS[p.lang] ? p.lang : PP.deviceLang();
 };
-PP.deviceLang = () => LANGS[localStorage.getItem(DKEY)] ? localStorage.getItem(DKEY) : "en";
 PP.setLang = (code, p) => {
   if (!LANGS[code]) return;
   localStorage.setItem(DKEY, code);
