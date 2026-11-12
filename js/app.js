@@ -148,7 +148,7 @@ function addKid() {
       if (S.state.profiles.some(p => p.name.toLowerCase() === n.toLowerCase())) { m.querySelector("#kidErr").textContent = t("That name is already here. Try another!"); return; }
       const np = S.add(n); np.lang = PP.deviceLang(); PP.langMode = "child"; S.touch(np); close(); home(); toast(`🐼 你好，${esc(n)}！ ${t("Hello!")}`);
     };
-    m.querySelector("#kidOk").onclick = ok; inp.onkeydown = e => e.key === "Enter" && ok();
+    m.querySelector("#kidOk").onclick = ok; inp.onkeydown = e => { if (e.key === "Enter") ok(); }; // never return false here: that cancels every key press
   });
 }
 

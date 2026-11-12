@@ -101,7 +101,7 @@ PP.Grown = { open() {
     const inp = m.querySelector("#gate"); setTimeout(() => inp.focus(), 50);
     m.querySelector("[data-x]").onclick = close;
     const ok = () => { if (+inp.value === a * b) { close(); panel(); } else m.querySelector("#gErr").textContent = t("Not quite. Please ask a grown-up 🙂"); };
-    m.querySelector("#gOk").onclick = ok; inp.onkeydown = e => e.key === "Enter" && ok();
+    m.querySelector("#gOk").onclick = ok; inp.onkeydown = e => { if (e.key === "Enter") ok(); }; // never return false here: that cancels every key press
   });
 } };
 function panel() {

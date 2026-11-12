@@ -78,7 +78,7 @@ async function traceChar(page, ch, wrongFirst) {
   await page.reload(); await page.waitForSelector(".pick");
   console.log("Profiles");
   await page.click("#addKid"); await page.click("#kidOk"); ok((await page.textContent("#kidErr")) === await TT(page, "Please type a name 😊", {}), "empty name is refused");
-  await page.fill("#kidName", "Mei Mei"); await page.click("#kidOk"); await page.waitForSelector(".home");
+  await page.click("#kidName"); await page.keyboard.type("Mei Mei"); ok(await page.inputValue("#kidName") === "Mei Mei", "name box takes real key presses (English keyboard)"); await page.click("#kidOk"); await page.waitForSelector(".home");
   ok((await page.textContent(".who")).includes("Mei Mei"), "new child Mei Mei on home");
   await page.click(".who"); await page.click("#addKid"); await page.fill("#kidName", "Xiao Long"); await page.click("#kidOk"); await page.waitForSelector(".home");
   await page.click(".who"); ok((await page.$$(".kid[data-id]")).length === 2, "two profiles in the picker");
