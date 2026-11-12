@@ -38,3 +38,6 @@ Passed 1–8 (live run 99/102: the 3 misses were one transient 503 on die3.mp3; 
 
 # Self-score v6 (2026-11-11): 9/10
 Passed 1–8: local 102/102, live + cloud 109/109 in one clean run; pitch_check clean (leng2 rong2 → NO_AUDIO); verify_pinyin 121/121. Minus 1: caught the long-syllable button overflow only from a screenshot, not a test (now a test).
+
+# Self-score v7 (2026-11-12): 9/10
+Passed 1–8: live + cloud 139/139 in one clean run at 390×844 (+320×640), offline check OK; verify_pinyin 187/187; pitch_check 937 files, 0 new problems. Minus 1: the badge-shelf crash for the new 🧠 badge was only caught by the full test run, and the two-syllable word recordings can't be pitch-checked by the tool.
