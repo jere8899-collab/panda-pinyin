@@ -129,7 +129,7 @@ async function traceChar(page, ch, wrongFirst) {
 
   console.log("Writing Garden");
   await page.click("#garden"); await page.waitForSelector(".garden-s");
-  ok((await page.$$(".chars.locked")).length === 5, "sets 2-6 locked at first");
+  ok((await page.$$(".chars.locked")).length === 1 && /15 more sets/.test(await page.textContent(".set-more")), "at first only Set 2 shows locked; the other 15 sets fold into one line");
   await page.click(".ch[data-i='6']", { force: true }); await sleep(300); ok(!!(await page.$(".garden-s")) && (await page.$$eval(".toast", ts => ts.some(t => /Trace 3/.test(t.textContent)))), "locked 十 doesn't open, kind toast instead");
   for (const [i, ch] of [[0, "一"], [5, "口"], [4, "大"]]) {
     if (i) { await page.click("#back"); await page.waitForSelector(".garden-s"); }
@@ -142,7 +142,7 @@ async function traceChar(page, ch, wrongFirst) {
     if (ch === "大") await page.screenshot({ path: SHOTS + "/03_tracing.png" });
   }
   await page.click("#back"); await page.waitForSelector(".garden-s");
-  ok((await page.$$(".chars.locked")).length === 4, "set 2 opens after 3 traced characters");
+  ok((await page.$$(".chars.locked")).length === 1 && /14 more sets/.test(await page.textContent(".set-more")), "set 2 opens after 3 traced characters (Set 3 shows locked, 14 folded)");
   await page.click(".ch[data-i='6']"); await page.waitForFunction(() => /Your turn: stroke 1/.test(document.querySelector("#tfb").textContent), null, { timeout: 15000 });
   ok((await page.textContent(".ch-head")).includes("shí") && (await page.textContent(".ch-head")).includes("ten"), "十 shows shí · ten");
   await page.click("#say"); ok((await page.evaluate(() => __played.slice(-1)[0])) === "audio/c_shi.mp3", "十 plays c_shi.mp3");
@@ -216,14 +216,19 @@ async function traceChar(page, ch, wrongFirst) {
   ok((await mp.$$(".node[data-i]")).length === 33 && (await mp.$$(".node.locked")).length === 25, "33 lessons shown; old kid's 7 done + d t n l open, 25 locked");
   ok(await mp.$eval(".node[data-i='7']", e => e.classList.contains("next")), "next lesson for old kid is 声母 d t n l");
   ok((await mp.getAttribute(".pet .panda", "src")).includes("sleepy") || (await mp.getAttribute(".pet .panda", "src")).includes("space"), "old kid's panda/skin shown");
-  await mp.click("#garden"); ok((await mp.$$(".chars.locked")).length === 5, "old kid with 2 traced: sets 2-6 still locked");
+  await mp.click("#garden"); ok((await mp.$$(".chars.locked")).length === 1 && !!(await mp.$(".set-more")), "old kid with 2 traced: Set 2 locked, later sets folded");
   ok((await mp.textContent(".garden-s")).includes("⭐⭐⭐"), "old kid's 一 crowns still shown");
   await mp.click("#back"); await mp.click("#skins"); ok((await mp.textContent(".skins")).includes("Brush Panda") && (await mp.textContent(".skins")).includes("Lion Dance Panda"), "Brush + Lion Dance skins in the shop");
+  ok(await mp.$$eval(".skin", bs => bs.length) === 11, "11 skins in the shop");
+  for (const nm of ["Mid-Autumn Lantern Panda", "School Uniform Panda", "Little Chef Panda", "Dragon Boat Panda", "Super Panda", "Merlion Panda"]) ok((await mp.textContent(".skins")).includes(nm), nm + " in the shop");
+  ok(await mp.$$eval(".skins img", is => is.every(i => i.complete && i.naturalWidth > 100)), "every skin picture loads");
+  await mp.click(".skin[data-s='merlion']"); await sleep(300);
+  ok(await mp.$$eval(".toast", ts => ts.some(t => /Need ⭐ 400/.test(t.textContent))) && await mp.evaluate(() => !PP.Store.cur().owned.includes("merlion") && PP.Store.cur().stars === 48), "too few stars for Merlion → kind 'Need ⭐ 400' toast");
   ok(await mp.evaluate(() => PP.Store.cur().owned.join() === "classic,space"), "owned skins unchanged");
   console.log("Sets 4-5");
   await mp.evaluate(() => { const p = PP.Store.cur(); ["二", "三", "十", "土", "上", "中", "日", "月"].forEach(c => p.chars[c] = { best: 2, plays: 1 }); PP.Store.touch(p); });
   await mp.reload(); await mp.waitForSelector(".home"); await mp.click("#garden"); await mp.waitForSelector(".garden-s");
-  ok((await mp.$$(".chars.locked")).length === 2, "sets 2-4 open after 3 traced in each set before, sets 5-6 locked");
+  ok((await mp.$$(".chars.locked")).length === 1, "sets 2-4 open after 3 traced in each set before, sets 5-6 locked");
   for (const [i, ch] of [[18, "目"], [21, "足"]]) {
     if (i !== 18) { await mp.click("#back"); await mp.waitForSelector(".garden-s"); }
     await mp.click(`.ch[data-i='${i}']`); await mp.waitForFunction(() => /Your turn: stroke 1/.test(document.querySelector("#tfb").textContent), null, { timeout: 20000 });
@@ -235,7 +240,7 @@ async function traceChar(page, ch, wrongFirst) {
   console.log("Set 6");
   await mp.evaluate(() => { const p = PP.Store.cur(); ["手", "天", "田", "王"].forEach(c => p.chars[c] = { best: 2, plays: 1 }); PP.Store.touch(p); });
   await mp.click("#back"); await mp.click("#back"); await mp.waitForSelector(".home"); await mp.click("#garden"); await mp.waitForSelector(".garden-s");
-  ok((await mp.$$(".chars.locked")).length === 0, "set 6 opens after 3 of set 5");
+  ok((await mp.$$(".chars.locked")).length === 1 && (await mp.textContent(".garden-s")).includes("第七组"), "set 6 opens after 3 of set 5; Set 7 now shows locked");
   await mp.click(".ch[data-i='34']"); await mp.waitForFunction(() => /Your turn: stroke 1/.test(document.querySelector("#tfb").textContent), null, { timeout: 20000 });
   ok((await mp.textContent(".ch-head")).includes("yáng"), "羊 shows yáng");
   await traceChar(mp, "羊"); await mp.waitForFunction(() => /You wrote/.test(document.querySelector("#tfb").textContent), null, { timeout: 8000 }).catch(() => {});
@@ -251,6 +256,62 @@ async function traceChar(page, ch, wrongFirst) {
   await sleep(800); ok(await mp.$$eval(".toast", ts => ts.some(t => /New badge/.test(t.textContent))), "badge toast shows");
   const bOnce = await mp.evaluate(() => { const p = PP.Store.cur(), st = p.stars; PP.checkBadges(p); PP.checkBadges(p); return PP.Store.cur().stars === st; });
   ok(bOnce, "a badge pays only once");
+  console.log("v7 writing: sets 7-17, words, memory mode, new skins");
+  await mp.evaluate(() => { const p = PP.Store.cur(); PP.CHAR_SETS.forEach((st, n) => { if (n >= 6 && n <= 15) PP.CHARS.filter(c => c.set === n).slice(1, 4).forEach(c => p.chars[c.ch] = p.chars[c.ch] || { best: 2, plays: 1 }); }); PP.Store.touch(p); });
+  await mp.reload(); await mp.waitForSelector(".home"); await mp.click("#garden"); await mp.waitForSelector(".garden-s");
+  ok((await mp.$$(".chars.locked")).length === 1 && !(await mp.$(".set-more")) && (await mp.textContent(".garden-s")).includes("第十七组"), "sets 7-16 open after 3 traced in each; Set 17 shows locked; no folded line");
+  ok((await mp.$$(".ch .hz.word")).length === 12, "12 two-character word cards (Sets 16-17)");
+  const idx = ch => mp.evaluate(c => PP.CHARS.findIndex(x => x.ch === c), ch);
+  await mp.$eval(`.ch[data-i='${await idx("妈妈")}']`, e => e.closest(".chars").previousElementSibling.previousElementSibling ? e.closest(".chars").scrollIntoView() : e.scrollIntoView()); await sleep(400);
+  const i4 = await idx("四");
+  await mp.click(`.ch[data-i='${i4}']`); await mp.waitForFunction(() => /Your turn: stroke 1/.test(document.querySelector("#tfb").textContent), null, { timeout: 20000 });
+  ok((await mp.textContent(".ch-head")).includes("sì") && (await mp.textContent(".ch-head")).includes("four"), "四 shows sì · four");
+  ok(await mp.$eval("#mem", b => b.disabled), "🧠 默写 waits until the character is traced once");
+  await traceChar(mp, "四"); await mp.waitForFunction(() => /You wrote/.test(document.querySelector("#tfb").textContent), null, { timeout: 8000 }).catch(() => {});
+  ok(/You wrote/.test(await mp.textContent("#tfb")), "traced 四 (5 strokes)");
+  await mp.click("#say"); ok((await mp.evaluate(() => __played.slice(-1)[0])) === await mp.evaluate(() => PP.CHARS.find(c => c.ch === "四").audio), "四 plays its recording");
+  ok(!(await mp.$eval("#mem", b => b.disabled)), "🧠 默写 opens after tracing");
+  const m0 = await mp.evaluate(() => PP.Store.cur().stars);
+  await mp.click("#mem"); await mp.waitForFunction(() => /Your turn: stroke 1/.test(document.querySelector("#tfb").textContent), null, { timeout: 20000 }); await sleep(600);
+  ok(await mp.evaluate(() => PP._writer._options.showOutline === false), "memory mode hides the grey outline");
+  const box2 = await (await mp.$("#pad svg")).boundingBox();
+  await mp.mouse.move(box2.x + 30, box2.y + box2.height - 30); await mp.mouse.down(); await mp.mouse.move(box2.x + box2.width - 30, box2.y + 40, { steps: 8 }); await mp.mouse.up(); await sleep(400);
+  ok(/再想想/.test(await mp.textContent("#tfb")), "memory mode wrong stroke → gentle 再想想");
+  await traceChar(mp, "四"); await mp.waitForFunction(() => /from memory/.test(document.querySelector("#tfb").textContent), null, { timeout: 8000 }).catch(() => {});
+  ok(/from memory/.test(await mp.textContent("#tfb")), "wrote 四 from memory");
+  const m1 = await mp.evaluate(() => PP.Store.cur());
+  ok(m1.chars["四"].mem === true && m1.chars["四"].best >= 1 && m1.stars === m0 + 2, `first memory write +2⭐ (${m0}→${m1.stars})`);
+  await mp.click("#mem"); await mp.waitForFunction(() => /Your turn: stroke 1/.test(document.querySelector("#tfb").textContent), null, { timeout: 20000 }); await sleep(300);
+  await traceChar(mp, "四"); await mp.waitForFunction(() => /from memory/.test(document.querySelector("#tfb").textContent), null, { timeout: 8000 }).catch(() => {});
+  ok((await mp.evaluate(() => PP.Store.cur().stars)) === m1.stars, "memory stars pay only once per character");
+  await mp.click("#back"); await mp.waitForSelector(".garden-s");
+  ok((await mp.textContent(`.ch[data-i='${i4}']`)).includes("🧠"), "garden shows 🧠 on 四");
+  // a two-character word: 木头 is traced one character after the other
+  const iw = await idx("木头");
+  await mp.click(`.ch[data-i='${iw}']`); await mp.waitForFunction(() => /木 \(1\/2\): Your turn: stroke 1/.test(document.querySelector("#tfb").textContent), null, { timeout: 20000 });
+  ok((await mp.textContent(".ch-head")).includes("mùtou") && await mp.$eval("#hzHead i[data-k='0']", e => e.classList.contains("now")), "木头 shows mùtou, 木 highlighted first");
+  await traceChar(mp, "木"); await mp.waitForFunction(() => /头 \(2\/2\): Your turn: stroke 1/.test(document.querySelector("#tfb").textContent), null, { timeout: 20000 });
+  ok(await mp.$eval("#hzHead i[data-k='1']", e => e.classList.contains("now")), "then 头 is highlighted");
+  await sleep(300); await mp.screenshot({ path: SHOTS + "/18_trace_word.png" });
+  await traceChar(mp, "头"); await mp.waitForFunction(() => /You wrote/.test(document.querySelector("#tfb").textContent), null, { timeout: 8000 }).catch(() => {});
+  ok(/You wrote 木头/.test(await mp.textContent("#tfb")), "traced the word 木头 to the end");
+  ok(!!(await mp.evaluate(() => PP.Store.cur().chars["木头"])), "木头 saved as one word");
+  await mp.click("#say"); ok(/audio\/w_/.test(await mp.evaluate(() => __played.slice(-1)[0])), "木头 plays its word recording");
+  // whole Set 7 traced gives Writing Set 7; 10 memory characters give the 🧠 badge
+  await mp.evaluate(() => { const p = PP.Store.cur(); PP.CHARS.filter(c => c.set === 7).forEach(c => p.chars[c.ch] = Object.assign({ best: 1, plays: 1 }, p.chars[c.ch])); PP.CHARS.slice(0, 10).forEach(c => p.chars[c.ch] = Object.assign({ best: 1, plays: 1 }, p.chars[c.ch], { mem: true })); PP.checkBadges(p); PP.Store.touch(p); });
+  const bb = await mp.evaluate(() => PP.Store.cur().badges);
+  ok(!!bb.set7 && !!bb.memory10 && !bb.set8, "Writing Set 7 + Memory Writer badges given; Set 8 not yet");
+  await mp.click("#back"); await mp.waitForSelector(".garden-s"); await mp.evaluate(() => { document.querySelectorAll(".set-h")[6].scrollIntoView(); scrollBy(0, -80); }); await sleep(500);
+  await mp.screenshot({ path: SHOTS + "/19_writing_sets.png" });
+  // enough stars → buy + wear a new skin
+  await mp.evaluate(() => { const p = PP.Store.cur(); p.stars = 450; PP.Store.touch(p); });
+  await mp.click("#back"); await mp.waitForSelector(".home"); await mp.click("#skins"); await mp.waitForSelector(".skins"); await mp.waitForFunction(() => !document.querySelector(".toast"), null, { timeout: 8000 }).catch(() => {});
+  await mp.$eval(".skin[data-s='lantern']", e => e.scrollIntoView({ block: "start" })); await sleep(800);
+  await mp.screenshot({ path: SHOTS + "/20_skins.png" });
+  await mp.click(".skin[data-s='merlion']"); await sleep(400);
+  const pm = await mp.evaluate(() => PP.Store.cur());
+  ok(pm.skin === "merlion" && pm.owned.includes("merlion") && pm.stars === 50, "bought Merlion Panda for 400⭐ and wearing it");
+  ok((await mp.getAttribute(".pet .panda", "src")).includes("merlion") || (await mp.getAttribute(".pet .panda", "src")).includes("sleepy"), "home panda shows Merlion skin");
   await mig.close();
 
   console.log("Small phone 320×640");

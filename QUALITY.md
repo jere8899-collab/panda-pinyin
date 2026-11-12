@@ -10,9 +10,13 @@
 
 # Feature map
 Picker (start) → Add child / tap child → Home: pet (tap = hop, 🎋 Feed, 👕 Skins), Pinyin Park nodes → learn cards → 我准备好了 → quiz → result (Next / Again / Home);
-Writing Garden node → character grid → trace screen (👀 Watch, ✍️ Trace, ⬅ ➡); ☁️ chip or "Grown-ups" link → sum gate → cloud login/sign-up, remove player.
+Writing Garden node → sets 1–17 (locked ones folded) → trace screen (👀 Watch, ✍️ Trace, 🧠 默写 from memory, ⬅ ➡; words traced char by char); ☁️ chip or "Grown-ups" link → sum gate → cloud login/sign-up, remove player.
 
 # Lessons learned
+* A new badge kind (🧠 memory, no `set`) crashed the badge shelf's "how to earn" line; when adding a badge type, open the shelf in the test with it locked (v7).
+* Never force-move a release tag that is already pushed (v6 was moved by mistake, then restored to 57b0539); make a new tag (pre-v7) instead (v7).
+* Folding locked sets changes every `.chars.locked` count in e2e; count what is actually rendered (v7).
+* Two-character words: CEDICT gives the neutral tone (大人 dà ren, 木头 mù tou); verify_pinyin now checks whole words, not just characters (v7).
 * Longer syllables (chēng, zhōng) overflowed the 3-answer row at 390 px; grid columns need minmax(0,1fr) and labels > 4 letters get a smaller font. e2e now fails if any answer button leaves the screen (v6).
 * GitHub Pages can return a one-off 503 when the test fires ~800 audio fetches at once; recheck the failed file(s) one by one with curl before calling it a bug (v5).
 * New lessons change hard-coded lesson/locked counts in e2e.js (Xiao Long 27→29, old kid 20→22); search the test for the old total before running (v5).

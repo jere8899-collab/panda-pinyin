@@ -112,3 +112,6 @@ input:focus{outline:none;border-color:var(--pink)}
 .badge{background:#f6f3fa;border-radius:16px;padding:10px 8px;display:flex;flex-direction:column;align-items:center;text-align:center;opacity:.7}
 .badge.got{background:#fff7d6;opacity:1;box-shadow:0 0 0 2px var(--gold) inset}
 .badge .b-ic{font-size:2rem}.badge b{font-size:.95rem}.badge small{color:var(--mut);font-size:.75rem}.badge .how{margin-top:2px}
+.ch .hz.word{font-size:2.1rem;letter-spacing:-2px}.ch-head .hz.word{font-size:2.2rem;white-space:nowrap}
+.ch-head .hz i{font-style:normal;transition:color .2s}.ch-head .hz i.now{color:var(--pink)}
+.set-more{text-align:center;margin:14px 0 4px}

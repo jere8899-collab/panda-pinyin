@@ -64,10 +64,17 @@ Rule for every future run: verify pinyin, tones, stroke order and vocabulary aga
 * 180 new Chen Wang recordings; leng2 rong2 failed the pitch check → NO_AUDIO.
 * Fix: long syllables (chēng, zhōng) no longer push the 3rd answer button off a phone screen; e2e now checks every answer button fits.
 
+## v7 done (2026-11-12): more writing + more skins
+* Writing Garden sets 7–17: 54 more characters (numbers, family, plants & weather, colours, actions, school, food, directions, opposites) + 12 two-character words in 2 词语 sets (traced one character after the other). 102 entries in total. Stroke data from hanzi-writer-data 2.0.1; pinyin checked against CC-CEDICT (187/187); recordings from audio-cmn (Yue Tan HSK words/characters; Chen Wang syllables for 爸 妈 哥 姐 弟 妹 石 禾 竹 果, which have no HSK file). All 54 single-character recordings pass the pitch check.
+* 🧠 默写 From-memory mode: outline hidden, gentle "再想想！", hint after 3 misses, +2⭐ the first time per character.
+* Locked sets after the next one fold into one "🔒 N more sets to discover" line.
+* 12 new badges: Writing Set 7–17 + 🧠 Memory Writer (10 characters from memory). 27 badges.
+* 6 new skins: Mid-Autumn Lantern 150, School Uniform 180, Little Chef 220, Dragon Boat 260, Super Panda 320, Merlion 400⭐ (made with the built-in free image tool from the Bamboo Panda picture).
+
 ## Next ideas (in order)
 1. Whole syllables ye yue yuan yin yun ying + finals ian uan üan iang uang iong.
 2. "Spell it" game: drag initial + final, then pick the tone.
-3. Tracing set 7 (2e).
+3. More 词语 word sets + a 'pick the right character' reading game using the Writing Garden words.
 4. A grown-ups progress view per child (which tones are tricky).
 5. Daily goal / streak with the panda (no punishment for missed days).
 6. Consider a fully separate free Supabase project if Jeremy wants (see README).

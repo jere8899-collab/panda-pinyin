@@ -20,9 +20,9 @@ def mark(s):
 D = {}
 for line in open(CE, encoding='utf8'):
     m = re.match(r'(\S+) (\S+) \[([^\]]+)\] /(.*)/', line)
-    if m and len(m.group(2)) == 1 and ' ' not in m.group(3): D.setdefault(m.group(2), []).append((mark(m.group(3)), m.group(4)[:70]))
+    if m and len(m.group(2)) == len(m.group(3).split()): D.setdefault(m.group(2), []).append((" ".join(mark(x) for x in m.group(3).split()), m.group(4)[:70]))
 bad = 0
 for hz, py, en in items:
-    g = [r[1] for r in D.get(hz, []) if r[0] == py][:1]; bad += not g
+    g = [r[1] for r in D.get(hz, []) if r[0].lower() == py.lower()][:1]; bad += not g
     print('OK ' if g else 'BAD', hz, py, '(' + en + ')', '|', g or D.get(hz, [])[:3])
 print(len(items), "checked,", bad, "bad"); sys.exit(1 if bad else 0)

@@ -257,10 +257,76 @@ const CHARS = [
   { ch: "马", py: "mǎ", en: "horse", audio: "audio/c_ma.mp3", strokes: 3, set: 6 },
   { ch: "牛", py: "niú", en: "cow", audio: "audio/c_niu.mp3", strokes: 4, set: 6 },
   { ch: "羊", py: "yáng", en: "sheep", audio: "audio/c_yang.mp3", strokes: 6, set: 6 },
-  { ch: "鸟", py: "niǎo", en: "bird", audio: "audio/c_niao.mp3", strokes: 5, set: 6 }
+  { ch: "鸟", py: "niǎo", en: "bird", audio: "audio/c_niao.mp3", strokes: 5, set: 6 },
+  { ch: "四", py: "sì", en: "four", audio: "audio/w_56db.mp3", strokes: 5, set: 7 },
+  { ch: "五", py: "wǔ", en: "five", audio: "audio/w_4e94.mp3", strokes: 4, set: 7 },
+  { ch: "六", py: "liù", en: "six", audio: "audio/w_516d.mp3", strokes: 4, set: 7 },
+  { ch: "七", py: "qī", en: "seven", audio: "audio/w_4e03.mp3", strokes: 2, set: 7 },
+  { ch: "八", py: "bā", en: "eight", audio: "audio/w_516b.mp3", strokes: 2, set: 7 },
+  { ch: "九", py: "jiǔ", en: "nine", audio: "audio/w_4e5d.mp3", strokes: 2, set: 7 },
+  { ch: "爸", py: "bà", en: "dad", audio: "audio/ba4.mp3", strokes: 8, set: 8 },
+  { ch: "妈", py: "mā", en: "mum", audio: "audio/ma1.mp3", strokes: 6, set: 8 },
+  { ch: "哥", py: "gē", en: "big brother", audio: "audio/ge1.mp3", strokes: 10, set: 8 },
+  { ch: "姐", py: "jiě", en: "big sister", audio: "audio/jie3.mp3", strokes: 8, set: 8 },
+  { ch: "弟", py: "dì", en: "little brother", audio: "audio/di4.mp3", strokes: 7, set: 8 },
+  { ch: "妹", py: "mèi", en: "little sister", audio: "audio/mei4.mp3", strokes: 8, set: 8 },
+  { ch: "石", py: "shí", en: "stone", audio: "audio/shi2.mp3", strokes: 5, set: 9 },
+  { ch: "禾", py: "hé", en: "rice plant", audio: "audio/he2.mp3", strokes: 5, set: 9 },
+  { ch: "竹", py: "zhú", en: "bamboo", audio: "audio/zhu2.mp3", strokes: 6, set: 9 },
+  { ch: "花", py: "huā", en: "flower", audio: "audio/w_82b1.mp3", strokes: 7, set: 9 },
+  { ch: "草", py: "cǎo", en: "grass", audio: "audio/w_8349.mp3", strokes: 9, set: 9 },
+  { ch: "雨", py: "yǔ", en: "rain", audio: "audio/w_96e8.mp3", strokes: 8, set: 9 },
+  { ch: "红", py: "hóng", en: "red", audio: "audio/w_7ea2.mp3", strokes: 6, set: 10 },
+  { ch: "黄", py: "huáng", en: "yellow", audio: "audio/w_9ec4.mp3", strokes: 11, set: 10 },
+  { ch: "蓝", py: "lán", en: "blue", audio: "audio/w_84dd.mp3", strokes: 13, set: 10 },
+  { ch: "绿", py: "lǜ", en: "green", audio: "audio/w_7eff.mp3", strokes: 11, set: 10 },
+  { ch: "黑", py: "hēi", en: "black", audio: "audio/w_9ed1.mp3", strokes: 12, set: 10 },
+  { ch: "金", py: "jīn", en: "gold", audio: "audio/w_91d1.mp3", strokes: 8, set: 10 },
+  { ch: "走", py: "zǒu", en: "to walk", audio: "audio/w_8d70.mp3", strokes: 7, set: 11 },
+  { ch: "跑", py: "pǎo", en: "to run", audio: "audio/w_8dd1.mp3", strokes: 12, set: 11 },
+  { ch: "飞", py: "fēi", en: "to fly", audio: "audio/w_98de.mp3", strokes: 3, set: 11 },
+  { ch: "吃", py: "chī", en: "to eat", audio: "audio/w_5403.mp3", strokes: 6, set: 11 },
+  { ch: "看", py: "kàn", en: "to look", audio: "audio/w_770b.mp3", strokes: 9, set: 11 },
+  { ch: "听", py: "tīng", en: "to listen", audio: "audio/w_542c.mp3", strokes: 7, set: 11 },
+  { ch: "书", py: "shū", en: "book", audio: "audio/w_4e66.mp3", strokes: 4, set: 12 },
+  { ch: "本", py: "běn", en: "root; counts books (一本书)", audio: "audio/w_672c.mp3", strokes: 5, set: 12 },
+  { ch: "文", py: "wén", en: "writing, language", audio: "audio/w_6587.mp3", strokes: 4, set: 12 },
+  { ch: "字", py: "zì", en: "character, word", audio: "audio/w_5b57.mp3", strokes: 6, set: 12 },
+  { ch: "笔", py: "bǐ", en: "pen, pencil", audio: "audio/w_7b14.mp3", strokes: 10, set: 12 },
+  { ch: "学", py: "xué", en: "to learn", audio: "audio/w_5b66.mp3", strokes: 8, set: 12 },
+  { ch: "米", py: "mǐ", en: "rice (grains)", audio: "audio/w_7c73.mp3", strokes: 6, set: 13 },
+  { ch: "饭", py: "fàn", en: "cooked rice, meal", audio: "audio/w_996d.mp3", strokes: 7, set: 13 },
+  { ch: "菜", py: "cài", en: "vegetables, dish", audio: "audio/w_83dc.mp3", strokes: 11, set: 13 },
+  { ch: "瓜", py: "guā", en: "melon", audio: "audio/w_74dc.mp3", strokes: 5, set: 13 },
+  { ch: "果", py: "guǒ", en: "fruit", audio: "audio/guo3.mp3", strokes: 8, set: 13 },
+  { ch: "茶", py: "chá", en: "tea", audio: "audio/w_8336.mp3", strokes: 9, set: 13 },
+  { ch: "东", py: "dōng", en: "east", audio: "audio/w_4e1c.mp3", strokes: 5, set: 14 },
+  { ch: "西", py: "xī", en: "west", audio: "audio/w_897f.mp3", strokes: 6, set: 14 },
+  { ch: "南", py: "nán", en: "south", audio: "audio/w_5357.mp3", strokes: 9, set: 14 },
+  { ch: "北", py: "běi", en: "north", audio: "audio/w_5317.mp3", strokes: 5, set: 14 },
+  { ch: "左", py: "zuǒ", en: "left", audio: "audio/w_5de6.mp3", strokes: 5, set: 14 },
+  { ch: "右", py: "yòu", en: "right", audio: "audio/w_53f3.mp3", strokes: 5, set: 14 },
+  { ch: "出", py: "chū", en: "to go out", audio: "audio/w_51fa.mp3", strokes: 5, set: 15 },
+  { ch: "入", py: "rù", en: "to go in", audio: "audio/w_5165.mp3", strokes: 2, set: 15 },
+  { ch: "来", py: "lái", en: "to come", audio: "audio/w_6765.mp3", strokes: 7, set: 15 },
+  { ch: "去", py: "qù", en: "to go", audio: "audio/w_53bb.mp3", strokes: 5, set: 15 },
+  { ch: "多", py: "duō", en: "many", audio: "audio/w_591a.mp3", strokes: 6, set: 15 },
+  { ch: "少", py: "shǎo", en: "few", audio: "audio/w_5c11.mp3", strokes: 4, set: 15 },
+  { ch: "大人", py: "dà ren", en: "grown-up", audio: "audio/w_59274eba.mp3", strokes: 5, set: 16 },
+  { ch: "上学", py: "shàng xué", en: "to go to school", audio: "audio/w_4e0a5b66.mp3", strokes: 11, set: 16 },
+  { ch: "妈妈", py: "mā ma", en: "mum", audio: "audio/w_59885988.mp3", strokes: 12, set: 16 },
+  { ch: "木头", py: "mù tou", en: "wood", audio: "audio/w_67285934.mp3", strokes: 9, set: 16 },
+  { ch: "山水", py: "shān shuǐ", en: "hills and water", audio: "audio/w_5c716c34.mp3", strokes: 7, set: 16 },
+  { ch: "火山", py: "huǒ shān", en: "volcano", audio: "audio/w_706b5c71.mp3", strokes: 7, set: 16 },
+  { ch: "白天", py: "bái tiān", en: "daytime", audio: "audio/w_767d5929.mp3", strokes: 9, set: 17 },
+  { ch: "水果", py: "shuǐ guǒ", en: "fruit", audio: "audio/w_6c34679c.mp3", strokes: 12, set: 17 },
+  { ch: "书本", py: "shū běn", en: "books", audio: "audio/w_4e66672c.mp3", strokes: 9, set: 17 },
+  { ch: "中文", py: "Zhōng wén", en: "Chinese language", audio: "audio/w_4e2d6587.mp3", strokes: 8, set: 17 },
+  { ch: "米饭", py: "mǐ fàn", en: "cooked rice", audio: "audio/w_7c73996d.mp3", strokes: 13, set: 17 },
+  { ch: "白菜", py: "bái cài", en: "Chinese cabbage", audio: "audio/w_767d83dc.mp3", strokes: 16, set: 17 }
 ];
 // a set opens once 3 characters of the set before it have been traced
-const CHAR_SETS = [null, { zh: "第一组", en: "Set 1 · first strokes" }, { zh: "第二组", en: "Set 2 · up, down & more" }, { zh: "第三组", en: "Set 3 · nature" }, { zh: "第四组", en: "Set 4 · my body" }, { zh: "第五组", en: "Set 5 · sky & field" }, { zh: "第六组", en: "Set 6 · people & animals" }];
+const CHAR_SETS = [null, { zh: "第一组", en: "Set 1 · first strokes" }, { zh: "第二组", en: "Set 2 · up, down & more" }, { zh: "第三组", en: "Set 3 · nature" }, { zh: "第四组", en: "Set 4 · my body" }, { zh: "第五组", en: "Set 5 · sky & field" }, { zh: "第六组", en: "Set 6 · people & animals" }, { zh: "第七组", en: "Set 7 · numbers" }, { zh: "第八组", en: "Set 8 · my family" }, { zh: "第九组", en: "Set 9 · plants & weather" }, { zh: "第十组", en: "Set 10 · colours" }, { zh: "第十一组", en: "Set 11 · actions" }, { zh: "第十二组", en: "Set 12 · school" }, { zh: "第十三组", en: "Set 13 · food" }, { zh: "第十四组", en: "Set 14 · directions" }, { zh: "第十五组", en: "Set 15 · opposites" }, { zh: "第十六组", en: "Set 16 · words 词语 1" }, { zh: "第十七组", en: "Set 17 · words 词语 2" }];
 
 
 // badges: finish every lesson of a world, or trace every character of a set (+5⭐ each once; the graduate badge +20⭐)
@@ -273,7 +339,8 @@ const BADGES = [
   { id: "w_whole", icon: "🌟", zh: "y w · 整体认读", en: "Whole Syllables", lessons: ["s13", "s14"] },
   { id: "w_glide", icon: "🍀", zh: "复韵母", en: "Gliding Finals", lessons: ["s15", "s16", "s17", "s18", "s19", "s20", "t6"] },
   { id: "w_nasal", icon: "👃", zh: "鼻韵母", en: "Nose Sounds", lessons: ["s21", "s22", "s23", "s24", "t7"] },
-  ...[1, 2, 3, 4, 5, 6].map(n => ({ id: "set" + n, icon: "✍️", zh: "写字 第" + "一二三四五六"[n - 1] + "组", en: "Writing Set " + n, set: n })),
+  ...CHAR_SETS.slice(1).map((st, k) => ({ id: "set" + (k + 1), icon: k >= 15 ? "📝" : "✍️", zh: "写字 " + st.zh, en: "Writing Set " + (k + 1), set: k + 1 })),
+  { id: "memory10", icon: "🧠", zh: "默写小能手", en: "Memory Writer: 10 characters from memory", memory: 10 },
   { id: "grad", icon: "👑", zh: "拼音乐园毕业", en: "Pinyin Park Graduate", all: true, stars: 20 }
 ];
 
@@ -285,7 +352,13 @@ const SKINS = [
   { id: "festive", zh: "新年熊猫", en: "New Year Panda", img: "img/panda_festive.webp", cost: 20 },
   { id: "space", zh: "太空熊猫", en: "Space Panda", img: "img/panda_space.webp", cost: 40 },
   { id: "brush", zh: "书法熊猫", en: "Brush Panda", img: "img/panda_brush.webp", cost: 80 },
-  { id: "lion", zh: "舞狮熊猫", en: "Lion Dance Panda", img: "img/panda_lion.webp", cost: 120 }
+  { id: "lion", zh: "舞狮熊猫", en: "Lion Dance Panda", img: "img/panda_lion.webp", cost: 120 },
+  { id: "lantern", zh: "中秋灯笼熊猫", en: "Mid-Autumn Lantern Panda", img: "img/panda_lantern.webp", cost: 150 },
+  { id: "school", zh: "小学生熊猫", en: "School Uniform Panda", img: "img/panda_school.webp", cost: 180 },
+  { id: "chef", zh: "小厨师熊猫", en: "Little Chef Panda", img: "img/panda_chef.webp", cost: 220 },
+  { id: "dragonboat", zh: "龙舟熊猫", en: "Dragon Boat Panda", img: "img/panda_dragonboat.webp", cost: 260 },
+  { id: "hero", zh: "超级熊猫", en: "Super Panda", img: "img/panda_hero.webp", cost: 320 },
+  { id: "merlion", zh: "鱼尾狮熊猫", en: "Merlion Panda", img: "img/panda_merlion.webp", cost: 400 }
 ];
 
 window.PP = Object.assign(window.PP || {}, { MARKS, mark, audioOf, hasAudio, CHAR_SETS, BADGES, TONES, LESSONS, CHARS, PRAISE, KIND, SKINS });

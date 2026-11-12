@@ -48,7 +48,8 @@ function reward(p, stars, xp, happy) {
 /* ---------------- badges ---------------- */
 const badgeDone = (p, b) => b.all ? PP.LESSONS.every(l => (p.lessons[l.id] || {}).best)
   : b.lessons ? b.lessons.every(id => (p.lessons[id] || {}).best)
-  : PP.CHARS.filter(c => c.set === b.set).every(c => p.chars[c.ch]);
+  : b.memory ? Object.values(p.chars).filter(c => c.mem).length >= b.memory
+  : PP.CHARS.filter(c => c.set === b.set).every(c => p.chars[c.ch] && p.chars[c.ch].best);
 // award any badge now earned (also gives older saves the badges they already deserve); returns the new ones
 function checkBadges(p) {
   p.badges = p.badges || {};
@@ -63,7 +64,7 @@ function badgeShelf() {
   const p = S.cur(); checkBadges(p);
   modal(`<h3>🏅 徽章 Badges <small class="muted">${Object.keys(p.badges).length}/${PP.BADGES.length}</small></h3>
     <div class="badges">${PP.BADGES.map(b => { const got = p.badges[b.id];
-      const how = b.all ? "Finish every Pinyin Park lesson" : b.lessons ? "Finish: " + b.lessons.map(id => PP.LESSONS.find(l => l.id === id).zh).join(" · ") : "Trace all of " + PP.CHAR_SETS[b.set].zh;
+      const how = b.all ? "Finish every Pinyin Park lesson" : b.lessons ? "Finish: " + b.lessons.map(id => PP.LESSONS.find(l => l.id === id).zh).join(" · ") : b.memory ? "Write " + b.memory + " characters with 🧠 默写" : "Trace all of " + PP.CHAR_SETS[b.set].zh;
       return `<div class="badge ${got ? "got" : ""}"><span class="b-ic">${got ? b.icon : "🔒"}</span><b>${b.zh}</b><small>${b.en}</small><small class="how">${got ? "✓ " + got : how}</small></div>`; }).join("")}</div>
     <button class="btn ghost" data-x>Close</button>`, (m, close) => { m.querySelector("[data-x]").onclick = close; });
 }
@@ -303,57 +304,84 @@ function garden() {
   app().innerHTML = `${topBar(true)}<section class="screen garden-s">
     <h2>🌸 写字花园 <small>Writing Garden</small></h2>
     <p class="intro">Watch the strokes, then trace them with your finger. 先看，再写！</p>
-    ${PP.CHAR_SETS.slice(1).map((st, k) => { const n = k + 1, open = setOpen(p, n), list = PP.CHARS.map((c, i) => [c, i]).filter(([c]) => c.set === n);
+    ${PP.CHAR_SETS.slice(1).map((st, k) => { const n = k + 1, open = setOpen(p, n);
+      if (!open && n > 1 && !setOpen(p, n - 1)) return setOpen(p, n - 2) ? `<p class="muted set-more">🔒 ${PP.CHAR_SETS.length - n} more set${PP.CHAR_SETS.length - n > 1 ? "s" : ""} to discover · 还有${PP.CHAR_SETS.length - n}组</p>` : "";
+      const list = PP.CHARS.map((c, i) => [c, i]).filter(([c]) => c.set === n);
       return `<h3 class="set-h">${open ? "" : "🔒 "}${st.zh} <small>${st.en}</small></h3>
       ${open ? "" : `<p class="muted set-lock">Trace 3 characters in ${PP.CHAR_SETS[n - 1].en.split(" ·")[0]} to open these!</p>`}
-      <div class="chars ${open ? "" : "locked"}">${list.map(([c, i]) => { const r = p.chars[c.ch]; return `<button class="ch" data-i="${i}" ${open ? "" : "aria-disabled=true"}><span class="hz">${c.ch}</span><small>${c.py} · ${c.en}</small><span class="st">${r ? crowns(r.best) : "☆☆☆"}</span></button>`; }).join("")}</div>`; }).join("")}
+      <div class="chars ${open ? "" : "locked"}">${list.map(([c, i]) => { const r = p.chars[c.ch]; return `<button class="ch" data-i="${i}" ${open ? "" : "aria-disabled=true"}><span class="hz ${c.ch.length > 1 ? "word" : ""}">${c.ch}</span><small>${pyShow(c)} · ${c.en}</small><span class="st">${r ? crowns(r.best || 0) : "☆☆☆"}${r && r.mem ? " 🧠" : ""}</span></button>`; }).join("")}</div>`; }).join("")}
   </section>`;
   bindTop();
   app().querySelectorAll(".ch").forEach(b => b.onclick = () => { const c = PP.CHARS[+b.dataset.i]; if (!setOpen(p, c.set)) return toast("🔒 Trace 3 characters in the set above first!"); trace(+b.dataset.i); });
 }
-function trace(idx) {
-  const p = S.cur(), C = PP.CHARS[idx];
+const pyShow = C => C.ch.length > 1 ? C.py.replace(/ /g, "") : C.py;
+function trace(idx, memory) {
+  const p = S.cur(), C = PP.CHARS[idx], parts = [...C.ch], word = parts.length > 1;
+  const r0 = p.chars[C.ch];
   app().innerHTML = `${topBar(true)}<section class="screen trace">
-    <div class="ch-head"><span class="hz">${C.ch}</span><div><b>${C.py}</b> <span>${C.en}</span><small>${C.strokes} stroke${C.strokes > 1 ? "s" : ""} · ${C.strokes}画</small></div><button class="ic" id="say" aria-label="Hear it">🔊</button></div>
+    <div class="ch-head"><span class="hz ${word ? "word" : ""}" id="hzHead">${parts.map((c, k) => `<i data-k="${k}">${c}</i>`).join("")}</span><div><b>${pyShow(C)}</b> <span>${C.en}</span><small>${C.strokes} stroke${C.strokes > 1 ? "s" : ""} · ${C.strokes}画${word ? " · 2 characters" : ""}</small></div><button class="ic" id="say" aria-label="Hear it">🔊</button></div>
     <div class="pad-wrap"><svg class="grid" viewBox="0 0 100 100" aria-hidden="true"><rect x="1" y="1" width="98" height="98" rx="4"/><line x1="50" y1="1" x2="50" y2="99"/><line x1="1" y1="50" x2="99" y2="50"/><line x1="1" y1="1" x2="99" y2="99"/><line x1="99" y1="1" x2="1" y2="99"/></svg><div id="pad"></div></div>
-    <p class="fb" id="tfb">👀 Watch first, then trace!</p>
-    <div class="row"><button class="btn ghost" id="watch">👀 Watch 看</button><button class="btn" id="write">✍️ Trace 写</button></div>
+    <p class="fb" id="tfb">${memory ? "🧠 默写 From memory: no outline this time!" : "👀 Watch first, then trace!"}</p>
+    <div class="row"><button class="btn ghost" id="watch">👀 Watch 看</button><button class="btn ${memory ? "ghost" : ""}" id="write">✍️ Trace 写</button><button class="btn ${memory ? "" : "ghost"}" id="mem" ${r0 ? "" : "disabled"} title="${r0 ? "" : "Trace it once first"}">🧠 默写</button></div>
     <div class="row"><button class="btn ghost sm" id="prev" ${idx ? "" : "disabled"}>⬅ ${idx ? PP.CHARS[idx - 1].ch : ""}</button><button class="btn ghost sm" id="nextc" ${idx < PP.CHARS.length - 1 && setOpen(p, PP.CHARS[idx + 1].set) ? "" : "disabled"}>${idx < PP.CHARS.length - 1 ? PP.CHARS[idx + 1].ch : ""} ➡</button></div>
   </section>`;
   bindTop(garden);
   const size = Math.min(300, window.innerWidth - 64);
   const pad = $("#pad"); pad.parentElement.style.width = pad.parentElement.style.height = size + "px";
-  const w = HanziWriter.create(pad, C.ch, {
-    width: size, height: size, padding: 12, showOutline: true, showCharacter: false,
-    strokeColor: "#3b3b58", outlineColor: "#e6dff0", drawingColor: "#ff6f91", drawingWidth: 26, highlightColor: "#7fd1ae",
-    strokeAnimationSpeed: 1, delayBetweenStrokes: 350, showHintAfterMisses: 2, highlightOnComplete: true,
-    charDataLoader: (ch, onLoad, onErr) => fetch("vendor/hanzi-data/" + ch + ".json").then(r => r.json()).then(onLoad).catch(onErr),
-    onLoadCharDataError: () => { $("#tfb").textContent = "Couldn't load this character. Check the internet and try again."; }
-  });
-  PP._writer = w;
   const fb = t => $("#tfb").innerHTML = t;
-  const startQuiz = () => {
-    let miss = 0;
-    fb(`✍️ 该你了！ Your turn: stroke 1 of ${C.strokes}`);
-    w.quiz({
-      onMistake: s => { miss++; sfx(false); fb(s.mistakesOnStroke >= 2 ? "💡 跟着绿色的笔画写 · Follow the green stroke" : "🌱 再试试！ Almost! Try that stroke again"); },
-      onCorrectStroke: s => { sfx(true); if (s.strokesRemaining) fb(`👍 好！ Stroke ${s.strokeNum + 2} of ${C.strokes}`); },
-      onComplete: s => {
-        const c = s.totalMistakes <= 1 ? 3 : s.totalMistakes <= 3 ? 2 : 1, r = p.chars[C.ch];
-        const first = !r, better = r && c > r.best;
-        p.chars[C.ch] = { best: Math.max(c, r ? r.best : 0), plays: (r ? r.plays : 0) + 1 };
-        const st = 3 + (first ? 3 : better ? 1 : 0); reward(p, st, 5, 15); checkBadges(p);
-        Audio1.play(C.audio, C.ch);
-        fb(`🎉 <b>${pick(PP.PRAISE)[0]}</b> You wrote ${C.ch}! ${crowns(c)} +${st}⭐`);
-      }
+  let k = 0, w = null, total = 0, run = 0;
+  const mark = () => document.querySelectorAll("#hzHead i").forEach(e => e.classList.toggle("now", word && +e.dataset.k === k));
+  const make = () => {
+    pad.innerHTML = ""; mark();
+    w = PP._writer = HanziWriter.create(pad, parts[k], {
+      width: size, height: size, padding: 12, showOutline: !memory, showCharacter: false,
+      strokeColor: "#3b3b58", outlineColor: "#e6dff0", drawingColor: "#ff6f91", drawingWidth: 26, highlightColor: "#7fd1ae",
+      strokeAnimationSpeed: 1, delayBetweenStrokes: 350, showHintAfterMisses: memory ? 3 : 2, highlightOnComplete: true,
+      charDataLoader: (ch, onLoad, onErr) => fetch("vendor/hanzi-data/" + ch + ".json").then(r => r.json()).then(onLoad).catch(onErr),
+      onLoadCharDataError: () => fb("Couldn't load this character. Check the internet and try again.")
     });
   };
-  $("#watch").onclick = () => { fb("👀 看笔顺 · Watch the order"); w.cancelQuiz && w.cancelQuiz(); w.showCharacter && w.hideCharacter(); w.animateCharacter({ onComplete: () => fb("Now you try! ✍️ Tap Trace") }); };
-  $("#write").onclick = () => { w.cancelQuiz && w.cancelQuiz(); w.hideCharacter(); startQuiz(); };
+  const n = () => PP._strokes = (w && w._character && w._character.strokes.length) || "";
+  const finish = () => {
+    const c = total <= 1 ? 3 : total <= 3 ? 2 : 1, r = p.chars[C.ch];
+    const first = !r, better = r && c > r.best;
+    if (memory) {
+      const firstMem = !(r && r.mem); p.chars[C.ch] = Object.assign({}, r, { mem: true, plays: (r ? r.plays : 0) + 1 });
+      const st = firstMem ? 2 : 0; reward(p, st, 5, 10); checkBadges(p);
+      Audio1.play(C.audio, C.ch);
+      return fb(`🧠🎉 <b>${pick(PP.PRAISE)[0]}</b> You wrote ${C.ch} from memory!${st ? ` +${st}⭐` : ""}`);
+    }
+    p.chars[C.ch] = Object.assign({}, r, { best: Math.max(c, r ? r.best : 0), plays: (r ? r.plays : 0) + 1 });
+    const st = 3 + (first ? 3 : better ? 1 : 0); reward(p, st, 5, 15); checkBadges(p);
+    Audio1.play(C.audio, C.ch);
+    fb(`🎉 <b>${pick(PP.PRAISE)[0]}</b> You wrote ${C.ch}! ${crowns(c)} +${st}⭐`);
+    const m = $("#mem"); if (m) m.disabled = false;
+  };
+  const startQuiz = () => {
+    const my = ++run;
+    setTimeout(() => {
+      if (my !== run) return;
+      fb(`${memory ? "🧠" : "✍️"} ${word ? `${parts[k]} (${k + 1}/2): ` : "该你了！ "}Your turn: stroke 1 of ${w._character ? w._character.strokes.length : "…"}`);
+      w.quiz({
+        onMistake: s => { total++; sfx(false); fb(s.mistakesOnStroke >= (memory ? 3 : 2) ? "💡 跟着绿色的笔画写 · Follow the green stroke" : memory ? "🌱 再想想！ Think of the stroke order and try again" : "🌱 再试试！ Almost! Try that stroke again"); },
+        onCorrectStroke: s => { sfx(true); if (s.strokesRemaining) fb(`👍 好！ Stroke ${s.strokeNum + 2} of ${s.strokeNum + 1 + s.strokesRemaining}`); },
+        onComplete: () => {
+          if (k < parts.length - 1) { k++; fb(`👍 ${parts[k - 1]} done! Now ${parts[k]} ➡`); setTimeout(() => { make(); memory ? startQuiz() : w.animateCharacter({ onComplete: () => { w.hideCharacter(); startQuiz(); } }); }, 900); }
+          else finish();
+        }
+      });
+    }, 60);
+  };
+  const restart = () => { run++; k = 0; total = 0; make(); };
+  make();
+  $("#watch").onclick = () => { fb("👀 看笔顺 · Watch the order"); restart(); const go = () => w.animateCharacter({ onComplete: () => { if (k < parts.length - 1) { k++; make(); go(); } else { k = 0; make(); fb("Now you try! ✍️ Tap Trace"); } } }); go(); };
+  $("#write").onclick = () => memory ? trace(idx, false) : (restart(), startQuiz());
+  $("#mem").onclick = () => memory ? (restart(), startQuiz()) : trace(idx, true);
   $("#say").onclick = () => Audio1.play(C.audio, C.ch);
   $("#prev").onclick = () => idx && trace(idx - 1);
   $("#nextc").onclick = () => idx < PP.CHARS.length - 1 && setOpen(p, PP.CHARS[idx + 1].set) && trace(idx + 1);
-  setTimeout(() => { w.animateCharacter({ onComplete: () => { w.hideCharacter(); startQuiz(); } }); }, 400);
+  if (memory) startQuiz();
+  else setTimeout(() => { w.animateCharacter({ onComplete: () => { w.hideCharacter(); startQuiz(); } }); }, 400);
 }
 
 PP.App = { profiles, home, garden, trace, lesson, quiz, level, rerender: () => (S.cur() ? home() : profiles()) };
