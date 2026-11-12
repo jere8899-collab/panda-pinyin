@@ -6,13 +6,19 @@
 4. Profiles stay separate; progress survives a reload; cloud round trip works on a 2nd device.
 5. No sideways scroll; every visible button ≥ 44 px.
 6. Pinyin/tone marks/stroke data come from a cited source (README "Audio & data sources").
+9. Both helper languages: `UI=vi node tools/test/e2e.js` green, `node tools/i18n_check.js vi` 0 missing, no text overflow at 390 px (the test checks every main screen).
 7. Never touch Word Realms files, repo, localStorage keys (wordRealms.*), caches (wr-*) or its cloud rows.
 
 # Feature map
 Picker (start) → Add child / tap child → Home: pet (tap = hop, 🎋 Feed, 👕 Skins), Pinyin Park nodes → learn cards → 我准备好了 → quiz → result (Next / Again / Home);
-Writing Garden node → sets 1–17 (locked ones folded) → trace screen (👀 Watch, ✍️ Trace, 🧠 默写 from memory, ⬅ ➡; words traced char by char); ☁️ chip or "Grown-ups" link → sum gate → cloud login/sign-up, remove player.
+🌐 (home top bar / player screen / Grown-ups per child) → language list → screen redraws in that language;
+Writing Garden node → sets 1–28 (locked ones folded) → trace screen (👀 Watch, ✍️ Trace, 🧠 默写 from memory, ⬅ ➡; words traced char by char); ☁️ chip or "Grown-ups" link → sum gate → cloud login/sign-up, remove player.
 
 # Lessons learned
+* A test seed can quietly pre-trace the character you then test (猫 was seeded, so "first trace" paid 2⭐ not 5⭐); pick a test character the seed doesn't touch (v8).
+* A test that adds a made-up i18n key must run after the "all keys translated" check, or it reports its own key (v8).
+* `order: 0` is falsy: use `??` not `||` for numeric defaults (English sorted after Vietnamese) (v8).
+* pitch_check.py only checks syllable files; single-character word files need tools/char_pitch_check.py (v8).
 * A new badge kind (🧠 memory, no `set`) crashed the badge shelf's "how to earn" line; when adding a badge type, open the shelf in the test with it locked (v7).
 * Never force-move a release tag that is already pushed (v6 was moved by mistake, then restored to 57b0539); make a new tag (pre-v7) instead (v7).
 * Folding locked sets changes every `.chars.locked` count in e2e; count what is actually rendered (v7).

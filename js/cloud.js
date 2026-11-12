@@ -4,7 +4,7 @@
    (<name>@family.pandapinyin.app) and their own session key (pp-auth), so they never mix with Word Realms
    accounts on the same github.io origin. The game never waits for the cloud; the device save always works. */
 (function () {
-const PP = window.PP, S = PP.Store, ui = PP.ui;
+const PP = window.PP, S = PP.Store, ui = PP.ui, t = k => PP.t(k);
 const CFG = {
   url: "https://aoqfqopzycowbnjshzvg.supabase.co",
   key: "sb_publishable_uohGzZ5-4NxurifutYE4Xg_8FMVfiVp",   // public by design; RLS protects rows
@@ -19,20 +19,20 @@ const setMeta = m => localStorage.setItem(META, JSON.stringify(Object.assign(met
 const email = n => n.trim().toLowerCase() + "@" + CFG.domain;
 const ours = u => !!(u && u.email && u.email.endsWith("@" + CFG.domain));   // hard guard: only ever write Panda Pinyin accounts
 
-C.nameErr = n => { n = String(n || "").trim(); if (n.length < 3) return "Family name needs at least 3 letters."; if (n.length > 20) return "Keep it to 20 letters or fewer."; if (!/^[A-Za-z0-9_]+$/.test(n)) return "Letters, numbers and _ only (no spaces)."; return null; };
-C.passErr = p => String(p || "").length < 6 ? "Password needs at least 6 characters." : null;
+C.nameErr = n => { n = String(n || "").trim(); if (n.length < 3) return t("Family name needs at least 3 letters."); if (n.length > 20) return t("Keep it to 20 letters or fewer."); if (!/^[A-Za-z0-9_]+$/.test(n)) return t("Letters, numbers and _ only (no spaces)."); return null; };
+C.passErr = p => String(p || "").length < 6 ? t("Password needs at least 6 characters.") : null;
 const friendly = (e, signup) => { const m = String((e && (e.message || e)) || "").toLowerCase(), code = e && e.code;
-  if (code === "user_already_exists" || /already (registered|exists)/.test(m)) return "That family name is taken. Try another.";
-  if (code === "invalid_credentials" || /invalid login/.test(m)) return "Wrong family name or password.";
-  if (/rate limit|too many|429/.test(m)) return "Too many tries. Please wait a minute.";
-  if (/fetch|network|load|offline|timeout/.test(m)) return "Can't reach the cloud right now. Progress is still saved on this device.";
-  return signup ? "Couldn't create the family account. Please try again." : "Couldn't log in. Please try again."; };
+  if (code === "user_already_exists" || /already (registered|exists)/.test(m)) return t("That family name is taken. Try another.");
+  if (code === "invalid_credentials" || /invalid login/.test(m)) return t("Wrong family name or password.");
+  if (/rate limit|too many|429/.test(m)) return t("Too many tries. Please wait a minute.");
+  if (/fetch|network|load|offline|timeout/.test(m)) return t("Can't reach the cloud right now. Progress is still saved on this device.");
+  return signup ? t("Couldn't create the family account. Please try again.") : t("Couldn't log in. Please try again."); };
 
 const LABEL = { guest: ["☁️", "Device only"], loading: ["☁️", "Connecting…"], saving: ["⏳", "Saving…"], saved: ["☁️✓", "Cloud saved"], offline: ["📴", "Offline"] };
-C.chip = () => `<button class="cloud-chip st-${C.status}" id="cloudChip" aria-label="Family cloud save">${LABEL[C.status][0]}</button>`;
-C.bindChip = () => { const b = document.getElementById("cloudChip"); if (b) { b.title = LABEL[C.status][1]; b.onclick = () => PP.Grown.open(); } };
-const set = st => { C.status = st; document.querySelectorAll(".cloud-chip").forEach(b => { b.className = "cloud-chip st-" + st; b.textContent = LABEL[st][0]; b.title = LABEL[st][1]; });
-  const el = document.getElementById("ccStatus"); if (el) el.textContent = LABEL[st][1]; };
+C.chip = () => `<button class="cloud-chip st-${C.status}" id="cloudChip" aria-label="${t("Family cloud save")}">${LABEL[C.status][0]}</button>`;
+C.bindChip = () => { const b = document.getElementById("cloudChip"); if (b) { b.title = t(LABEL[C.status][1]); b.onclick = () => PP.Grown.open(); } };
+const set = st => { C.status = st; document.querySelectorAll(".cloud-chip").forEach(b => { b.className = "cloud-chip st-" + st; b.textContent = LABEL[st][0]; b.title = t(LABEL[st][1]); });
+  const el = document.getElementById("ccStatus"); if (el) el.textContent = t(LABEL[st][1]); };
 
 function lib() {
   if (window.supabase && window.supabase.createClient) return Promise.resolve(window.supabase);
@@ -81,8 +81,8 @@ C.auth = async (mode, name, pass) => {
   const { data, error } = await fn;
   if (error) throw new Error(friendly(error, mode === "signup"));
   const user = data.user || (data.session && data.session.user);
-  if (!data.session) throw new Error("This account needs switching on by the site owner (email confirmation is on).");
-  if (!ours(user)) throw new Error("Not a Panda Pinyin account.");
+  if (!data.session) throw new Error(t("This account needs switching on by the site owner (email confirmation is on)."));
+  if (!ours(user)) throw new Error(t("Not a Panda Pinyin account."));
   C.name = name.trim().toLowerCase(); setMeta({ name: C.name });
   await pull(user);
 };
@@ -95,49 +95,52 @@ C.logout = async (clear) => {
 /* ---------------- 👪 Grown-ups panel (behind a small grown-up check) ---------------- */
 PP.Grown = { open() {
   const a = 3 + Math.floor(Math.random() * 6), b = 4 + Math.floor(Math.random() * 5);
-  ui.modal(`<h3>👪 Grown-ups only</h3><p>What is <b>${a} × ${b}</b>?</p>
+  ui.modal(`<h3>👪 ${t("Grown-ups only")}</h3><p>${t("What is")} <b>${a} × ${b}</b>?</p>
     <input id="gate" inputmode="numeric" maxlength="3" autocomplete="off"><p class="err" id="gErr"></p>
-    <div class="row"><button class="btn ghost" data-x>Cancel</button><button class="btn" id="gOk">OK</button></div>`, (m, close) => {
+    <div class="row"><button class="btn ghost" data-x>${t("Cancel")}</button><button class="btn" id="gOk">OK</button></div>`, (m, close) => {
     const inp = m.querySelector("#gate"); setTimeout(() => inp.focus(), 50);
     m.querySelector("[data-x]").onclick = close;
-    const ok = () => { if (+inp.value === a * b) { close(); panel(); } else m.querySelector("#gErr").textContent = "Not quite. Please ask a grown-up 🙂"; };
+    const ok = () => { if (+inp.value === a * b) { close(); panel(); } else m.querySelector("#gErr").textContent = t("Not quite. Please ask a grown-up 🙂"); };
     m.querySelector("#gOk").onclick = ok; inp.onkeydown = e => e.key === "Enter" && ok();
   });
 } };
 function panel() {
   const kids = S.state.profiles;
-  ui.modal(`<h3>👪 Grown-ups</h3>
-    <div class="box"><b>☁️ Family cloud save</b>
-      ${C.name ? `<p>Signed in as <b>${ui.esc(C.name)}</b> · <span id="ccStatus">${LABEL[C.status][1]}</span></p>
-        <p class="muted">All children’s progress syncs to this family account. Log in with the same family name on another phone or tablet to continue there.</p>
-        <div class="row"><button class="btn sm" id="cSave">Save now</button><button class="btn sm ghost" id="cOut">Log out</button></div>
-        <button class="link" id="cOutClear">Log out & clear this device (shared computer)</button>`
-      : `<p class="muted">Progress is saved on this device. Make a free family account (no email needed) to keep it safe in the cloud and use it on other devices.</p>
-        <input id="cName" placeholder="Family name, e.g. ngfamily" autocomplete="username" autocapitalize="off" maxlength="20">
-        <input id="cPass" type="password" placeholder="Password (6+ characters)" autocomplete="current-password">
+  ui.modal(`<h3>👪 ${t("Grown-ups")}</h3>
+    <div class="box"><b>☁️ ${t("Family cloud save")}</b>
+      ${C.name ? `<p>${t("Signed in as")} <b>${ui.esc(C.name)}</b> · <span id="ccStatus">${t(LABEL[C.status][1])}</span></p>
+        <p class="muted">${t("All children’s progress syncs to this family account. Log in with the same family name on another phone or tablet to continue there.")}</p>
+        <div class="row"><button class="btn sm" id="cSave">${t("Save now")}</button><button class="btn sm ghost" id="cOut">${t("Log out")}</button></div>
+        <button class="link" id="cOutClear">${t("Log out & clear this device (shared computer)")}</button>`
+      : `<p class="muted">${t("Progress is saved on this device. Make a free family account (no email needed) to keep it safe in the cloud and use it on other devices.")}</p>
+        <input id="cName" placeholder="${t("Family name, e.g. ngfamily")}" autocomplete="username" autocapitalize="off" maxlength="20">
+        <input id="cPass" type="password" placeholder="${t("Password (6+ characters)")}" autocomplete="current-password">
         <p class="err" id="cErr"></p>
-        <div class="row"><button class="btn sm" id="cIn">Log in</button><button class="btn sm ghost" id="cUp">Create account</button></div>
-        <p class="muted tiny">Write the family name and password down: there is no email, so they can’t be reset.</p>`}
+        <div class="row"><button class="btn sm" id="cIn">${t("Log in")}</button><button class="btn sm ghost" id="cUp">${t("Create account")}</button></div>
+        <p class="muted tiny">${t("Write the family name and password down: there is no email, so they can’t be reset.")}</p>`}
     </div>
-    <div class="box"><b>🧒 Players</b>${kids.length ? kids.map(k => `<div class="krow"><span>${ui.esc(k.name)} · ⭐ ${k.stars} · Lv ${PP.App.level(k)}</span><button class="btn sm ghost" data-del="${k.id}">Remove</button></div>`).join("") : `<p class="muted">No players yet.</p>`}</div>
-    <p class="muted tiny">Audio: real recordings by Chen Wang and Yue Tan (audio-cmn / Shtooka, CC BY-SA). Stroke order: Hanzi Writer (MIT) + hanzi-writer-data (Arphic PL). <a href="CREDITS.md" target="_blank">Credits</a></p>
-    <button class="btn ghost" data-x>Close</button>`, (m, close) => {
+    <div class="box"><b>🧒 ${t("Players")}</b>${kids.length ? kids.map(k => `<div class="krow"><span>${ui.esc(k.name)} · ⭐ ${k.stars} · ${t("Lv")} ${PP.App.level(k)}</span><button class="btn sm ghost" data-lang="${k.id}" aria-label="${t("Language")}">🌐 ${(PP.LANGS[k.lang] || PP.LANGS[PP.deviceLang()]).flag}</button><button class="btn sm ghost" data-del="${k.id}">${t("Remove")}</button></div>`).join("") : `<p class="muted">${t("No players yet.")}</p>`}
+      <button class="btn sm ghost" id="devLang">🌐 ${t("Language on this device")}: ${PP.LANGS[PP.deviceLang()].name}</button></div>
+    <p class="muted tiny">${t("Audio: real recordings by Chen Wang and Yue Tan (audio-cmn / Shtooka, CC BY-SA). Stroke order: Hanzi Writer (MIT) + hanzi-writer-data (Arphic PL).")} <a href="CREDITS.md" target="_blank">${t("Credits")}</a></p>
+    <button class="btn ghost" data-x>${t("Close")}</button>`, (m, close) => {
     m.querySelector("[data-x]").onclick = close;
     const err = t => m.querySelector("#cErr").textContent = t;
     const go = mode => async () => {
       const n = m.querySelector("#cName").value.trim(), p = m.querySelector("#cPass").value;
       const e = C.nameErr(n) || C.passErr(p); if (e) return err(e);
-      err(mode === "signup" ? "Creating…" : "Logging in…");
-      try { await C.auth(mode, n, p); close(); PP.App.rerender(); ui.toast("☁️✓ Family cloud save is on!"); } catch (x) { err(x.message); }
+      err(mode === "signup" ? t("Creating…") : t("Logging in…"));
+      try { await C.auth(mode, n, p); close(); PP.App.rerender(); ui.toast("☁️✓ " + t("Family cloud save is on!")); } catch (x) { err(x.message); }
     };
     if (m.querySelector("#cIn")) { m.querySelector("#cIn").onclick = go("login"); m.querySelector("#cUp").onclick = go("signup"); }
     if (m.querySelector("#cSave")) {
-      m.querySelector("#cSave").onclick = () => C.saveNow().then(() => ui.toast("☁️✓ Saved")).catch(() => ui.toast("Couldn't reach the cloud. Saved on this device."));
+      m.querySelector("#cSave").onclick = () => C.saveNow().then(() => ui.toast("☁️✓ " + t("Saved"))).catch(() => ui.toast(t("Couldn't reach the cloud. Saved on this device.")));
       m.querySelector("#cOut").onclick = async () => { await C.logout(false); close(); PP.App.rerender(); };
-      m.querySelector("#cOutClear").onclick = async () => { if (!confirm("Log out and remove Panda Pinyin progress from THIS device? (The cloud copy stays.)")) return; await C.logout(true); close(); PP.App.profiles(); };
+      m.querySelector("#cOutClear").onclick = async () => { if (!confirm(t("Log out and remove Panda Pinyin progress from THIS device? (The cloud copy stays.)"))) return; await C.logout(true); close(); PP.App.profiles(); };
     }
+    m.querySelectorAll("[data-lang]").forEach(b => b.onclick = () => { const k = kids.find(x => x.id === b.dataset.lang); close(); PP.App.langPicker(k, panel); });
+    m.querySelector("#devLang").onclick = () => { close(); PP.App.langPicker(null, panel); };
     m.querySelectorAll("[data-del]").forEach(b => b.onclick = () => { const k = kids.find(x => x.id === b.dataset.del);
-      if (!confirm(`Remove ${k.name} and all their progress?`)) return; S.remove(k.id); close(); PP.App.profiles(); });
+      if (!confirm(t("Remove {name} and all their progress?").replace("{name}", k.name))) return; S.remove(k.id); close(); PP.App.profiles(); });
   });
 }
 })();

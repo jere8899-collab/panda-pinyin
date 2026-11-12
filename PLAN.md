@@ -71,10 +71,16 @@ Rule for every future run: verify pinyin, tones, stroke order and vocabulary aga
 * 12 new badges: Writing Set 7–17 + 🧠 Memory Writer (10 characters from memory). 27 badges.
 * 6 new skins: Mid-Autumn Lantern 150, School Uniform 180, Little Chef 220, Dragon Boat 260, Super Panda 320, Merlion 400⭐ (made with the built-in free image tool from the Bamboo Panda picture).
 
+## v8 done (2026-11-12): more words, harder skins, 🌐 language switch
+* Writing Garden sets 18–28: 42 more characters (animals, people, day & night, seasons, describing, at home, doing things) + 24 more two-character words in 4 词语 sets (family, time & seasons, school, everyday). 168 entries. Pinyin 253/253 vs CC-CEDICT; 132/132 single-character recordings pass the tone check (new tools/char_pitch_check.py). 11 set badges + 🧠 Memory Star (50, +15⭐): 39 badges.
+* Star balance: replaying a finished lesson pays half; trace replays pay 1⭐ once a day per character (first trace 5⭐, better 2⭐); first memory write 3⭐. Skin prices ~2.5× (top Merlion 400→1200⭐), cheap starters kept (New Year 20, Space 60, Little Artist 120). 5 new skins: Little Artist, Orchid (胡姬花), Kopitiam, Wushu, Little Emperor (1800⭐). About 1,970⭐ can be earned by doing everything once.
+* 🌐 Helper language: English + Tiếng Việt. One file per language in js/i18n/ (keys = English text, fallback to English). Saved per child (p.lang), synced with the cloud save; device default before a child is picked. 🌐 on the home top bar and the player screen; per-child 🌐 in Grown-ups. Vietnamese word meanings checked against CVDICT (tools/vi_meaning_check.py). tools/i18n_check.js lists missing translations; the e2e test plays the whole game in both languages (UI=vi) and fails on any text overflow.
+
 ## Next ideas (in order)
 1. Whole syllables ye yue yuan yin yun ying + finals ian uan üan iang uang iong.
 2. "Spell it" game: drag initial + final, then pick the tone.
-3. More 词语 word sets + a 'pick the right character' reading game using the Writing Garden words.
+3. A 'pick the right character' reading game using the Writing Garden words (meanings already translated).
+3b. More helper languages on request (Malay, Tamil, Burmese…): one file each, see README.
 4. A grown-ups progress view per child (which tones are tricky).
 5. Daily goal / streak with the panda (no punishment for missed days).
 6. Consider a fully separate free Supabase project if Jeremy wants (see README).
