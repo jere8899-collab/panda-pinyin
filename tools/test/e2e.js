@@ -133,6 +133,16 @@ async function traceChar(page, ch, wrongFirst) {
   await page.click(".sheet [data-x]");
 
   console.log("Pet + skins");
+  // v9: the Bamboo Panda gently bobs on the home screen; reduce-motion phones get the still picture
+  const idleSrc = () => page.evaluate(() => { const i = document.querySelector(".pet .panda"); return i.complete && i.naturalWidth > 0 ? i.currentSrc : "not loaded"; });
+  await page.waitForFunction(() => { const i = document.querySelector(".pet .panda"); return i && i.complete; });
+  ok((await idleSrc()).includes("panda_classic_idle.webp"), "home Bamboo Panda plays the idle animation");
+  await page.emulateMedia({ reducedMotion: "reduce" }); await page.click("#shelf"); await page.click(".sheet [data-x]"); await page.evaluate(() => PP.home && PP.home());
+  await page.waitForFunction(() => document.querySelector(".pet .panda").currentSrc.includes("panda_classic.webp"), null, { timeout: 5000 }).catch(() => {});
+  ok((await idleSrc()).endsWith("panda_classic.webp"), "reduce motion: still Bamboo Panda picture");
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  await page.waitForFunction(() => document.querySelector(".pet .panda").currentSrc.includes("idle"), null, { timeout: 5000 }).catch(() => {});
+  ok(await page.$$eval(".panda", ps => ps.filter(i => i.closest("picture")).length) === 1, "only the home pet is animated");
   const p0 = await page.evaluate(() => PP.Store.cur());
   await page.click("#feed"); await sleep(200);
   const p1 = await page.evaluate(() => PP.Store.cur());
@@ -141,6 +151,7 @@ async function traceChar(page, ch, wrongFirst) {
   const p2 = await page.evaluate(() => PP.Store.cur());
   ok(p2.skin === "festive" && p2.owned.includes("festive"), "bought + wearing festive skin");
   ok((await page.getAttribute(".pet .panda", "src")).includes("festive"), "home panda shows festive skin");
+  ok(!(await page.$(".pet picture")), "other skins keep their still picture");
 
   console.log("Writing Garden");
   await page.click("#garden"); await page.waitForSelector(".garden-s");

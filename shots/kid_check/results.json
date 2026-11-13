@@ -1,0 +1,192 @@
+{
+  "when": "2026-11-13T12:38:23.846778+08:00",
+  "when_label": "Asia/Singapore",
+  "base": "https://jere8899-collab.github.io/panda-pinyin/",
+  "game_code_changed": false,
+  "deployed": false,
+  "cloud_login_used": false,
+  "results": [
+    {
+      "browser": "chromium",
+      "steps": {
+        "1_fresh_context": {
+          "pass": true,
+          "detail": "url loaded, picker=true, local panda keys=[], profiles=0"
+        },
+        "2_start_new_game": {
+          "pass": true,
+          "detail": "profile picker is showing (no existing child)"
+        },
+        "3_name_Mia": {
+          "pass": true,
+          "detail": "box shows \"Mia\""
+        },
+        "3_name_Tuan": {
+          "pass": true,
+          "detail": "box shows \"Tuấn\""
+        },
+        "3_name_Xiaoming": {
+          "pass": true,
+          "detail": "box shows \"小明\""
+        },
+        "3_create_player": {
+          "pass": true,
+          "detail": "created \"小明\", home who=\"👤 小明\""
+        },
+        "4_lesson": {
+          "pass": true,
+          "detail": "6 questions, stars 0 → 11 (+11)"
+        },
+        "4_tracing": {
+          "pass": true,
+          "detail": "一 accepted via mouse; feedback=\"🎉 太好了！ You wrote 一! ⭐⭐⭐ +5⭐\"; stars now 16"
+        },
+        "5_stars_and_shop": {
+          "pass": true,
+          "detail": "stars 0 → 16 (pill=\"⭐ 16\"), 16 skins shown"
+        },
+        "6_reload_persist": {
+          "pass": true,
+          "detail": "name=小明 stars=16 lessons=1 chars=1"
+        },
+        "7_console_errors": {
+          "pass": true,
+          "detail": "none"
+        },
+        "7_failed_network": {
+          "pass": true,
+          "detail": "none"
+        },
+        "7_overflow": {
+          "pass": true,
+          "detail": "none"
+        },
+        "7_screenshots": {
+          "pass": true,
+          "detail": "12 saved under shots/kid_check/"
+        }
+      },
+      "errors": [],
+      "consoleErrors": [],
+      "failedNet": [],
+      "brokenImages": [],
+      "overflow": [],
+      "shots": [
+        "/workspace/panda-pinyin/shots/kid_check/chromium_01_picker.png",
+        "/workspace/panda-pinyin/shots/kid_check/chromium_02_name_Mia.png",
+        "/workspace/panda-pinyin/shots/kid_check/chromium_03_name_Tuan.png",
+        "/workspace/panda-pinyin/shots/kid_check/chromium_04_name_Xiaoming.png",
+        "/workspace/panda-pinyin/shots/kid_check/chromium_05_home_new.png",
+        "/workspace/panda-pinyin/shots/kid_check/chromium_06_lesson_learn.png",
+        "/workspace/panda-pinyin/shots/kid_check/chromium_07_lesson_quiz.png",
+        "/workspace/panda-pinyin/shots/kid_check/chromium_08_lesson_done.png",
+        "/workspace/panda-pinyin/shots/kid_check/chromium_09_garden.png",
+        "/workspace/panda-pinyin/shots/kid_check/chromium_10_traced.png",
+        "/workspace/panda-pinyin/shots/kid_check/chromium_11_skins.png",
+        "/workspace/panda-pinyin/shots/kid_check/chromium_12_after_reload.png"
+      ],
+      "notes": [
+        "First run used real Audio (mild play() stub only). All steps passed with real mp3 playback."
+      ],
+      "starsBefore": 0,
+      "starsAfterLesson": 11,
+      "starsAfterTrace": 16,
+      "starsAfterReload": 16
+    },
+    {
+      "browser": "webkit",
+      "steps": {
+        "1_fresh_context": {
+          "pass": true,
+          "detail": "url loaded, picker=true, local panda keys=[], profiles=0"
+        },
+        "2_start_new_game": {
+          "pass": true,
+          "detail": "profile picker is showing (no existing child)"
+        },
+        "3_name_Mia": {
+          "pass": true,
+          "detail": "box shows \"Mia\""
+        },
+        "3_name_Tuan": {
+          "pass": true,
+          "detail": "box shows \"Tuấn\""
+        },
+        "3_name_Xiaoming": {
+          "pass": true,
+          "detail": "box shows \"小明\""
+        },
+        "3_create_player": {
+          "pass": true,
+          "detail": "created \"小明\", home who=\"👤 小明\", painted=true"
+        },
+        "4_lesson": {
+          "pass": true,
+          "detail": "6 questions, stars 0 → 11 (+11)"
+        },
+        "4_tracing": {
+          "pass": true,
+          "detail": "一 accepted via mouse; feedback=\"🎉 太好了！ You wrote 一! ⭐⭐⭐ +5⭐\"; stars now 16"
+        },
+        "5_stars_and_shop": {
+          "pass": true,
+          "detail": "stars 0 → 16 (pill=\"⭐ 16\"), 16 skins shown"
+        },
+        "6_reload_persist": {
+          "pass": true,
+          "detail": "name=小明 stars=16 lessons=1 chars=1 (before {\"name\":\"小明\",\"stars\":16,\"lessons\":1,\"chars\":1})"
+        },
+        "7_console_errors": {
+          "pass": true,
+          "detail": "none"
+        },
+        "7_failed_network": {
+          "pass": true,
+          "detail": "none"
+        },
+        "7_overflow": {
+          "pass": true,
+          "detail": "none"
+        },
+        "7_screenshots": {
+          "pass": true,
+          "detail": "12 saved under shots/kid_check/"
+        },
+        "4_lesson_hear_card": {
+          "pass": false,
+          "detail": "Playwright WebKit renderer crashed after tapping a learn card to hear it (also crashes with no Audio hook and with a DOM click; Chromium does not)"
+        }
+      },
+      "errors": [],
+      "consoleErrors": [],
+      "failedNet": [],
+      "brokenImages": [],
+      "overflow": [],
+      "shots": [
+        "/workspace/panda-pinyin/shots/kid_check/webkit_01_picker.png",
+        "/workspace/panda-pinyin/shots/kid_check/webkit_02_name_Mia.png",
+        "/workspace/panda-pinyin/shots/kid_check/webkit_03_name_Tuan.png",
+        "/workspace/panda-pinyin/shots/kid_check/webkit_04_name_Xiaoming.png",
+        "/workspace/panda-pinyin/shots/kid_check/webkit_05_home_new.png",
+        "/workspace/panda-pinyin/shots/kid_check/webkit_06_lesson_learn.png",
+        "/workspace/panda-pinyin/shots/kid_check/webkit_07_lesson_quiz.png",
+        "/workspace/panda-pinyin/shots/kid_check/webkit_08_lesson_done.png",
+        "/workspace/panda-pinyin/shots/kid_check/webkit_09_garden.png",
+        "/workspace/panda-pinyin/shots/kid_check/webkit_10_traced.png",
+        "/workspace/panda-pinyin/shots/kid_check/webkit_11_skins.png",
+        "/workspace/panda-pinyin/shots/kid_check/webkit_12_after_reload.png",
+        "/workspace/panda-pinyin/shots/kid_check/webkit_13_before_hear_card.png"
+      ],
+      "notes": [
+        "WebKit main flow uses a dummy Audio + aborted mp3 routes because real playback crashes this renderer",
+        "home after create: {\"hasNode\":true,\"nodeH\":72,\"hasPet\":true,\"bodyText\":\"Lv 1 · 熊猫宝宝 Baby\\n❤️❤️❤️🤍🤍\\n\\n我们一起学拼音吧！ Let’s learn pinyin!\\n\\n🎋 Feed (2⭐)\\n👕 Skins\\n🏅\\n徽章 Badges\\nFinish a world to win you\"}",
+        "about to start quiz (#go)",
+        "quiz visible"
+      ],
+      "starsBefore": 0,
+      "starsAfterLesson": 11,
+      "starsAfterTrace": 16,
+      "starsAfterReload": 16
+    }
+  ]
+}

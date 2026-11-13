@@ -37,7 +37,15 @@ const STAGE = ["", ["熊猫宝宝", "Baby"], ["熊猫宝宝", "Baby"], ["小可�
 const stage = lv => STAGE[lv][0] + " " + t(STAGE[lv][1]);
 const skinOf = p => PP.SKINS.find(s => s.id === p.skin) || PP.SKINS[0];
 const sleepy = p => p.day !== S.today() && (p.xp || 0) > 0;     // hasn't played yet today: sleepy, wakes on the first play (never sad or punished)
-const pandaImg = (p, cls = "") => `<img class="panda ${cls}" src="${sleepy(p) ? "img/panda_sleepy.webp" : skinOf(p).img}" alt="panda" style="--s:${(0.78 + level(p) * 0.03).toFixed(2)}">`;
+const pandaScale = p => (0.78 + level(p) * 0.03).toFixed(2);   // the panda grows a little with each level
+const pandaSrc = p => sleepy(p) ? "img/panda_sleepy.webp" : skinOf(p).img;
+// Home pet only: skins with an idle animation (sprite-gen frames, see CREDITS) play it; reduced-motion devices keep the still picture
+const IDLE = { classic: "img/panda_classic_idle.webp" };
+const pandaImg = (p, cls = "", idle = false) => {
+  const img = `<img class="panda ${cls}" src="${pandaSrc(p)}" alt="panda" style="--s:${pandaScale(p)}">`;
+  const anim = idle && !sleepy(p) && IDLE[skinOf(p).id];
+  return anim ? `<picture class="panda-idle"><source media="(prefers-reduced-motion: no-preference)" srcset="${anim}">${img}</picture>` : img;
+};
 const hearts = p => { const n = Math.round((p.happy || 0) / 20); return "❤️".repeat(n) + "🤍".repeat(5 - n); };
 function reward(p, stars, xp, happy) {
   const before = level(p);
@@ -161,7 +169,7 @@ function home() {
   const lv = level(p), nextIdx = PP.LESSONS.findIndex(l => !(p.lessons[l.id] || {}).best);
   app().innerHTML = `${topBar()}<section class="screen home">
     <div class="pet card">
-      <button class="pet-tap" id="petTap" aria-label="${t("Cuddle the panda")}">${pandaImg(p)}</button>
+      <button class="pet-tap" id="petTap" aria-label="${t("Cuddle the panda")}">${pandaImg(p, "", true)}</button>
       <div class="pet-info">
         <b>${t("Lv")} ${lv} · ${stage(lv)}</b>
         <div class="bar"><i style="width:${lv >= 10 ? 100 : Math.round(lvlXp(p) / 30 * 100)}%"></i></div>

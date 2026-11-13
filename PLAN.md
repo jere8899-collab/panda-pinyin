@@ -76,6 +76,12 @@ Rule for every future run: verify pinyin, tones, stroke order and vocabulary aga
 * Star balance: replaying a finished lesson pays half; trace replays pay 1⭐ once a day per character (first trace 5⭐, better 2⭐); first memory write 3⭐. Skin prices ~2.5× (top Merlion 400→1200⭐), cheap starters kept (New Year 20, Space 60, Little Artist 120). 5 new skins: Little Artist, Orchid (胡姬花), Kopitiam, Wushu, Little Emperor (1800⭐). About 1,970⭐ can be earned by doing everything once.
 * 🌐 Helper language: English + Tiếng Việt. One file per language in js/i18n/ (keys = English text, fallback to English). Saved per child (p.lang), synced with the cloud save; device default before a child is picked. 🌐 on the home top bar and the player screen; per-child 🌐 in Grown-ups. Vietnamese word meanings checked against CVDICT (tools/vi_meaning_check.py). tools/i18n_check.js lists missing translations; the e2e test plays the whole game in both languages (UI=vi) and fails on any text overflow.
 
+## v9 done (2026-11-13): the Bamboo Panda moves
+* Tidy first: `pandaImg` in js/app.js split into `pandaScale` / `pandaSrc` (one long line before); CREDITS skin count fixed (11 → 16).
+* Home screen only: the Bamboo Panda (free skin) gently bobs (`img/panda_classic_idle.webp`, animated WebP, 4 frames 460/200/460/200 ms, ~105 KB). Frames from Jeremy's approved sprite-gen trial (Grok login, frame pipeline), cut out from the cyan key by hand, all frames the same width so the panda never "grows"; the bob is ~3.5% of its height (a soft squash on the resting frame). The one AI frame whose face drifted was left out.
+* `<picture>` with `prefers-reduced-motion: no-preference`: phones set to reduce motion get the still picture. Other skins, the sleepy panda, the player list and lesson buddy stay still. e2e checks all three.
+* Offline: the new file is in img/, so build_sw.py caches it and the cache version changes.
+
 ## 🧹 House rule: tidy first, then build (Jeremy, 2026-11-12)
 Before adding a feature, first clean up the code that feature touches: remove dead code, simplify, tidy.
 * Keep each cleanup **small** and limited to the files the feature touches.

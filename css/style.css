@@ -34,7 +34,7 @@ input:focus{outline:none;border-color:var(--pink)}
 .kid .kid-img{height:84px;display:flex;align-items:flex-end}
 .kid.add{border:3px dashed #f3c3d3;box-shadow:none;background:#fff8fb;justify-content:center}.kid .plus{font-size:2.6rem;color:var(--pink)}
 .panda{width:calc(150px * var(--s,1));display:block;filter:drop-shadow(0 6px 8px #0002);transition:width .3s}
-.panda.sm{width:calc(78px * var(--s,1))}.panda.xs{width:64px}.panda.big{width:170px;margin:0 auto}
+.panda-idle{display:block}.panda.sm{width:calc(78px * var(--s,1))}.panda.xs{width:64px}.panda.big{width:170px;margin:0 auto}
 .hop{animation:hop .6s ease}@keyframes hop{30%{transform:translateY(-14px) rotate(-4deg)}60%{transform:translateY(0) rotate(3deg)}}
 /* home */
 .card{background:#fff;border-radius:24px;box-shadow:0 6px 20px #0000000f}
