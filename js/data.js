@@ -6,7 +6,7 @@ const MARKS = {
   a: ["a", "ā", "á", "ǎ", "à"], o: ["o", "ō", "ó", "ǒ", "ò"], e: ["e", "ē", "é", "ě", "è"],
   i: ["i", "ī", "í", "ǐ", "ì"], u: ["u", "ū", "ú", "ǔ", "ù"], "ü": ["ü", "ǖ", "ǘ", "ǚ", "ǜ"]
 };
-// put the tone mark on the right vowel (a/o/e first, else the last of i/u/ü); enough for every syllable in v1
+// put the tone mark on the right vowel: a/o/e first, else the last of i/u/ü (guì, liú)
 function mark(base, tone) {
   if (!tone || tone === 5) return base;
   let idx = -1;
@@ -88,8 +88,7 @@ const LESSONS = [
   { id: "t4", icon: "👑", zh: "声母大复习", en: "Big review: b p m f d t n l g k h",
     intro: "Everything so far! Which tone do you hear?",
     learn: [],
-    quiz: { kind: "tone", tones: [1, 2, 3, 4], bases: ["ba", "pa", "ma", "fa", "da", "ta", "na", "la", "di", "ni", "li", "du", "tu", "lü", "ga", "ka", "ha", "ge", "ke", "he", "gu", "ku", "hu"], n: 10 } }
-,
+    quiz: { kind: "tone", tones: [1, 2, 3, 4], bases: ["ba", "pa", "ma", "fa", "da", "ta", "na", "la", "di", "ni", "li", "du", "tu", "lü", "ga", "ka", "ha", "ge", "ke", "he", "gu", "ku", "hu"], n: 10 } },
   { id: "s7", icon: "🐔", zh: "声母 j q x", en: "Initials j q x",
     intro: "We say j, q, x as jī, qī, xī: smile and keep your tongue low. 🤫 A little secret: j q x never go with u. When you see ju, qu, xu, it is really jü, qü, xü! The two dots hide, but you still say ü (round lips 🐟).",
     learn: [{ base: "ji", tone: 1, tip: "smile, no puff" }, { base: "qi", tone: 1, tip: "smile with a puff 💨" }, { base: "xi", tone: 1, tip: "smile and hiss softly 🐍" },
@@ -132,8 +131,7 @@ const LESSONS = [
     quiz: { kind: "syl", bases: ["zi", "ci", "si", "zhi", "chi", "shi", "ji", "qi", "xi", "zu", "cu", "su", "zhu", "chu", "shu", "ju", "qu", "xu", "za", "ca", "sa", "zha", "cha", "sha"], tones: [1, 2, 3, 4], sameTone: true,
       confuse: { zi: ["zhi", "ji"], ci: ["chi", "qi"], si: ["shi", "xi"], zhi: ["zi", "ji"], chi: ["ci", "qi"], shi: ["si", "xi"], ji: ["zhi", "zi"], qi: ["chi", "ci"], xi: ["shi", "si"],
         zu: ["zhu", "ju"], cu: ["chu", "qu"], su: ["shu", "xu"], zhu: ["zu", "ju"], chu: ["cu", "qu"], shu: ["su", "xu"], ju: ["zhu", "zu"], qu: ["chu", "cu"], xu: ["shu", "su"],
-        za: ["zha", "ca"], ca: ["cha", "za"], sa: ["sha", "ca"], zha: ["za", "cha"], cha: ["ca", "zha"], sha: ["sa", "cha"] }, n: 10 } }
-,
+        za: ["zha", "ca"], ca: ["cha", "za"], sa: ["sha", "ca"], zha: ["za", "cha"], cha: ["ca", "zha"], sha: ["sa", "cha"] }, n: 10 } },
   { id: "s13", icon: "🦆", zh: "声母 y w", en: "Initials y w",
     intro: "y and w are like i and u wearing a little hat 🎩. They start a syllable: y sounds like i, w sounds like u.",
     learn: [{ base: "ya", tone: 1, hz: "鸭", tip: "duck" }, { base: "ye", tone: 2, hz: "爷", tip: "grandpa (爷爷)" }, { base: "yu", tone: 2, hz: "鱼", tip: "fish" },
@@ -217,7 +215,15 @@ const LESSONS = [
     quiz: { kind: "syl", bases: ["ban", "bang", "fan", "fang", "tan", "tang", "shan", "shang", "men", "meng", "fen", "feng", "gen", "geng", "chen", "cheng", "bin", "bing", "lin", "ling", "min", "ming", "xin", "xing", "jin", "jing"], tones: [1, 2, 3, 4], sameTone: true,
       confuse: { ban: ["bang", "ben"], bang: ["ban", "beng"], fan: ["fang", "fen"], fang: ["fan", "feng"], tan: ["tang", "dan"], tang: ["tan", "teng"], shan: ["shang", "shen"], shang: ["shan", "sheng"],
         men: ["meng", "man"], meng: ["men", "mang"], fen: ["feng", "fan"], feng: ["fen", "fang"], gen: ["geng", "gan"], geng: ["gen", "gang"], chen: ["cheng", "chan"], cheng: ["chen", "chang"],
-        bin: ["bing", "ben"], bing: ["bin", "beng"], lin: ["ling", "lan"], ling: ["lin", "leng"], min: ["ming", "men"], ming: ["min", "meng"], xin: ["xing", "xun"], xing: ["xin", "xiong"], jin: ["jing", "jun"], jing: ["jin", "jiong"] }, n: 10 } }
+        bin: ["bing", "ben"], bing: ["bin", "beng"], lin: ["ling", "lan"], ling: ["lin", "leng"], min: ["ming", "men"], ming: ["min", "meng"], xin: ["xing", "xun"], xing: ["xin", "xiong"], jin: ["jing", "jun"], jing: ["jin", "jiong"] }, n: 10 } },
+  { id: "s25", icon: "🥥", zh: "整体认读音节 ye yue yuan yin yun ying", en: "Whole syllables 2: ye yue yuan yin yun ying",
+    intro: "6 more syllables to read as ONE sound, no blending: ye yue yuan yin yun ying. With zhi chi shi ri zi ci si yi wu yu, that makes all 16 whole syllables! In yue yuan yun the ü hides its dots, so say them with round lips 🐟",
+    learn: [
+      { base: "ye", tone: 1, hz: "椰", tip: "coconut (椰子)" }, { base: "yue", tone: 4, hz: "月", tip: "moon" },
+      { base: "yuan", tone: 2, hz: "圆", tip: "round" }, { base: "yin", tone: 1, hz: "音", tip: "sound" },
+      { base: "yun", tone: 2, hz: "云", tip: "cloud" }, { base: "ying", tone: 1, hz: "鹰", tip: "eagle" }],
+    quiz: { kind: "syl", bases: ["ye", "yue", "yuan", "yin", "yun", "ying"], tones: [1, 2, 3, 4], sameTone: true,
+      confuse: { ye: ["yue", "yin"], yue: ["ye", "yuan"], yuan: ["yue", "yun"], yin: ["ying", "yun"], yun: ["yin", "yuan"], ying: ["yin", "ye"] }, n: 8 } }
 ];
 
 // stroke tracing (stroke order data: hanzi-writer-data, Make Me a Hanzi / Arphic PL)

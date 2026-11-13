@@ -105,7 +105,8 @@ async function traceChar(page, ch, wrongFirst) {
   ok(stars1 === 10, `stars after lesson 1 = 5 first-try + 5 bonus (got ${stars1})`);
   await page.screenshot({ path: SHOTS + "/tmp_done.png" });
   console.log("Lessons 2-7");
-  for (let i = 1; i < 33; i++) { await page.click("#next"); await page.waitForSelector(".learn, .quiz");
+  for (let i = 1; i < 34; i++) { await page.click("#next"); await page.waitForSelector(".learn, .quiz");
+    if (i === 33) { await sleep(700); ok((await page.textContent(".intro")).includes("16"), "whole syllables 2 says all 16"); await page.click(".lcard[data-i='2']"); ok((await page.evaluate(() => __played.slice(-1)[0])) === "audio/yuan2.mp3", "圆 yuán card plays yuan2.mp3"); await page.screenshot({ path: SHOTS + "/17_whole_syllables_2.png" }); }
     if (i === 28) { await sleep(700); await page.click(".lcard[data-i='2']"); ok((await page.evaluate(() => __played.slice(-1)[0])) === "audio/yin1.mp3", "in card plays yin1.mp3 (in said alone = yin)"); await page.screenshot({ path: SHOTS + "/14_nasal_learn.png" }); }
     if (i === 30) { await sleep(700); await page.click(".lcard[data-i='2']"); ok((await page.evaluate(() => __played.slice(-1)[0])) === "audio/ying1.mp3", "ing card plays ying1.mp3 (ing said alone = ying)"); await page.screenshot({ path: SHOTS + "/15_back_nasal_learn.png" }); }
     if (i === 31) { await sleep(700); await page.click(".lcard[data-i='6']"); ok((await page.evaluate(() => __played.slice(-1)[0])) === "audio/long2.mp3", "龙 lóng card plays long2.mp3"); await page.screenshot({ path: SHOTS + "/16_back_nasal_blend.png" }); }
@@ -188,12 +189,12 @@ async function traceChar(page, ch, wrongFirst) {
   await page.click("#back"); await page.click("#back"); await page.waitForSelector(".home"); await page.click(".who");
   await page.click(".kid[data-id] >> text=Xiao Long"); await page.waitForSelector(".home");
   ok((await page.textContent("#starPill")).includes("0"), "Xiao Long has his own 0⭐");
-  ok((await page.$$(".node.locked")).length === 32, "Xiao Long's lessons are still locked");
+  ok((await page.$$(".node.locked")).length === 33, "Xiao Long's lessons are still locked");
   await page.reload(); await page.waitForSelector(".home");
   ok((await page.textContent(".who")).includes("Xiao Long"), "after reload the same child is playing");
   await page.click(".who"); await page.click(".kid[data-id] >> text=Mei Mei"); await page.waitForSelector(".home");
   const after = await page.evaluate(() => PP.Store.cur());
-  ok(after.stars === mei.stars && after.xp === mei.xp && Object.keys(after.lessons).length === 33, `Mei Mei's progress survived reload (⭐${after.stars}, xp ${after.xp})`);
+  ok(after.stars === mei.stars && after.xp === mei.xp && Object.keys(after.lessons).length === 34, `Mei Mei's progress survived reload (⭐${after.stars}, xp ${after.xp})`);
 
   console.log("Grown-ups gate");
   await page.click("#cloudChip"); await page.waitForSelector("#gate");
@@ -240,7 +241,7 @@ async function traceChar(page, ch, wrongFirst) {
   await mp.goto(BASE); await mp.evaluate(v => { localStorage.setItem("pandaPinyin.save.v1", JSON.stringify(v)); localStorage.removeItem("pandaPinyin.cloud.v1"); }, V1); await mp.reload(); await mp.waitForSelector(".home");
   ok((await mp.textContent("#starPill")).includes("48"), "old kid keeps 33⭐ + 3 badges they already earned (+15⭐) = 48");
   ok(await mp.evaluate(() => Object.keys(PP.Store.cur().badges).sort().join() === "w_bpmf,w_finals,w_tones"), "old kid gets Tone, Finals, b p m f badges");
-  ok((await mp.$$(".node[data-i]")).length === 33 && (await mp.$$(".node.locked")).length === 25, "33 lessons shown; old kid's 7 done + d t n l open, 25 locked");
+  ok((await mp.$$(".node[data-i]")).length === 34 && (await mp.$$(".node.locked")).length === 26, "34 lessons shown; old kid's 7 done + d t n l open, 26 locked");
   ok(await mp.$eval(".node[data-i='7']", e => e.classList.contains("next")), "next lesson for old kid is 声母 d t n l");
   ok((await mp.getAttribute(".pet .panda", "src")).includes("sleepy") || (await mp.getAttribute(".pet .panda", "src")).includes("space"), "old kid's panda/skin shown");
   await mp.click("#garden"); ok((await mp.$$(".chars.locked")).length === 1 && !!(await mp.$(".set-more")), "old kid with 2 traced: Set 2 locked, later sets folded");

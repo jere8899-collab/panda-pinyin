@@ -82,6 +82,11 @@ Rule for every future run: verify pinyin, tones, stroke order and vocabulary aga
 * `<picture>` with `prefers-reduced-motion: no-preference`: phones set to reduce motion get the still picture. Other skins, the sleepy panda, the player list and lesson buddy stay still. e2e checks all three.
 * Offline: the new file is in img/, so build_sw.py caches it and the cache version changes.
 
+## v10 done (2026-11-13, daily run): the last 6 whole syllables
+* Tidy first (js/data.js): two stray comma lines between lessons folded in; outdated tone-mark comment fixed.
+* New Pinyin Park lesson 34 整体认读音节 ye yue yuan yin yun ying, so all 16 MOE whole syllables are now taught. Word cards 椰 yē, 月 yuè, 圆 yuán, 音 yīn, 云 yún, 鹰 yīng (CC-CEDICT 259/259; Vietnamese meanings checked in CVDICT). Quiz: hear it, pick between look-alikes with the same tone.
+* 4 new Chen Wang recordings yuan1–4 (audio-cmn 64k/syllabs); all 24 ye/yue/yuan/yin/yun/ying files pass the pitch check. No new badge (the 👑 Graduate badge now includes lesson 34; badges already earned are kept).
+
 ## 🧹 House rule: tidy first, then build (Jeremy, 2026-11-12)
 Before adding a feature, first clean up the code that feature touches: remove dead code, simplify, tidy.
 * Keep each cleanup **small** and limited to the files the feature touches.
@@ -89,7 +94,7 @@ Before adding a feature, first clean up the code that feature touches: remove de
 * Mention the cleanup briefly in the report.
 
 ## Next ideas (in order)
-1. Whole syllables ye yue yuan yin yun ying + finals ian uan üan iang uang iong.
+1. Finals ian uan üan iang uang iong (+ blending with real words).
 2. "Spell it" game: drag initial + final, then pick the tone.
 3. A 'pick the right character' reading game using the Writing Garden words (meanings already translated).
 3b. More helper languages on request (Malay, Tamil, Burmese…): one file each, see README.
