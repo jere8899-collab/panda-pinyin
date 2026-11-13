@@ -1,10 +1,6 @@
 {
-  "when": "2026-11-13T12:38:23.846778+08:00",
-  "when_label": "Asia/Singapore",
+  "when": "2026-11-13T08:55:52.162Z",
   "base": "https://jere8899-collab.github.io/panda-pinyin/",
-  "game_code_changed": false,
-  "deployed": false,
-  "cloud_login_used": false,
   "results": [
     {
       "browser": "chromium",
@@ -31,7 +27,7 @@
         },
         "3_create_player": {
           "pass": true,
-          "detail": "created \"小明\", home who=\"👤 小明\""
+          "detail": "created \"小明\", home who=\"👤 小明\", painted=true"
         },
         "4_lesson": {
           "pass": true,
@@ -39,7 +35,7 @@
         },
         "4_tracing": {
           "pass": true,
-          "detail": "一 accepted via mouse; feedback=\"🎉 太好了！ You wrote 一! ⭐⭐⭐ +5⭐\"; stars now 16"
+          "detail": "一 accepted via mouse; feedback=\"🎉 真棒！ You wrote 一! ⭐⭐⭐ +5⭐\"; stars now 16"
         },
         "5_stars_and_shop": {
           "pass": true,
@@ -47,7 +43,7 @@
         },
         "6_reload_persist": {
           "pass": true,
-          "detail": "name=小明 stars=16 lessons=1 chars=1"
+          "detail": "name=小明 stars=16 lessons=1 chars=1 (before {\"name\":\"小明\",\"stars\":16,\"lessons\":1,\"chars\":1})"
         },
         "7_console_errors": {
           "pass": true,
@@ -86,7 +82,9 @@
         "/workspace/panda-pinyin/shots/kid_check/chromium_12_after_reload.png"
       ],
       "notes": [
-        "First run used real Audio (mild play() stub only). All steps passed with real mp3 playback."
+        "home after create: {\"hasNode\":true,\"nodeH\":72,\"hasPet\":true,\"bodyText\":\"Lv 1 · 熊猫宝宝 Baby\\n❤️❤️❤️🤍🤍\\n\\n我们一起学拼音吧！ Let’s learn pinyin!\\n\\n🎋 Feed (2⭐)\\n👕 Skins\\n🏅\\n徽章 Badges\\nFinish a world to win you\"}",
+        "about to start quiz (#go)",
+        "quiz visible"
       ],
       "starsBefore": 0,
       "starsAfterLesson": 11,
@@ -126,7 +124,7 @@
         },
         "4_tracing": {
           "pass": true,
-          "detail": "一 accepted via mouse; feedback=\"🎉 太好了！ You wrote 一! ⭐⭐⭐ +5⭐\"; stars now 16"
+          "detail": "一 accepted via mouse; feedback=\"🎉 你真聪明！ You wrote 一! ⭐⭐⭐ +5⭐\"; stars now 16"
         },
         "5_stars_and_shop": {
           "pass": true,

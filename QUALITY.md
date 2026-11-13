@@ -8,6 +8,7 @@
 6. Pinyin/tone marks/stroke data come from a cited source (README "Audio & data sources").
 9. Both helper languages: `UI=vi node tools/test/e2e.js` green, `node tools/i18n_check.js vi` 0 missing, no text overflow at 390 px (the test checks every main screen).
 10. `node tools/test/namebox_webkit.js` green on live (iPhone-size WebKit name box: English keys, Vietnamese, Chinese IME).
+11. `BASE=<live> node tools/test/kid_check.js` ("play it like a kid", fresh phone, Chromium + WebKit) green before saying an update is live; WebKit's known Linux audio crash (real mp3 playback) is reported, not hidden.
 7. Never touch Word Realms files, repo, localStorage keys (wordRealms.*), caches (wr-*) or its cloud rows.
 
 # Feature map
@@ -16,6 +17,7 @@ Picker (start) → Add child / tap child → Home: pet (tap = hop, 🎋 Feed, �
 Writing Garden node → sets 1–28 (locked ones folded) → trace screen (👀 Watch, ✍️ Trace, 🧠 默写 from memory, ⬅ ➡; words traced char by char); ☁️ chip or "Grown-ups" link → sum gate → cloud login/sign-up, remove player.
 
 # Lessons learned
+* AI animation frames can quietly change size or face between frames (sprite-gen frame 2 was 15% bigger with smaller eyes): size every frame to the same width, compare faces side by side, and drop a frame that drifts (v9).
 * A test seed can quietly pre-trace the character you then test (猫 was seeded, so "first trace" paid 2⭐ not 5⭐); pick a test character the seed doesn't touch (v8).
 * A test that adds a made-up i18n key must run after the "all keys translated" check, or it reports its own key (v8).
 * `order: 0` is falsy: use `??` not `||` for numeric defaults (English sorted after Vietnamese) (v8).
@@ -53,3 +55,7 @@ Passed 1–8: live + cloud 139/139 in one clean run at 390×844 (+320×640), off
 
 # Self-score v8 (2026-11-13): 9/10
 Passed 1–10 on live: e2e + cloud 191/191 in English and 191/191 in Vietnamese (390×844 + 320×640), WebKit name-box check 27/27, i18n 523/523, verify_pinyin 253/253. Minus 1: the iPhone name-box bug (English keys ignored since v1) was found by Jeremy, not by a test; tests now type with real key presses in Chromium and WebKit.
+
+# Self-score v9 (2026-11-13): 9/10
+Bamboo Panda idle bob on the home screen. Passed 1–11 on live: e2e + cloud 195/195 (390×844 + 320×640), local e2e 187/187 in English and 187/187 in Vietnamese, i18n 523/523, WebKit name-box 27/27, offline check 3/3, play-it-like-a-kid all steps pass in Chromium and WebKit except WebKit's learn-card sound (known Linux WebKit test crash on real mp3 playback; the rest of that run uses a dummy sound). Animation checked by eye frame by frame: same panda, clean edges, no cyan halo; reduce-motion shows the still picture; other skins still. Minus 1: the animated panda is a slightly different drawing from the still one (sprite-gen redraw), and real iPhone sound is still unconfirmed by a person.
+
