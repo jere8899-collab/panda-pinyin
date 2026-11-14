@@ -17,6 +17,9 @@ Picker (start) → Add child / tap child → Home: pet (tap = hop, 🎋 Feed, �
 Writing Garden node → sets 1–28 (locked ones folded) → trace screen (👀 Watch, ✍️ Trace, 🧠 默写 from memory, ⬅ ➡; words traced char by char); ☁️ chip or "Grown-ups" link → sum gate → cloud login/sign-up, remove player.
 
 # Lessons learned
+* Read the lesson total from PP.LESSONS in tests instead of hard-coding it; then a new lesson needs no count edits (v11).
+* A recording can fail the pitch check even for a common word (mian4, so 面 miàn): run pitch_check on the downloaded files BEFORE choosing the word cards, and swap the word rather than ship an unclear sound (v11).
+* The skill files live in /home/box/sand-data/workflows/ (self-review-loop, play-it-like-a-kid); v10's "missing" note was wrong (v11).
 * AI animation frames can quietly change size or face between frames (sprite-gen frame 2 was 15% bigger with smaller eyes): size every frame to the same width, compare faces side by side, and drop a frame that drifts (v9).
 * A test seed can quietly pre-trace the character you then test (猫 was seeded, so "first trace" paid 2⭐ not 5⭐); pick a test character the seed doesn't touch (v8).
 * A test that adds a made-up i18n key must run after the "all keys translated" check, or it reports its own key (v8).
@@ -62,3 +65,7 @@ Bamboo Panda idle bob on the home screen. Passed 1–11 on live: e2e + cloud 195
 
 # Self-score v10 (2026-11-13): 9/10
 Lesson 34 整体认读音节 ye yue yuan yin yun ying. Local e2e 190/190 in English and 190/190 in Vietnamese; i18n 529/529; verify_pinyin 259/259; pitch_check 953 files, 0 new; live e2e + cloud 195/198 (the 3 misses were one GitHub Pages 503 on wa4.mp3, an unchanged file; rechecked 200 with curl); WebKit name-box all pass; play-it-like-a-kid on live: every step passes in Chromium and WebKit except WebKit's learn-card sound (known Linux test crash). Minus 1: the live suite didn't pass in one clean run, and the play-it-like-a-kid skill file is missing from the skills folder (kid_check.js covers its steps).
+
+# Self-score v11 (2026-11-14): 9/10
+Lessons 35–36: finals ian uan üan iang uang iong + blending (天 脸 船 圈 香 床 黄 熊). Tidy first, e2e 190/190 en + vi before building. After: local e2e 198/198 in English and 198/198 in Vietnamese; i18n 543/543 (0 missing); verify_pinyin 267/267; vi meanings: all 4 new ones match CVDICT; pitch_check 1084 files, 0 new (guan2 huan4 mian4 → NO_AUDIO); live e2e + cloud 206/206 in one clean run; WebKit name box 27/27 on live; play-it-like-a-kid on live: every step passes in Chromium and WebKit, including the new lesson played in full by touch and kept after reload, except WebKit's learn-card sound (known Linux test crash, not a game bug). Screenshots checked at 390 px in both languages. Minus 1: real iPhone sound still unconfirmed by a person, and the kid check reaches lesson 35 by marking earlier lessons done in the test child's save (a real new child would play 34 lessons first).
+

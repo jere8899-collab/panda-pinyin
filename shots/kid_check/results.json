@@ -1,6 +1,6 @@
 {
-  "when": "2026-11-14T13:13:10.403Z",
-  "base": "http://localhost:8765/",
+  "when": "2026-11-14T13:27:23.781Z",
+  "base": "https://jere8899-collab.github.io/panda-pinyin/",
   "results": [
     {
       "browser": "chromium",
@@ -35,7 +35,7 @@
         },
         "4_tracing": {
           "pass": true,
-          "detail": "一 accepted via mouse; feedback=\"🎉 对了！ You wrote 一! ⭐⭐⭐ +5⭐\"; stars now 16"
+          "detail": "一 accepted via mouse; feedback=\"🎉 真棒！ You wrote 一! ⭐⭐⭐ +5⭐\"; stars now 16"
         },
         "5_stars_and_shop": {
           "pass": true,
@@ -131,7 +131,7 @@
         },
         "4_tracing": {
           "pass": true,
-          "detail": "一 accepted via mouse; feedback=\"🎉 好极了！ You wrote 一! ⭐⭐⭐ +5⭐\"; stars now 16"
+          "detail": "一 accepted via mouse; feedback=\"🎉 对了！ You wrote 一! ⭐⭐⭐ +5⭐\"; stars now 16"
         },
         "5_stars_and_shop": {
           "pass": true,
