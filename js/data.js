@@ -15,10 +15,11 @@ function mark(base, tone) {
   return base.slice(0, idx) + MARKS[base[idx]][tone] + base.slice(idx + 1);
 }
 // written form -> audio file stem (a single final i/u/ü is read like yi/wu/yu)
-const AUDIO = { i: "yi", u: "wu", "ü": "yu", ui: "wei", iu: "you", ie: "ye", "üe": "yue", in: "yin", un: "wen", "ün": "yun", ing: "ying" };   // finals said alone
+const AUDIO = { i: "yi", u: "wu", "ü": "yu", ui: "wei", iu: "you", ie: "ye", "üe": "yue", in: "yin", un: "wen", "ün": "yun", ing: "ying",   // finals said alone
+  ian: "yan", uan: "wan", "üan": "yuan", iang: "yang", uang: "wang", iong: "yong" };
 const audioOf = (base, tone) => "audio/" + (AUDIO[base] || base.replace("ü", "v")) + tone + ".mp3";   // audio-cmn writes nü/lü as nv/lv
 // recordings we don't ask about: the pitch check (tools/pitch_check.py) couldn't confirm the tone
-const NO_AUDIO = new Set(["la4", "qi4", "se4", "shu4", "zhe4", "lüe2", "miu4", "niu2", "nüe4", "tie2", "xue2", "pin2", "ren4", "shan2", "zhen2", "leng2", "rong2"]);
+const NO_AUDIO = new Set(["la4", "qi4", "se4", "shu4", "zhe4", "lüe2", "miu4", "niu2", "nüe4", "tie2", "xue2", "pin2", "ren4", "shan2", "zhen2", "leng2", "rong2", "guan2", "huan4", "mian4"]);
 const hasAudio = (base, tone) => !NO_AUDIO.has(base + tone);
 
 const TONES = [null,
@@ -223,7 +224,22 @@ const LESSONS = [
       { base: "yuan", tone: 2, hz: "圆", tip: "round" }, { base: "yin", tone: 1, hz: "音", tip: "sound" },
       { base: "yun", tone: 2, hz: "云", tip: "cloud" }, { base: "ying", tone: 1, hz: "鹰", tip: "eagle" }],
     quiz: { kind: "syl", bases: ["ye", "yue", "yuan", "yin", "yun", "ying"], tones: [1, 2, 3, 4], sameTone: true,
-      confuse: { ye: ["yue", "yin"], yue: ["ye", "yuan"], yuan: ["yue", "yun"], yin: ["ying", "yun"], yun: ["yin", "yuan"], ying: ["yin", "ye"] }, n: 8 } }
+      confuse: { ye: ["yue", "yin"], yue: ["ye", "yuan"], yuan: ["yue", "yun"], yin: ["ying", "yun"], yun: ["yin", "yuan"], ying: ["yin", "ye"] }, n: 8 } },
+  { id: "s26", icon: "🌀", zh: "韵母 ian uan üan iang uang iong", en: "Finals ian uan üan iang uang iong",
+    intro: "A quick glide, then a nose sound: i + an → ian, u + an → uan, ü + an → üan, i + ang → iang, u + ang → uang, i + ong → iong. Alone they are written yan, wan, yuan, yang, wang, yong.",
+    learn: [{ base: "ian", tone: 1, tip: "i + an (alone: yan)" }, { base: "uan", tone: 1, tip: "u + an (alone: wan)" }, { base: "üan", tone: 1, tip: "ü + an (alone: yuan)" },
+      { base: "iang", tone: 1, tip: "i + ang (alone: yang)" }, { base: "uang", tone: 1, tip: "u + ang (alone: wang)" }, { base: "iong", tone: 1, tip: "i + ong (alone: yong)" }],
+    quiz: { kind: "syl", bases: ["ian", "iang", "uan", "uang", "üan", "iong"], tones: [1, 2, 3, 4], sameTone: true,
+      confuse: { ian: ["iang", "üan"], iang: ["ian", "iong"], uan: ["uang", "üan"], uang: ["uan", "iang"], "üan": ["uan", "ian"], iong: ["iang", "uang"] }, n: 6 } },
+  { id: "s27", icon: "🐻", zh: "拼一拼 ian uan üan iang uang iong", en: "Blend: ian uan üan iang uang iong",
+    intro: "x + ióng → xióng 熊, the bear in 熊猫! After j q x, üan hides its dots: q + üān → quān 圈.",
+    learn: [
+      { base: "tian", tone: 1, hz: "天", tip: "sky, day" }, { base: "lian", tone: 3, hz: "脸", tip: "face" },
+      { base: "chuan", tone: 2, hz: "船", tip: "boat" }, { base: "quan", tone: 1, hz: "圈", tip: "circle, ring (q + üan)" },
+      { base: "xiang", tone: 1, hz: "香", tip: "smells nice" }, { base: "chuang", tone: 2, hz: "床", tip: "bed" },
+      { base: "huang", tone: 2, hz: "黄", tip: "yellow" }, { base: "xiong", tone: 2, hz: "熊", tip: "bear (熊猫 = panda!)" }],
+    quiz: { kind: "syl", bases: ["bian", "mian", "dian", "tian", "lian", "jian", "qian", "xian", "duan", "guan", "huan", "chuan", "shuan", "suan", "juan", "quan", "xuan",
+      "liang", "jiang", "qiang", "xiang", "guang", "huang", "chuang", "shuang", "jiong", "qiong", "xiong"], tones: [1, 2, 3, 4], twin: true, n: 8 } }
 ];
 
 // stroke tracing (stroke order data: hanzi-writer-data, Make Me a Hanzi / Arphic PL)

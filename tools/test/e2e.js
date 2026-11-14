@@ -107,6 +107,11 @@ async function traceChar(page, ch, wrongFirst) {
   const NL = await page.evaluate(() => PP.LESSONS.length);   // lesson total, so new lessons don't break the counts below
   console.log(`Lessons 2-${NL}`);
   for (let i = 1; i < NL; i++) { await page.click("#next"); await page.waitForSelector(".learn, .quiz");
+    if (i === 34) { await sleep(700); await page.click(".lcard[data-i='2']"); ok((await page.evaluate(() => __played.slice(-1)[0])) === "audio/yuan1.mp3", "üan card plays yuan1.mp3 (üan said alone = yuan)");
+      await page.click(".lcard[data-i='5']"); ok((await page.evaluate(() => __played.slice(-1)[0])) === "audio/yong1.mp3", "iong card plays yong1.mp3 (iong said alone = yong)");
+      ok((await page.textContent(".learn")).includes("iōng"), "iong card shows iōng (mark on the o)"); await page.screenshot({ path: SHOTS + "/18_ian_iong_learn.png" }); }
+    if (i === 35) { await sleep(700); ok((await page.textContent(".learn")).includes("xióng") && (await page.textContent(".learn")).includes("quān"), "blend cards show xióng 熊 and quān 圈");
+      await page.click(".lcard[data-i='7']"); ok((await page.evaluate(() => __played.slice(-1)[0])) === "audio/xiong2.mp3", "熊 xióng card plays xiong2.mp3"); await page.screenshot({ path: SHOTS + "/19_ian_iong_blend.png" }); }
     if (i === 33) { await sleep(700); ok((await page.textContent(".intro")).includes("16"), "whole syllables 2 says all 16"); await page.click(".lcard[data-i='2']"); ok((await page.evaluate(() => __played.slice(-1)[0])) === "audio/yuan2.mp3", "圆 yuán card plays yuan2.mp3"); await page.screenshot({ path: SHOTS + "/17_whole_syllables_2.png" }); }
     if (i === 28) { await sleep(700); await page.click(".lcard[data-i='2']"); ok((await page.evaluate(() => __played.slice(-1)[0])) === "audio/yin1.mp3", "in card plays yin1.mp3 (in said alone = yin)"); await page.screenshot({ path: SHOTS + "/14_nasal_learn.png" }); }
     if (i === 30) { await sleep(700); await page.click(".lcard[data-i='2']"); ok((await page.evaluate(() => __played.slice(-1)[0])) === "audio/ying1.mp3", "ing card plays ying1.mp3 (ing said alone = ying)"); await page.screenshot({ path: SHOTS + "/15_back_nasal_learn.png" }); }
@@ -118,12 +123,13 @@ async function traceChar(page, ch, wrongFirst) {
     if (i === 8) { await sleep(700); await page.screenshot({ path: SHOTS + "/06_blend_learn.png" }); await page.click(".lcard[data-i='3']"); ok((await page.evaluate(() => __played.slice(-1)[0])) === "audio/lv4.mp3", "绿 lǜ card plays lv4.mp3"); }
     if (await page.$("#go")) await page.click("#go"); await page.waitForSelector(".quiz");
     if (i === 4) { await sleep(500); await page.screenshot({ path: SHOTS + "/tmp_syl.png" }); }
+    if (i === 34) { await sleep(900); await page.screenshot({ path: SHOTS + "/18_ian_iong_quiz.png" }); const q = await page.evaluate(() => PP._q); ok(!!q && new Set(q.opts.map(o => o.label)).size === 3, "ian … iong quiz shows 3 different choices"); }
     if (i === 32) { await sleep(900); await page.screenshot({ path: SHOTS + "/17_n_ng_review.png" }); const q = await page.evaluate(() => PP._q); ok(!!q && q.opts.length === 3, "n / ng review shows 3 choices"); }
     if (i === 18) { await sleep(900); await page.screenshot({ path: SHOTS + "/10_review_quiz.png" }); }
     if (i === 7) { await sleep(900); await page.screenshot({ path: SHOTS + "/05_dtnl_quiz.png" }); }
     const n = await playLesson(page); ok(n >= 6, `lesson ${i + 1} done (${n} qs)`); await page.waitForSelector(".done"); }
   const ovf = await page.evaluate(() => window.__overflow || []); ok(ovf.length === 0, "every answer button fits on screen " + ovf.slice(0, 5).join(","));
-  const usedBad = await page.evaluate(() => __played.filter(f => /audio\/(la4|qi4|se4|shu4|zhe4|lve2|miu4|niu2|nve4|tie2|xue2|pin2|ren4|shan2|zhen2|leng2|rong2)\.mp3/.test(f)));
+  const usedBad = await page.evaluate(() => __played.filter(f => /audio\/(la4|qi4|se4|shu4|zhe4|lve2|miu4|niu2|nve4|tie2|xue2|pin2|ren4|shan2|zhen2|leng2|rong2|guan2|huan4|mian4)\.mp3/.test(f)));
   ok(usedBad.length === 0, "no unchecked recording played as a question " + usedBad.join(","));
   await page.click("#homeGo"); await page.waitForSelector(".home");
   ok((await page.$$(".node.locked")).length === 0, "all lessons unlocked after playing through");

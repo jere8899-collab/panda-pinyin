@@ -13,8 +13,8 @@ Rule for every future run: verify pinyin, tones, stroke order and vocabulary aga
 | 1c | | compound finals ai ei ui ao ou iu ie üe er + blending + review | ✅ v4 (7 lessons) |
 | 1c+ | | nasal finals an en in un ün + blending | ✅ v5 (2 lessons) |
 | 1c++ | | ang eng ing ong + blending; n / ng review + 🏅 Nose Sounds badge | ✅ v6 (3 lessons) |
-| 1c+++ | | whole syllables ye yue yuan yin yun ying; ian uan üan iang uang iong | ⏭ next |
-| 1d | | tone-mark placement rules, 3rd-tone sandhi (nǐ hǎo → ní hǎo), 一/不 tone changes, two-syllable words, spelling games (drag initial + final + tone) | later |
+| 1c+++ | | whole syllables ye yue yuan yin yun ying; ian uan üan iang uang iong + blending | ✅ v10 + v11 |
+| 1d | | tone-mark placement rules, 3rd-tone sandhi (nǐ hǎo → ní hǎo), 一/不 tone changes, two-syllable words, spelling games (drag initial + final + tone) | ⏭ next |
 | 2 | 🌸 写字花园 Stroke-order tracing | Hanzi Writer tracing: 一 二 三 人 大 口 | ✅ v1 (6 characters) |
 | 2b | | 十 土 上 下 小 山 · 中 日 月 木 水 火, in sets that unlock | ✅ v2 (18 characters) |
 | 2c | | 目 耳 手 足 头 门 · 天 田 王 云 白 不 | ✅ v3 (30 characters) |
@@ -87,6 +87,14 @@ Rule for every future run: verify pinyin, tones, stroke order and vocabulary aga
 * New Pinyin Park lesson 34 整体认读音节 ye yue yuan yin yun ying, so all 16 MOE whole syllables are now taught. Word cards 椰 yē, 月 yuè, 圆 yuán, 音 yīn, 云 yún, 鹰 yīng (CC-CEDICT 259/259; Vietnamese meanings checked in CVDICT). Quiz: hear it, pick between look-alikes with the same tone.
 * 4 new Chen Wang recordings yuan1–4 (audio-cmn 64k/syllabs); all 24 ye/yue/yuan/yin/yun/ying files pass the pitch check. No new badge (the 👑 Graduate badge now includes lesson 34; badges already earned are kept).
 
+## v11 done (2026-11-14, daily run): finals ian uan üan iang uang iong
+* Tidy first: tools/test/e2e.js reads the lesson total from PP.LESSONS (no more hard-coded 34/33/26 to edit for every new lesson); outdated quiz-shape comment in js/data.js fixed; README typo. e2e 190/190 in English and Vietnamese before building.
+* Lesson 35 韵母 ian uan üan iang uang iong: learn cards iān uān üān iāng uāng iōng, each played with its stand-alone recording (yan wan yuan yang wang yong). Quiz: hear it, pick between look-alikes with the same tone (ian/iang/üan, uan/uang/üan, iang/iong …).
+* Lesson 36 拼一拼 ian uan üan iang uang iong: word cards 天 tiān, 脸 liǎn, 船 chuán, 圈 quān (q + üan, dots hidden), 香 xiāng, 床 chuáng, 黄 huáng, 熊 xióng (熊猫!). Quiz pool: 28 syllables (bian … xiong), all 4 tones, sometimes the same sound with another tone. CC-CEDICT 267/267; Vietnamese meanings checked in CVDICT (face → khuôn mặt, circle → hình tròn, cái vòng, smells nice → thơm, bear → gấu).
+* 131 new Chen Wang recordings (audio-cmn 64k/syllabs); guan2 huan4 mian4 failed the pitch check → NO_AUDIO (never a question; 面 miàn was swapped for 脸 liǎn for that reason).
+* No new badge (kept small; the 👑 Graduate badge now needs lessons 35–36 too, badges already earned are kept).
+* kid_check.js: new step 6b plays the newest lesson (NEW_LESSON, default s26) in full by touch on the fresh child (earlier lessons marked done in that child's save, since a new child can't reach lesson 35), then reloads to confirm it stays.
+
 ## 🧹 House rule: tidy first, then build (Jeremy, 2026-11-12)
 Before adding a feature, first clean up the code that feature touches: remove dead code, simplify, tidy.
 * Keep each cleanup **small** and limited to the files the feature touches.
@@ -94,8 +102,8 @@ Before adding a feature, first clean up the code that feature touches: remove de
 * Mention the cleanup briefly in the report.
 
 ## Next ideas (in order)
-1. Finals ian uan üan iang uang iong (+ blending with real words).
-2. "Spell it" game: drag initial + final, then pick the tone.
+1. "Spell it" game: drag initial + final, then pick the tone.
+2. A small "three-part syllables" review (三拼音节: j + i + ā → jiā, g + u + ā → guā, x + i + óng → xióng) and a 1d start: tone-mark placement and 3rd-tone sandhi.
 3. A 'pick the right character' reading game using the Writing Garden words (meanings already translated).
 3b. More helper languages on request (Malay, Tamil, Burmese…): one file each, see README.
 4. A grown-ups progress view per child (which tones are tricky).
@@ -107,4 +115,4 @@ Before adding a feature, first clean up the code that feature touches: remove de
 * A grown-up gate is a simple sum, not a real lock.
 * No real recording for every neutral-tone syllable; only "ma" uses the neutral tone.
 * audio-cmn records all 4 tones of every syllable, including a few that are not real words (e.g. tē, nē); they are used only as tone drill sounds, never shown as words.
-* la4 qi4 se4 shu4 zhe4 lve2 miu4 niu2 nve4 tie2 xue2 pin2 ren4 shan2 zhen2 leng2 rong2 are not used as answers (pitch check unclear).
+* la4 qi4 se4 shu4 zhe4 lve2 miu4 niu2 nve4 tie2 xue2 pin2 ren4 shan2 zhen2 leng2 rong2 guan2 huan4 mian4 are not used as answers (pitch check unclear).

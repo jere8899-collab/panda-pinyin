@@ -1,6 +1,6 @@
 {
-  "when": "2026-11-13T13:22:56.914Z",
-  "base": "https://jere8899-collab.github.io/panda-pinyin/",
+  "when": "2026-11-14T13:13:10.403Z",
+  "base": "http://localhost:8765/",
   "results": [
     {
       "browser": "chromium",
@@ -45,6 +45,10 @@
           "pass": true,
           "detail": "name=小明 stars=16 lessons=1 chars=1 (before {\"name\":\"小明\",\"stars\":16,\"lessons\":1,\"chars\":1})"
         },
+        "6b_new_lesson": {
+          "pass": true,
+          "detail": "s26 (lesson 35): 6 cards [iān i + an (alone: yan) 🔊 | uān u + an (alone: wan) 🔊 | üān ü + an (alone: yuan) 🔊 | iāng i + ang (alone: yang) 🔊 | uāng u + ang (alone: wang) 🔊 | iōng i +], 6 questions, crowns 3, stars 56 → 67, kept after reload"
+        },
         "7_console_errors": {
           "pass": true,
           "detail": "none"
@@ -59,7 +63,7 @@
         },
         "7_screenshots": {
           "pass": true,
-          "detail": "12 saved under shots/kid_check/"
+          "detail": "15 saved under shots/kid_check/"
         }
       },
       "errors": [],
@@ -79,7 +83,10 @@
         "/workspace/panda-pinyin/shots/kid_check/chromium_09_garden.png",
         "/workspace/panda-pinyin/shots/kid_check/chromium_10_traced.png",
         "/workspace/panda-pinyin/shots/kid_check/chromium_11_skins.png",
-        "/workspace/panda-pinyin/shots/kid_check/chromium_12_after_reload.png"
+        "/workspace/panda-pinyin/shots/kid_check/chromium_12_after_reload.png",
+        "/workspace/panda-pinyin/shots/kid_check/chromium_13_new_lesson_learn.png",
+        "/workspace/panda-pinyin/shots/kid_check/chromium_14_new_lesson_quiz.png",
+        "/workspace/panda-pinyin/shots/kid_check/chromium_15_new_lesson_done.png"
       ],
       "notes": [
         "home after create: {\"hasNode\":true,\"nodeH\":72,\"hasPet\":true,\"bodyText\":\"Lv 1 · 熊猫宝宝 Baby\\n❤️❤️❤️🤍🤍\\n\\n我们一起学拼音吧！ Let’s learn pinyin!\\n\\n🎋 Feed (2⭐)\\n👕 Skins\\n🏅\\n徽章 Badges\\nFinish a world to win you\"}",
@@ -124,7 +131,7 @@
         },
         "4_tracing": {
           "pass": true,
-          "detail": "一 accepted via mouse; feedback=\"🎉 对了！ You wrote 一! ⭐⭐⭐ +5⭐\"; stars now 16"
+          "detail": "一 accepted via mouse; feedback=\"🎉 好极了！ You wrote 一! ⭐⭐⭐ +5⭐\"; stars now 16"
         },
         "5_stars_and_shop": {
           "pass": true,
@@ -133,6 +140,10 @@
         "6_reload_persist": {
           "pass": true,
           "detail": "name=小明 stars=16 lessons=1 chars=1 (before {\"name\":\"小明\",\"stars\":16,\"lessons\":1,\"chars\":1})"
+        },
+        "6b_new_lesson": {
+          "pass": true,
+          "detail": "s26 (lesson 35): 6 cards [iān i + an (alone: yan) 🔊 | uān u + an (alone: wan) 🔊 | üān ü + an (alone: yuan) 🔊 | iāng i + ang (alone: yang) 🔊 | uāng u + ang (alone: wang) 🔊 | iōng i +], 6 questions, crowns 3, stars 56 → 67, kept after reload"
         },
         "7_console_errors": {
           "pass": true,
@@ -148,7 +159,7 @@
         },
         "7_screenshots": {
           "pass": true,
-          "detail": "12 saved under shots/kid_check/"
+          "detail": "15 saved under shots/kid_check/"
         },
         "4_lesson_hear_card": {
           "pass": false,
@@ -173,6 +184,9 @@
         "/workspace/panda-pinyin/shots/kid_check/webkit_10_traced.png",
         "/workspace/panda-pinyin/shots/kid_check/webkit_11_skins.png",
         "/workspace/panda-pinyin/shots/kid_check/webkit_12_after_reload.png",
+        "/workspace/panda-pinyin/shots/kid_check/webkit_13_new_lesson_learn.png",
+        "/workspace/panda-pinyin/shots/kid_check/webkit_14_new_lesson_quiz.png",
+        "/workspace/panda-pinyin/shots/kid_check/webkit_15_new_lesson_done.png",
         "/workspace/panda-pinyin/shots/kid_check/webkit_13_before_hear_card.png"
       ],
       "notes": [

@@ -451,6 +451,34 @@ async function runBrowser(kind) {
       } catch (e) {
         mark("6_reload_persist", false, String(e && e.message || e));
       }
+
+      // Step 6b: the newest lesson (NEW_LESSON, default s26) played in full by touch. A fresh child can't reach it
+      // without ~35 lessons, so the lessons before it are marked done in this child's save (as if played earlier).
+      if (!(await pageAlive(page))) mark("6b_new_lesson", false, "blocked: page crashed");
+      else try {
+        const id = process.env.NEW_LESSON || "s26";
+        const idx = await page.evaluate(id => { const p = PP.Store.cur(), i = PP.LESSONS.findIndex(l => l.id === id);
+          PP.LESSONS.slice(0, i).forEach(l => { p.lessons[l.id] = p.lessons[l.id] || { best: 1, plays: 1 }; }); PP.Store.touch(p); return i; }, id);
+        await page.reload({ waitUntil: "domcontentloaded" }); await page.waitForSelector(".home", { timeout: 20000 }); await sleep(800);
+        const st0 = await page.evaluate(() => PP.Store.cur().stars);
+        await page.locator(`.node[data-i='${idx}']`).scrollIntoViewIfNeeded(); await page.tap(`.node[data-i='${idx}']`);
+        await page.waitForSelector(".learn", { timeout: 8000 }); await sleep(600);
+        const cards = await page.$$eval(".lcard", cs => cs.map(c => c.innerText.replace(/\s+/g, " ").trim()));
+        await shot(page, "13_new_lesson_learn");
+        await page.tap(".lcard[data-i='0']").catch(() => {}); await sleep(300);
+        await page.tap("#go"); await page.waitForSelector(".quiz", { timeout: 8000 }); await sleep(800);
+        await shot(page, "14_new_lesson_quiz");
+        const n = await playLesson(page);
+        await page.waitForSelector(".done", { timeout: 8000 });
+        await shot(page, "15_new_lesson_done"); await checkOverflow(page, "new lesson done", rec);
+        if (await page.$("#homeGo")) await page.tap("#homeGo"); await page.waitForSelector(".home", { timeout: 8000 });
+        await page.reload({ waitUntil: "domcontentloaded" }); await page.waitForSelector(".home", { timeout: 20000 });
+        const after = await page.evaluate(id => { const p = PP.Store.cur(); return { best: (p.lessons[id] || {}).best || 0, stars: p.stars }; }, id);
+        mark("6b_new_lesson", n >= 6 && after.best > 0 && after.stars > st0,
+          `${id} (lesson ${idx + 1}): ${cards.length} cards [${cards.slice(0, 6).join(" | ").slice(0, 160)}], ${n} questions, crowns ${after.best}, stars ${st0} → ${after.stars}, kept after reload`);
+      } catch (e) {
+        mark("6b_new_lesson", false, String(e && e.message || e));
+      }
     }
 
     // Step 7: console / network / overflow (collected throughout)
