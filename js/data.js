@@ -29,7 +29,7 @@ const TONES = [null,
   { n: 5, zh: "轻声", en: "Neutral tone: short and light", shape: "·", hint: "Quick and soft, no mark at all 🪶" }
 ];
 
-// learn: cards to tap & hear. quiz: {kind:"tone"|"syl", pool:[[base,tone],...], opts:...}
+// learn: cards to tap & hear. quiz: { kind: "tone"|"syl", bases, tones, n, sameTone?, twin?, confuse? } (see quiz() in js/app.js)
 const LESSONS = [
   { id: "t1", icon: "🎵", zh: "四个声调", en: "The 4 tones",
     intro: "Chinese has 4 tones. The same sound can mean different things! Tap each card to hear it.",
